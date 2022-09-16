@@ -1,13 +1,18 @@
-on:
+name: Running cypress tests
+on: 
   push:
-    branches:
+    branches-ignore:
+      - master
       - staging
+
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
       - name: Cypress run
         uses: cypress-io/github-action@v4.0.0 
         with:
@@ -26,18 +31,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  deploy:
-    runs-on: ubuntu-latest
-    needs: sonarcloud
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ngduc/vercel-deploy-action@master
-        with:
-          vercel-cli: vercel
-          vercel-token: ${{ secrets.VERCEL_ACCESS_TOKEN }}
-          vercel-args: "--prod"
-          vercel-org-id: ${{ secrets.VERCEL_ORGANIZATION_TOKEN }}
-          vercel-project-id: ${{ secrets.VERCEL_STAGING_PROJECT_ID }}
-          working-directory: ./
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
