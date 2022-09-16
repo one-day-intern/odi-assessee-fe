@@ -1,4 +1,4 @@
-name: Running cypress tests
+name: cypress test and code quality checks with sonarcloud
 on: 
   push:
     branches-ignore:
