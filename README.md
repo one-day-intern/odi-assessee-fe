@@ -15,10 +15,10 @@ We aim to provide means for:
 
 ## Tables of Content 📃
 
-### [Getting started 💻](#getting-started-🏃‍♂️🏃‍♀️)
+### Getting started 💻
 -   [Server-side setup](#server-side-setup-🛠)
 -   [Client-side setup](#client-side-setup-🎨🖌)
-### [Release Notes 📝](#release-notes-001---hello-world-update-👋)
+### Release Notes 📝
 -   [0.0.1 - Hello World Update](#release-notes-001---hello-world-update-👋)
 
 ## Getting Started 🏃‍♂️🏃‍♀️
