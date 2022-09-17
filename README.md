@@ -48,6 +48,7 @@ If you do not have a local postgres database in your machine, please follow thes
     cd one-day-intern-backend
     python -r requirements.txt
     ```
+    
 3.  Now, you need to set up the ```DATABASE_URL``` environment variable required to run the project. The ```DATABASE_URL``` has the following format ```postgres://{username}:{password}@{host}:{port}/{name}```.
 
 	  Your ```DATABASE_URL``` should look something like this. ```postgres://postgres:postgres@localhost:5432/my_database```
@@ -64,11 +65,11 @@ If you do not have a local postgres database in your machine, please follow thes
 	```
 	
 	  To add the environment variable through the ```.env``` file, you may create a ```.env``` file and add the following line 	modified with your database credentials.
-	```
+	```sh
 	DATABASE_URL = postgres://{username}:{password}@{host}:{port}/{name}
 	```
 	For example,
-	```
+	```sh
     DATABASE_URL = postgres://postgres:postgres@localhost:5432/my_database
 	```
 
