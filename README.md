@@ -77,7 +77,7 @@ If you do not have a local postgres database in your machine, please follow thes
 	```sh
     python manage.py migrate
     ```
-    
+
 5.  Finally, you can run the development server.
 	```sh
     python manage.py runserver
@@ -114,6 +114,7 @@ The client-side codebase consists of two separate repositories: ```odi-assessee-
     ```sh
     yarn install
 	```
+
 4.  You also need to configure the ```BACKEND_URL``` for your Next.js application, which will most likely be ```http://localhost:XXXX``` (where you host our [cloned backend](https://github.com/one-day-intern/one-day-intern-backend)). 
 	
     To configure the environment variables, you need to create a ```.env.local``` file which contains the following value:
@@ -142,6 +143,7 @@ The client-side codebase consists of two separate repositories: ```odi-assessee-
 	```sh
     yarn dev
 	```
+    
 6.  You can open ```http://localhost:3000/``` to see the application in the browser. 
 
 	(Note that if you were to run both applications simultaneously, one application may be run on ```http://localhost:3001/```)
