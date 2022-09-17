@@ -48,7 +48,7 @@ If you do not have a local postgres database in your machine, please follow thes
     cd one-day-intern-backend
     python -r requirements.txt
     ```
-    
+
 3.  Now, you need to set up the ```DATABASE_URL``` environment variable required to run the project. The ```DATABASE_URL``` has the following format ```postgres://{username}:{password}@{host}:{port}/{name}```.
 
 	  Your ```DATABASE_URL``` should look something like this. ```postgres://postgres:postgres@localhost:5432/my_database```
@@ -77,6 +77,7 @@ If you do not have a local postgres database in your machine, please follow thes
 	```sh
     python manage.py migrate
     ```
+    
 5.  Finally, you can run the development server.
 	```sh
     python manage.py runserver
