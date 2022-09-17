@@ -11,7 +11,6 @@ We aim to provide means for:
 
 ## Frustrations that leads us to the creation of this project 😤
 -   Some companies still use multiple external mediums for their assessment process. This situation becomes a hassle for HR and assessor personnels to manage, monitor, and guide the progress of their assesses throughout the assessment.
-
 -   Some assessments are still performed separately and isolated from each other. These kinds of assessments are still incapable of mimicking the real-life work experience.
 
 ## Tables of Content 📃
@@ -20,7 +19,7 @@ We aim to provide means for:
 -   Server-side setup
 -   Client-side setup
 ### Release Notes 📝
-- 0.0.1 - Hello World Update
+-   0.0.1 - Hello World Update
 
 ## Getting Started 🏃‍♂️🏃‍♀️
 To start the project locally, please follow the steps below.
@@ -39,11 +38,12 @@ If you do not have a local postgres instance in your machine, please follow thes
 If you do not have a local postgres database in your machine, please follow these [steps](https://www.postgresql.org/docs/current/sql-createdatabase.html).
 
 1.  First, clone the server-side repository.
-    ```
+    ```sh
     git clone https://github.com/one-day-intern/one-day-intern-backend.git
     ```
+
 2.  After a successful repo-clone, you must install the dependencies to your local machine by using the following commands. 
-    ```
+    ```sh
     python -m pipenv shell
     cd one-day-intern-backend
     python -r requirements.txt
@@ -55,11 +55,11 @@ If you do not have a local postgres database in your machine, please follow thes
 	  You may do this by adding environment variables directly through the ```CLI (Command Line Interface)``` or through a ```.env``` file.
     
 	  To add the environment variables through the windows CLI, do the following.
-	```
+	```sh
     export DATABASE_URL = postgres://{username}:{password}@{host}:{port}/{name}
 	```
 	  To add the environment variables through the mac or linux CLI, do the following.
-	```
+	```sh
 	set DATABASE_URL = postgres://{username}:{password}@{host}:{port}/{name}
 	```
 	
@@ -72,12 +72,12 @@ If you do not have a local postgres database in your machine, please follow thes
     DATABASE_URL = postgres://postgres:postgres@localhost:5432/my_database
 	```
 
-4. If this is your first time running the application, perform the database migration as follows.
-	```
+4.  If this is your first time running the application, perform the database migration as follows.
+	```sh
     python manage.py migrate
     ```
-5. Finally, you can run the development server.
-	```
+5.  Finally, you can run the development server.
+	```sh
     python manage.py runserver
     ```
 
@@ -91,11 +91,11 @@ The client-side codebase consists of two separate repositories: ```odi-assessee-
 1.  First, clone the repository you wish to contribute:
 
 	  The following is used to clone the assessee frontend:
-	```
+	```sh
     git clone https://github.com/one-day-intern/odi-assessee-fe.git
     ```
 	  The following is used to clone the assessor frontend:
-	```
+	```sh
     git clone https://github.com/one-day-intern/odi-assessor-fe.git
     ```
 
@@ -104,25 +104,25 @@ The client-side codebase consists of two separate repositories: ```odi-assessee-
 	  The steps for ```yarn``` users will be further specified below.
 
 3.  After configuring ```npm``` in your machine, you can initialize the project by installing the dependencies as follows:
-    ```
+    ```sh
     npm i
     ```
 
 	  However, for those using ```yarn```, you can initialize the project by installing the dependencies as follows:
-    ```
+    ```sh
     yarn install
 	```
 4.  You also need to configure the ```BACKEND_URL``` for your Next.js application, which will most likely be ```http://localhost:XXXX``` (where you host our [cloned backend](https://github.com/one-day-intern/one-day-intern-backend)). 
 	
     To configure the environment variables, you need to create a ```.env.local``` file which contains the following value:
-	```
+	```js
 	NEXT_PUBLIC_BACKEND_URL = <backend_url>
 	```
 
 	To access the following the backend URL on your browser-side code, you can use ```process.env.NEXT_PUBLIC_BACKEND_URL```.
 
 	For those who prefer to add the variable to the next.config.js, you are able to add the following:
-    ```
+    ```js
     module.exports = {
       env: {
           ……,
@@ -133,11 +133,11 @@ The client-side codebase consists of two separate repositories: ```odi-assessee-
 
 5.  Both assessee and assessor applications are initialized using [Next.js](https://nextjs.org/docs). The development server in your local machine can be started as follows:
 
-    ```
+    ```sh
     npm run dev
     ```
     or 
-	```
+	```sh
     yarn dev
 	```
 6.  You can open ```http://localhost:3000/``` to see the application in the browser. 
