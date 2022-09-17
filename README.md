@@ -16,10 +16,10 @@ We aim to provide means for:
 ## Tables of Content 📃
 
 ### Getting started 💻
--   [Server-side setup](#server-side-setup-🛠)
--   [Client-side setup](#client-side-setup-🎨🖌)
+-   Server-side setup
+-   Client-side setup
 ### Release Notes 📝
--   [0.0.1 - Hello World Update](#release-notes-001---hello-world-update-👋)
+-   0.0.1 - Hello World Update
 
 ## Getting Started 🏃‍♂️🏃‍♀️
 To start the project locally, please follow the steps below.
