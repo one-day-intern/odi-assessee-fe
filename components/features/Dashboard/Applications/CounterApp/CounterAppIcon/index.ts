@@ -1,0 +1,1 @@
+export { CounterAppIcon } from "./CounterAppIcon";

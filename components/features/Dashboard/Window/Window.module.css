@@ -1,0 +1,36 @@
+.window {
+  --window-head-height: 32px;
+  width: fit-content;
+  height: fit-content;
+  border: 1px solid black;
+  cursor: default !important;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.window__head {
+  display: flex;
+  box-sizing: border-box;
+  padding: 5px;
+  /* position: relative; */
+  height: var(--window-head-height);
+  width: 100%;
+  user-select: none;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.window__head--title {
+  margin: 0;
+  font-size: 100%;
+  color: grey;
+}
+
+.window__body {
+  position: relative;
+  width: 100%;
+  height: calc(100% - var(--window-head-height));
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}

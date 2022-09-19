@@ -1,0 +1,11 @@
+.taskbar-shortcut {
+    padding: 8px;
+    min-height: inherit; /* placeholder */
+    border: 0;
+    background-color: transparent;
+}
+
+.taskbar-shortcut > div {
+    width: 100%;
+    height: 100%;
+}
