@@ -86,7 +86,7 @@ const Window: React.FC<Props> = ({
       rndRef.current!.updateSize({ width: app.width, height: app.height });
       toggleReveal(app, false);
     }
-  }, [app.reveal]);
+  }, [app, toggleReveal]);
 
   return (
     <motion.div
