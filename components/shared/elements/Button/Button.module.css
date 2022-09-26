@@ -1,0 +1,42 @@
+.button {
+    outline: none;
+    border: none;
+    border-radius: 0.5rem;
+
+    padding: 0.5rem 1rem;
+    margin: 2rem 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+
+    width: 100%;
+}
+
+.button p,
+.button h1,
+.button h2,
+.button h3,
+.button h4,
+.button h5,
+.button h6 {
+    font-size: 1.15rem;
+    line-height: 1.35rem;
+
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    margin: 0;
+}
+
+
+.button--primary {
+    background-color: #9076C0;
+    color: white;
+}
+
+.button--secondary {
+    background-color: #3D65D8;
+    color: white;
+}
