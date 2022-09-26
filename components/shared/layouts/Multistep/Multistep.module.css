@@ -1,0 +1,34 @@
+.window__container {
+    display: flex;
+}
+
+.window__navbar {
+    width: 30vw;
+    
+    padding: 3rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3rem 0;
+    justify-content: center;
+}
+
+.window__main {
+    background: white;
+    width: 100%;
+
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.window__main--container {
+        display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+}

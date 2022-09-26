@@ -1,0 +1,38 @@
+.signup-choice {
+    border-radius: 0.75rem;
+  
+    padding: 1.15rem 3rem;
+    margin: 1rem 0;
+  
+    display: grid;
+    grid-template-areas:
+      "heading check"
+      "subheading check";
+  
+    grid-template-columns: 1fr fit-content(100%);
+  
+    gap: 0 1rem;
+    cursor: pointer;
+  }
+  
+  .signup-choice__text {
+    margin: 0;
+  
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+  }
+  
+  .signup-choice__text--heading {
+    font-size: 1.15rem;
+    line-height: 1.35rem;
+  
+    grid-area: heading;
+  }
+  
+  .signup-choice__text--subheading {
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.5);
+  
+    grid-area: subheading;
+  }
+  

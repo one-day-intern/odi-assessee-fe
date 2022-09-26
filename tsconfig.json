@@ -18,11 +18,12 @@
       "@components/*" : ["components/*"],
       "@hooks/*" : ["hooks/*"],
       "@utils/*" : ["utils/*"],
-      "@services/*": ["services/*"]
+      "@services/*": ["services/*"],
+      "@context/*": ["context/*"],
     },
     "baseUrl": "./",
     "types": ["jest"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "jest.config.js"],
-  "exclude": ["node_modules", "**/*.test.tsx"]
+  "exclude": ["node_modules", "**/*.test.tsx", "**/*.test.ts"]
 }

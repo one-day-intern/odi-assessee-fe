@@ -1,0 +1,12 @@
+.signin-notice {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+
+  margin: 4rem 0;
+}
+
+.signin-notice--link {
+  font-weight: 600;
+  color: #2a666b;
+}

@@ -1,0 +1,6 @@
+.clickable {
+    cursor: pointer;
+
+    pointer-events: auto;
+    margin: 0 1rem;
+}
