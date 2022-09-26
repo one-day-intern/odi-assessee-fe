@@ -1,8 +1,22 @@
 import React from 'react'
 
-const Backdrop = () => {
+import styles from "./Backdrop.module.css";
+import { BackdropProps } from "./BackdropProps";
+
+const Backdrop = ({ children } : BackdropProps) => {
   return (
-    <div>Backdrop</div>
+    <div className={ styles["backdrop"] } data-testid="backdrop">
+        <div className={ styles["backdrop__circle"] }></div>
+        <div className={ styles["backdrop__circle"] }></div>
+        <div className={ styles["backdrop__circle"] }></div>
+        <div className={ styles["backdrop__circle"] }></div>
+        <div className={ styles["backdrop__circle"] }></div>
+        <div className={ styles["backdrop__circle"] }></div>
+        <div className={ styles["backdrop__circle"] }></div>
+        <div className={ styles["backdrop__content"]}>
+            { children }
+        </div>
+    </div>
   )
 }
 

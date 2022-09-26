@@ -1,0 +1,41 @@
+.choice {
+  display: grid;
+  grid-template-areas:
+    "radiobutton name"
+    "radiobutton details";
+
+  gap: 0 1rem;
+
+  align-items: center;
+
+  grid-template-columns: fit-content(100%) 1fr;
+
+  cursor: pointer;
+}
+
+.choice--disabled {
+  pointer-events: none;
+}
+
+.choice__text {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+
+  font-size: 1.05rem;
+
+  margin: 0;
+}
+
+.choice__text--name {
+  color: #3d65d8;
+
+  grid-area: name;
+}
+.choice__text--description {
+  color: rgba(49, 81, 173, 0.7);
+  grid-area: details;
+}
+
+.choice__text--disabled {
+  color: gray;
+}
