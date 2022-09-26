@@ -18,7 +18,7 @@
   .signup-choice__text {
     margin: 0;
   
-    font-family: "Roboto";
+    font-family: "Roboto", sans-serif;
     font-weight: 500;
   }
   
