@@ -90,21 +90,18 @@ beforeEach(() => {
   });
 });
 
-const useHook = () =>
-  renderHook(() =>
-    useWindowStateManager(
-      app,
-      (_app, fs) => {
-        _app.fullscreen = fs;
-      },
-      "fullscreen-bounds",
-      dummyRnd
-    )
-  );
-
 describe("useWindowStateManager hook test suite", () => {
   test("testing use window state manager", () => {
-    const { result } = useHook();
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
 
     expect(result.current.bounds).toBeTruthy();
     expect(result.current.mobileMode).toBe(false);
@@ -115,7 +112,16 @@ describe("useWindowStateManager hook test suite", () => {
   });
 
   test("testing fullscreen method", () => {
-    const { result } = useHook();
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
 
     act(() => {
       result.current.fullscreen();
@@ -137,7 +143,16 @@ describe("useWindowStateManager hook test suite", () => {
   });
 
   test("testing setToNormalMode method", () => {
-    const { result } = useHook();
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
 
     act(() => {
       result.current.fullscreen();
@@ -161,7 +176,16 @@ describe("useWindowStateManager hook test suite", () => {
   });
 
   test("testing setToOriginalSize method", () => {
-    const { result } = useHook();
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
 
     act(() => {
       result.current.fullscreen();
@@ -197,7 +221,16 @@ describe("useWindowStateManager hook test suite", () => {
   });
 
   test("testing setToOriginalSizeMobile method", () => {
-    const { result } = useHook();
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
 
     act(() => {
       result.current.fullscreen();
@@ -237,7 +270,16 @@ describe("useWindowStateManager hook test suite", () => {
   });
 
   test("testing resize handler from normal to mobile mode", () => {
-    const { result } = useHook();
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
 
     expect(result.current.mobileMode).toBe(false);
     expect(RndComponent.x).toBe(app.currentX);
@@ -248,17 +290,26 @@ describe("useWindowStateManager hook test suite", () => {
     global.innerWidth = 1024;
     act(() => {
       global.dispatchEvent(new Event("resize"));
-    })
+    });
 
     expect(result.current.mobileMode).toBe(true);
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
     expect(app.fullscreen).toBe(true);
     expect(result.current.bounds?.width).toBe(global.innerWidth);
-  })
+  });
 
   test("testing resize handler from mobile to normal mode", () => {
-    const { result } = useHook();
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
 
     expect(result.current.mobileMode).toBe(false);
     expect(RndComponent.x).toBe(app.currentX);
@@ -269,7 +320,7 @@ describe("useWindowStateManager hook test suite", () => {
     global.innerWidth = 1024;
     act(() => {
       global.dispatchEvent(new Event("resize"));
-    })
+    });
 
     expect(result.current.mobileMode).toBe(true);
     expect(RndComponent.x).toBe(0);
@@ -280,18 +331,27 @@ describe("useWindowStateManager hook test suite", () => {
     global.innerWidth = 1920;
     act(() => {
       global.dispatchEvent(new Event("resize"));
-    })
+    });
 
     expect(result.current.mobileMode).toBe(false);
     expect(RndComponent.x).toBe(app.currentX);
     expect(RndComponent.y).toBe(app.currentY);
     expect(app.fullscreen).toBe(false);
     expect(result.current.bounds?.width).toBe(global.innerWidth);
-  })
+  });
 
   test("testing fullscreen persistence after resize", () => {
-    const { result } = useHook();
-    
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
+
     expect(result.current.mobileMode).toBe(false);
     expect(result.current.isPreviouslyFullscreen).toBe(false);
     expect(app.fullscreen).toBe(false);
@@ -300,18 +360,18 @@ describe("useWindowStateManager hook test suite", () => {
 
     act(() => {
       result.current.fullscreen();
-    })
+    });
 
     expect(result.current.mobileMode).toBe(false);
     expect(result.current.isPreviouslyFullscreen).toBe(false);
     expect(app.fullscreen).toBe(true);
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
-    
+
     global.innerWidth = 1024;
     act(() => {
       global.dispatchEvent(new Event("resize"));
-    })
+    });
 
     expect(result.current.mobileMode).toBe(true);
     expect(result.current.isPreviouslyFullscreen).toBe(true);
@@ -322,18 +382,26 @@ describe("useWindowStateManager hook test suite", () => {
     global.innerWidth = 1920;
     act(() => {
       global.dispatchEvent(new Event("resize"));
-    })
+    });
 
     expect(result.current.mobileMode).toBe(false);
     expect(result.current.isPreviouslyFullscreen).toBe(true);
     expect(app.fullscreen).toBe(true);
     expect(RndComponent.x).toBe(0);
-    expect(RndComponent.y).toBe(0)
-  })
+    expect(RndComponent.y).toBe(0);
+  });
 
   test("testing fullscreen persistence after recalling fullscreen", () => {
-    const { result } = useHook();
-    
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
     expect(result.current.mobileMode).toBe(false);
     expect(result.current.isPreviouslyFullscreen).toBe(false);
     expect(app.fullscreen).toBe(false);
@@ -342,18 +410,18 @@ describe("useWindowStateManager hook test suite", () => {
 
     act(() => {
       result.current.fullscreen();
-    })
+    });
 
     expect(result.current.mobileMode).toBe(false);
     expect(result.current.isPreviouslyFullscreen).toBe(false);
     expect(app.fullscreen).toBe(true);
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
-    
+
     global.innerWidth = 1024;
     act(() => {
       global.dispatchEvent(new Event("resize"));
-    })
+    });
 
     expect(result.current.mobileMode).toBe(true);
     expect(result.current.isPreviouslyFullscreen).toBe(true);
@@ -363,18 +431,27 @@ describe("useWindowStateManager hook test suite", () => {
 
     act(() => {
       result.current.fullscreen();
-    })
+    });
 
     expect(result.current.mobileMode).toBe(true);
     expect(result.current.isPreviouslyFullscreen).toBe(true);
     expect(app.fullscreen).toBe(true);
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
-  })
+  });
 
   test("testing set to original size while mobile mode", () => {
-    const { result } = useHook();
-    
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
+
     expect(result.current.mobileMode).toBe(false);
     expect(result.current.isPreviouslyFullscreen).toBe(false);
     expect(app.fullscreen).toBe(false);
@@ -383,18 +460,18 @@ describe("useWindowStateManager hook test suite", () => {
 
     act(() => {
       result.current.fullscreen();
-    })
+    });
 
     expect(result.current.mobileMode).toBe(false);
     expect(result.current.isPreviouslyFullscreen).toBe(false);
     expect(app.fullscreen).toBe(true);
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
-    
+
     global.innerWidth = 1024;
     act(() => {
       global.dispatchEvent(new Event("resize"));
-    })
+    });
 
     expect(result.current.mobileMode).toBe(true);
     expect(result.current.isPreviouslyFullscreen).toBe(true);
@@ -420,10 +497,19 @@ describe("useWindowStateManager hook test suite", () => {
     expect(app.fullscreen).toBe(true);
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
-  })
+  });
   test("testing set to original size mobile while mobile mode", () => {
-    const { result } = useHook();
-    
+    const { result } = renderHook(() =>
+      useWindowStateManager(
+        app,
+        (_app, fs) => {
+          _app.fullscreen = fs;
+        },
+        "fullscreen-bounds",
+        dummyRnd
+      )
+    );
+
     expect(result.current.mobileMode).toBe(false);
     expect(result.current.isPreviouslyFullscreen).toBe(false);
     expect(app.fullscreen).toBe(false);
@@ -432,18 +518,18 @@ describe("useWindowStateManager hook test suite", () => {
 
     act(() => {
       result.current.fullscreen();
-    })
+    });
 
     expect(result.current.mobileMode).toBe(false);
     expect(result.current.isPreviouslyFullscreen).toBe(false);
     expect(app.fullscreen).toBe(true);
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
-    
+
     global.innerWidth = 1024;
     act(() => {
       global.dispatchEvent(new Event("resize"));
-    })
+    });
 
     expect(result.current.mobileMode).toBe(true);
     expect(result.current.isPreviouslyFullscreen).toBe(true);
@@ -469,5 +555,5 @@ describe("useWindowStateManager hook test suite", () => {
     expect(app.fullscreen).toBe(true);
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
-  })
+  });
 });

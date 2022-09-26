@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Rnd } from "react-rnd";
 
-export default (
+const useWindowStateManager = (
   app: Application,
   toggleFullscreen: (app: Application, fullscreen: boolean) => void,
   fullScreenBounds: string,
@@ -14,6 +14,34 @@ export default (
       .querySelector(`.${fullScreenBounds}`)
       ?.getBoundingClientRect();
   });
+
+  const fullscreen = useCallback(() => {
+    if (!app.fullscreen) {
+      rndRef?.updatePosition({
+        x: 0,
+        y: 0,
+      });
+      toggleFullscreen(app, true);
+    } else if (!isPreviouslyFullscreen) {
+      setIsPreviouslyFullscreen(true);
+    }
+  }, [app, isPreviouslyFullscreen, rndRef, toggleFullscreen]);
+
+  const setToNormalMode = useCallback(() => {
+    if (!isPreviouslyFullscreen) {
+      rndRef?.updatePosition({
+        x: app.currentX,
+        y: app.currentY,
+      });
+
+      rndRef?.updateSize({
+        width: app.width,
+        height: app.height,
+      });
+
+      toggleFullscreen(app, false);
+    }
+  }, [app, isPreviouslyFullscreen, rndRef, toggleFullscreen]);
 
   useEffect(() => {
     function handleResize() {
@@ -32,44 +60,24 @@ export default (
     }
     window.addEventListener("resize", handleResize);
     // Call handler right away so state gets updated with initial window size
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [
     mobileMode,
-    isPreviouslyFullscreen,
-    app,
-    rndRef,
+    fullScreenBounds,
+    fullscreen,
+    setToNormalMode,
     setBounds,
     setMobileMode,
   ]);
 
-  const fullscreen = () => {
-    if (!app.fullscreen) {
-      rndRef?.updatePosition({
-        x: 0,
-        y: 0,
-      });
-      toggleFullscreen(app, true);
-    } else if (!isPreviouslyFullscreen) {
-      setIsPreviouslyFullscreen(true);
+  useEffect(() => {
+    if (innerWidth <= 1024 && !mobileMode) {
+      setMobileMode(true);
+      fullscreen();
     }
-  };
-
-  const setToNormalMode = () => {
-    if (!isPreviouslyFullscreen) {
-      rndRef?.updatePosition({
-        x: app.currentX,
-        y: app.currentY,
-      });
-
-      rndRef?.updateSize({
-        width: app.width,
-        height: app.height,
-      });
-
-      toggleFullscreen(app, false);
-    }
-  };
+  }, [fullscreen, mobileMode])
 
   const setToOriginalSize = (e: React.MouseEvent) => {
     if (app.fullscreen && !mobileMode) {
@@ -119,3 +127,5 @@ export default (
     setToOriginalSizeMobile,
   };
 };
+
+export default useWindowStateManager;
