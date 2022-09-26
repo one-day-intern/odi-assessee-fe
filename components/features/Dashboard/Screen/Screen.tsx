@@ -8,7 +8,7 @@ interface Props {
 // this component handles desktop misc. logic (background, etc.)
 const Screen: React.FC<Props> = ({ children }) => {
   return (
-    <div className={`${styles.screen}`}>
+    <div data-testid="MainScreen" className={`${styles.screen}`}>
         {children}
     </div>
   )
