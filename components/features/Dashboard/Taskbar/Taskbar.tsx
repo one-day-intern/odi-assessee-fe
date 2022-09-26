@@ -3,6 +3,7 @@ import styles from "./Taskbar.module.css";
 import TaskbarShortcut from "./TaskbarShortcut";
 import { motion } from "framer-motion"
 
+
 interface Props {
   children?: React.ReactNode;
   virtualDesktop: VirtualDesktop;
