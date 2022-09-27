@@ -1,5 +1,4 @@
-import { OdiLogo } from "@components/shared/elements/svg/OdiLogo";
-import { AnimatePresence, motion, MotionConfig } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 
 import { Backdrop } from "../Backdrop";

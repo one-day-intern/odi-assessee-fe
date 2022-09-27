@@ -3,7 +3,7 @@ const passwordValidator = (input: string): [boolean, string] => {
   let error = "";
 
   // Case 4: Number
-  if (!input.match(/[0-9]/g)) {
+  if (!input.match(/\d/g)) {
     isValid = false;
     error = "Your password should have at least 1 number";
   }
