@@ -9,13 +9,14 @@ const Button = ({
   onClick,
   disabled,
 }: ButtonProps) => {
+  const buttonVariant = `button--${variant}`
   return (
     <motion.button
       data-testid="button"
       whileTap={{ scale: 0.98 }}
       disabled={disabled ?? false}
       onClick={onClick}
-      className={`${styles["button"]} ${styles[`button--${variant}`]}`}
+      className={`${styles["button"]} ${styles[buttonVariant]}`}
     >
       {children}
     </motion.button>

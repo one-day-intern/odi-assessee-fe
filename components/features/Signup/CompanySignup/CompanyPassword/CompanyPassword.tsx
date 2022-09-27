@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
 import { OdiLogo } from "@components/shared/elements/svg/OdiLogo";
 import styles from "./CompanyPassword.module.css";

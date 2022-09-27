@@ -1,7 +1,7 @@
 import { CompanyDescription } from '@components/features/Signup/CompanySignup/CompanyDescription'
 import { CompanyDetails } from '@components/features/Signup/CompanySignup/CompanyDetails'
 import { CompanyPassword } from '@components/features/Signup/CompanySignup/CompanyPassword'
-import React, { createContext, ReactNode, useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 
 const multistepForm: MultistepForm[] = [
   {
