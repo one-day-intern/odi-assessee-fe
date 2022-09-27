@@ -37,13 +37,8 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Install Dependencies
         run: npm install
-      - name: Cypress run
-        uses: cypress-io/github-action@v4.0.0 
-        with:
-          build: npm run build
-          start: npm start
-      - name: Print coverage report
-        run: npx nyc report
+      - name: Test and coverage
+        run: npm run test:coverage
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
