@@ -4,7 +4,20 @@ import useVirtualDesktop from "./useVirtualDesktop";
 
 const applications = [
   {
-    appId: "counter",
+    appId: "response-test",
+    app: () => <></>,
+    icon: () => <></>,
+    width: 600,
+    height: 800,
+    currentX: 200,
+    currentY: 100,
+    fullscreen: false,
+    reveal: false,
+    minimized: false,
+    zIndex: 0,
+  },
+  {
+    appId: "interactive-quiz",
     app: () => <></>,
     icon: () => <></>,
     width: 600,
