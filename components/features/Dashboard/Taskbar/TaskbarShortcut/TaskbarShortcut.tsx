@@ -26,9 +26,9 @@ const TaskbarShortcut: React.FC<Props> = ({
       type="button"
     >
       <motion.div
-        id="icon"
+        className="icon"
         onTap={onClick}
-        style={{ height: 30, width: 30 }}
+        style={{ maxHeight: 32 }}
         whileTap={{ scale: 0.8 }}
       >
         {children}

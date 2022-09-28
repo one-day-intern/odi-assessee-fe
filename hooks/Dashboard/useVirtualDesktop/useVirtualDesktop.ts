@@ -1,16 +1,32 @@
-import React, { useState } from "react";
-import CounterApp, {
-  CounterAppIcon,
-} from "@components/features/Dashboard/Applications/CounterApp";
+import { useState } from "react";
+import ResponseTest, {
+  ResponseTestIcon,
+} from "@components/features/Dashboard/Applications/ResponseTest";
+import InteractiveQuiz, {
+  InteractiveQuizIcon,
+} from "@components/features/Dashboard/Applications/InteractiveQuiz";
 import VideoConference, {
   VideoConferenceIcon,
 } from "@components/features/Dashboard/Applications/VideoConference";
 
 const applications: Application[] = [
   {
-    appId: "counter",
-    app: CounterApp,
-    icon: CounterAppIcon,
+    appId: "response-test",
+    app: ResponseTest,
+    icon: ResponseTestIcon,
+    width: 600,
+    height: 800,
+    currentX: 200,
+    currentY: 100,
+    fullscreen: false,
+    reveal: false,
+    minimized: false,
+    zIndex: 0,
+  },
+  {
+    appId: "interactive-quiz",
+    app: InteractiveQuiz,
+    icon: InteractiveQuizIcon,
     width: 600,
     height: 800,
     currentX: 800,
@@ -190,4 +206,4 @@ const useVirtualDesktop = (): VirtualDesktop => {
   };
 };
 
-export default useVirtualDesktop
+export default useVirtualDesktop;
