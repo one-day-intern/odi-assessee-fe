@@ -35,7 +35,7 @@ const applications: Application[] = [
   },
 ];
 
-export default (): VirtualDesktop => {
+const useVirtualDesktop = (): VirtualDesktop => {
   const [openedApps, setOpenedApps] = useState<Application[]>([]);
   const [numberOfMinimizedApps, setNumberOfMinizedApps] = useState(0);
 
@@ -189,3 +189,5 @@ export default (): VirtualDesktop => {
     toggleMinimize,
   };
 };
+
+export default useVirtualDesktop
