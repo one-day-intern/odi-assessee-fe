@@ -5,6 +5,7 @@ import { motion, Variants } from "framer-motion";
 import FullscreenShadow from "./FullscreenShadow";
 import useWindowStateManager from "@hooks/Dashboard/useWindowStateManager";
 import useMouseScreenIntersection from "@hooks/Dashboard/useMouseScreenIntersection";
+import DashboardAPIProvider from "@context/Dashboard/DashboardAPIContext";
 
 interface Props {
   children?: React.ReactNode;
@@ -273,10 +274,17 @@ const Window: React.FC<Props> = ({
           </div>
         </div>
         <div
-          onMouseDown={() => onFocus && onFocus(app)}
+          onMouseUp={(e) => e.stopPropagation()}
+          onMouseMove={(e) => e.stopPropagation()}
+          onMouseDown={(e) => {
+            onFocus && onFocus(app);
+            e.stopPropagation();
+          }}
           className={styles["window__body"]}
         >
-          <Application />
+          <DashboardAPIProvider onPushNotification={(notification) => {}}>
+            <Application />
+          </DashboardAPIProvider>
         </div>
       </Rnd>
     </motion.div>
