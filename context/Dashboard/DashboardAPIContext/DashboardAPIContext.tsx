@@ -5,7 +5,7 @@ interface Props {
   onPushNotification: (notification: DashboardNotification) => void;
 }
 
-const DashboardAPIContext = createContext<DashboardAPIContextType | null>(null);
+const DashboardAPIContext = createContext<DashboardAPIContextType>({} as DashboardAPIContextType);
 
 export const useDashboardAPI = () => useContext(DashboardAPIContext);
 
