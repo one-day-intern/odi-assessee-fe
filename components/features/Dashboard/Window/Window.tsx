@@ -43,6 +43,8 @@ const Window: React.FC<Props> = ({
     bounds,
     mobileMode,
     fullscreen,
+    setMobileMode,
+    setToNormalMode,
     setToOriginalSize,
     setToOriginalSizeMobile,
   } = useWindowStateManager(
@@ -87,6 +89,19 @@ const Window: React.FC<Props> = ({
       toggleReveal(app, false);
     }
   }, [app, toggleReveal]);
+
+  // this the resize event listener that would automatically set window to mobile mode
+  useEffect(() => {
+    if (bounds) {
+      if (bounds?.width <= 1024 && !mobileMode) {
+        setMobileMode(true);
+        fullscreen();
+      } else if (bounds?.width > 1024 && mobileMode) {
+        setMobileMode(false);
+        setToNormalMode();
+      }
+    }
+  }, [app, mobileMode, bounds, fullscreen, setToNormalMode, setMobileMode]);
 
   return (
     <motion.div
