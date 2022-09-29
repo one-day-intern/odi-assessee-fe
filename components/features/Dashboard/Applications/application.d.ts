@@ -1,5 +1,6 @@
 interface Application {
     appId: string;
+    appName: string;
     app: () => JSX.Element;
     icon: (() => JSX.Element) | React.FC<ApplicationIconProps>;
     width: number;

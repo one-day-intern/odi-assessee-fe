@@ -9,9 +9,10 @@ import VideoConference, {
   VideoConferenceIcon,
 } from "@components/features/Dashboard/Applications/VideoConference";
 
-const applications: Application[] = [
+export const applications: Application[] = [
   {
     appId: "response-test",
+    appName: "Response Test App",
     app: ResponseTest,
     icon: ResponseTestIcon,
     width: 600,
@@ -24,6 +25,7 @@ const applications: Application[] = [
   },
   {
     appId: "interactive-quiz",
+    appName: "Interactive Quiz App",
     app: InteractiveQuiz,
     icon: InteractiveQuizIcon,
     width: 600,
@@ -36,6 +38,7 @@ const applications: Application[] = [
   },
   {
     appId: "video-conference",
+    appName: "Video Conference App",
     app: VideoConference,
     icon: VideoConferenceIcon,
     width: 600,
