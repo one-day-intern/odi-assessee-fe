@@ -37,9 +37,6 @@ const Dashboard = () => {
                 toggleFullscreen={(_app, fullscreen) =>
                   virtualDesktop.toggleFullscreen(_app, fullscreen)
                 }
-                toggleReveal={(_app, reveal) =>
-                  virtualDesktop.toggleReveal(_app, reveal)
-                }
                 toggleMinimize={(_app, minimize) =>
                   virtualDesktop.toggleMinimize(_app, minimize)
                 }
