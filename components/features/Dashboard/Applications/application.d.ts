@@ -8,7 +8,6 @@ interface Application {
     currentY: number;
     fullscreen: boolean;
     minimized: boolean;
-    reveal: boolean;
     zIndex: number;
 }
 

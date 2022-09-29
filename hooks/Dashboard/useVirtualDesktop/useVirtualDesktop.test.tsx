@@ -12,7 +12,6 @@ const applications = [
     currentX: 200,
     currentY: 100,
     fullscreen: false,
-    reveal: false,
     minimized: false,
     zIndex: 0,
   },
@@ -25,7 +24,6 @@ const applications = [
     currentX: 800,
     currentY: 100,
     fullscreen: false,
-    reveal: false,
     minimized: false,
     zIndex: 0,
   },
@@ -38,7 +36,6 @@ const applications = [
     currentX: 500,
     currentY: 100,
     fullscreen: false,
-    reveal: false,
     minimized: false,
     zIndex: 0,
   },
@@ -52,7 +49,6 @@ describe("useVirtualDesktop hook test suite", () => {
     expect(typeof result.current.openApp).toBe("function");
     expect(typeof result.current.closeApp).toBe("function");
     expect(typeof result.current.focusApp).toBe("function");
-    expect(typeof result.current.toggleReveal).toBe("function");
     expect(typeof result.current.toggleFullscreen).toBe("function");
     expect(typeof result.current.toggleMinimize).toBe("function");
     expect(typeof result.current.updateAppPosition).toBe("function");
@@ -130,64 +126,6 @@ describe("useVirtualDesktop hook test suite", () => {
     expect(result.current.openedApps[1].zIndex).toBeLessThan(
       result.current.openedApps[0].zIndex
     );
-  });
-
-  test("testing reveal app virtual desktop", () => {
-    const { result } = renderHook(() => useVirtualDesktop());
-
-    act(() => {
-      result.current.openApp(applications[0]);
-    });
-
-    expect(result.current.openedApps.length).toBe(1);
-    expect(result.current.openedApps[0].appId).toBe(applications[0].appId);
-
-    act(() => {
-      result.current.openApp(applications[1]);
-    });
-
-    expect(result.current.openedApps.length).toBe(2);
-    expect(result.current.openedApps[1].appId).toBe(applications[1].appId);
-
-    act(() => {
-      result.current.toggleReveal(result.current.openedApps[0], true);
-    });
-
-    expect(result.current.openedApps[0].reveal).toBe(true);
-
-    act(() => {
-      result.current.toggleReveal(result.current.openedApps[1], false);
-    });
-
-    expect(result.current.openedApps[1].reveal).toBe(false);
-  });
-
-  test("testing update app position virtual desktop", () => {
-    const { result } = renderHook(() => useVirtualDesktop());
-
-    act(() => {
-      result.current.openApp(applications[0]);
-    });
-
-    expect(result.current.openedApps.length).toBe(1);
-    expect(result.current.openedApps[0].appId).toBe(applications[0].appId);
-
-    act(() => {
-      result.current.openApp(applications[1]);
-    });
-
-    expect(result.current.openedApps.length).toBe(2);
-    expect(result.current.openedApps[1].appId).toBe(applications[1].appId);
-
-    act(() => {
-      result.current.updateAppPosition(result.current.openedApps[0], {
-        x: 100,
-        y: 100,
-      });
-    });
-
-    expect(result.current.openedApps[0].currentX).toBe(100);
-    expect(result.current.openedApps[0].currentY).toBe(100);
   });
 
   test("testing update app size virtual desktop", () => {

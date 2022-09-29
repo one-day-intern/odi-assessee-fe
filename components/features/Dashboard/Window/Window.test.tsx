@@ -12,7 +12,6 @@ const applications = [
     currentX: 0,
     currentY: 0,
     fullscreen: false,
-    reveal: false,
     minimized: false,
     zIndex: 0,
   },
@@ -25,7 +24,6 @@ const resetApplications = () => {
   app.currentX = 0;
   app.currentY = 0;
   app.fullscreen = false;
-  app.reveal = false;
   app.minimized = false;
   app.zIndex = 0;
 };
@@ -58,9 +56,6 @@ const MyTestComponent = (
       }}
       toggleFullscreen={(_app, fullscreen) => {
         app.fullscreen = fullscreen;
-      }}
-      toggleReveal={(_app, reveal) => {
-        app.reveal = reveal;
       }}
       toggleMinimize={(_app, minimize) => {
         app.minimized = minimize;

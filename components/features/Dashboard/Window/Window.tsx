@@ -18,7 +18,6 @@ interface Props {
     size: { width: number; height: number }
   ) => void;
   toggleFullscreen: (app: Application, fullscreen: boolean) => void;
-  toggleReveal: (app: Application, reveal: boolean) => void;
   toggleMinimize: (app: Application, minimize: boolean) => void;
   app: Application;
 }
@@ -31,7 +30,6 @@ const Window: React.FC<Props> = ({
   onUpdatePos,
   onUpdateSize,
   toggleFullscreen,
-  toggleReveal,
   toggleMinimize,
 }) => {
   const rndRef = useRef<React.ElementRef<typeof Rnd>>(null);
@@ -84,12 +82,26 @@ const Window: React.FC<Props> = ({
 
   // this is the reveal 'event' listener that would be fired from the taskbar
   useEffect(() => {
-    if (app.reveal) {
-      rndRef.current!.updatePosition({ x: app.currentX, y: app.currentY });
-      rndRef.current!.updateSize({ width: app.width, height: app.height });
-      toggleReveal(app, false);
-    }
-  }, [app, toggleReveal]);
+    const revealSelf = () => {
+      if (bounds && !app.fullscreen) {
+        const newX = (bounds.width - app.width) * 0.5;
+        const newY = (bounds.height - app.height) * 0.5;
+        onUpdatePos(app, {
+          x: newX,
+          y: newY,
+        });
+        rndRef.current?.updatePosition({
+          x: newX,
+          y: newY,
+        });
+      }
+    };
+
+    addEventListener("reveal-windows" as keyof WindowEventMap, revealSelf);
+
+    return () =>
+      removeEventListener("reveal-windows" as keyof WindowEventMap, revealSelf);
+  }, [app, bounds, rndRef, onUpdatePos]);
 
   // this the resize event listener that would automatically set window to mobile mode
   useEffect(() => {

@@ -19,7 +19,6 @@ const applications: Application[] = [
     currentX: 200,
     currentY: 100,
     fullscreen: false,
-    reveal: false,
     minimized: false,
     zIndex: 0,
   },
@@ -32,7 +31,6 @@ const applications: Application[] = [
     currentX: 800,
     currentY: 100,
     fullscreen: false,
-    reveal: false,
     minimized: false,
     zIndex: 0,
   },
@@ -45,7 +43,6 @@ const applications: Application[] = [
     currentX: 500,
     currentY: 100,
     fullscreen: false,
-    reveal: false,
     minimized: false,
     zIndex: 0,
   },
@@ -84,38 +81,6 @@ const useVirtualDesktop = (): VirtualDesktop => {
             ..._app,
             zIndex: _app.zIndex - (_app.zIndex > 1 ? 1 : 0),
           });
-        }
-      }
-      return newArray;
-    });
-  };
-
-  // workaround to trigger reveal 'event' in the window component
-  // useEffect would then sync the state changes
-  // LOGIC:
-  // set 'reveal' to true => useEffect dependent on 'reveal' would fire =>
-  // sync position and size of window => set reveal back to false =>
-  // useEffect dependent on 'reveal' would fire again, but we will not sync
-  // if 'reveal' is false
-  const toggleReveal = (app: Application, reveal: boolean) => {
-    setOpenedApps((prev) => {
-      const newArray: Application[] = [];
-      for (let _app of prev) {
-        if (_app.appId === app.appId) {
-          const originalApp = applications.find(
-            (_app_) => _app_.appId === app.appId
-          );
-          newArray.push({
-            ..._app,
-            currentX: reveal ? originalApp!.currentX : _app.currentX,
-            currentY: reveal ? originalApp!.currentY : _app.currentY,
-            width: reveal ? originalApp!.width : _app.width,
-            height: reveal ? originalApp!.height : _app.height,
-            fullscreen: reveal ? false : _app.fullscreen,
-            reveal: reveal,
-          });
-        } else {
-          newArray.push({ ..._app });
         }
       }
       return newArray;
@@ -198,7 +163,6 @@ const useVirtualDesktop = (): VirtualDesktop => {
     openApp,
     closeApp,
     focusApp,
-    toggleReveal,
     updateAppPosition,
     updateAppSize,
     toggleFullscreen,
