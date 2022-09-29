@@ -24,18 +24,18 @@ describe("Company Password Test", () => {
     const button = screen.getByTestId("button");
     fireEvent.click(button);
 
-    const firstInputElement = screen.getAllByTestId("password-input")[0];
+    const firstInputElement = screen.getByTestId("inputField");
     expect(firstInputElement).toHaveFocus();
   });
 
   it("Test if confirmed password is empty, error shows up", () => {
-    const [passwordElement, confiremdPasswordElement] = screen.getAllByTestId("password-input");
+    const [passwordElement, confirmedPasswordElement] = screen.getAllByTestId("password-input");
     fireEvent.change(passwordElement, {
       target: {
         value: "aaAA1123",
       },
     });
-    fireEvent.change(confiremdPasswordElement, {
+    fireEvent.change(confirmedPasswordElement, {
       target: {
         value: "",
       },
@@ -46,13 +46,13 @@ describe("Company Password Test", () => {
   });
 
   it("Test if input is valid, no error shows up", () => {
-    const [passwordElement, confiremdPasswordElement] = screen.getAllByTestId("password-input");
+    const [passwordElement, confirmedPasswordElement] = screen.getAllByTestId("password-input");
     fireEvent.change(passwordElement, {
       target: {
         value: "aaAA1123",
       },
     });
-    fireEvent.change(confiremdPasswordElement, {
+    fireEvent.change(confirmedPasswordElement, {
       target: {
         value: "aaAA1123",
       },
