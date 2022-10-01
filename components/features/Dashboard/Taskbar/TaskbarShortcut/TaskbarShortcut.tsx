@@ -67,7 +67,7 @@ export const NotificationViewerShortcut: React.FC<
         </svg>
       </motion.div>
       <AnimatePresence>
-        {notificationCount && <NotificationCount count={notificationCount} />}
+        {notificationCount !== 0 && <NotificationCount count={notificationCount} />}
       </AnimatePresence>
     </motion.button>
   );
