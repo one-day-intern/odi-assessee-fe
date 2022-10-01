@@ -12,6 +12,10 @@ interface Props {
   fullScreenBounds: string;
   onClose?: (app: Application) => void;
   onFocus?: (app: Application) => void;
+  onNotification: (
+    app: Application,
+    notification: DashboardNotification
+  ) => void;
   onUpdatePos: (app: Application, pos: { x: number; y: number }) => void;
   onUpdateSize: (
     app: Application,
@@ -27,6 +31,7 @@ const Window: React.FC<Props> = ({
   fullScreenBounds,
   onClose,
   onFocus,
+  onNotification,
   onUpdatePos,
   onUpdateSize,
   toggleFullscreen,
@@ -286,15 +291,17 @@ const Window: React.FC<Props> = ({
           </div>
         </div>
         <div
-          onMouseUp={(e) => e.stopPropagation()}
-          onMouseMove={(e) => e.stopPropagation()}
-          onMouseDown={(e) => {
-            onFocus && onFocus(app);
+          onClick={(e) => {
             e.stopPropagation();
+            onFocus && onFocus(app);
           }}
           className={styles["window__body"]}
         >
-          <DashboardAPIProvider onPushNotification={(notification) => {}}>
+          <DashboardAPIProvider
+            onPushNotification={(notification) =>
+              onNotification(app, notification)
+            }
+          >
             <Application />
           </DashboardAPIProvider>
         </div>

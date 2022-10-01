@@ -1,4 +1,5 @@
 interface DashboardNotification {
+    id: string;
     message: string;
     priority: "high" | "normal" | "low";
 }
