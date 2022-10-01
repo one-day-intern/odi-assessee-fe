@@ -13,6 +13,10 @@
   cursor: pointer;
 }
 
+.choice--selected {
+  cursor: default;
+}
+
 .choice--disabled {
   pointer-events: none;
 }
