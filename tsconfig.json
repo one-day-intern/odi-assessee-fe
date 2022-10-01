@@ -19,7 +19,7 @@
       "@hooks/*" : ["hooks/*"],
       "@utils/*" : ["utils/*"],
       "@services/*": ["services/*"],
-      "@context/*": ["context/*"],
+      "@context/*": ["context/*"]
     },
     "baseUrl": "./",
     "types": ["jest"]
