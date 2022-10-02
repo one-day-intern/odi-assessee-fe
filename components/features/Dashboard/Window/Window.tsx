@@ -114,6 +114,7 @@ const Window: React.FC<Props> = ({
       if (bounds?.width <= 1024 && !mobileMode) {
         setMobileMode(true);
         fullscreen();
+        rndRef.current?.updatePosition({ x: 0, y: 0 })
       } else if (bounds?.width > 1024 && mobileMode) {
         setMobileMode(false);
         setToNormalMode();
