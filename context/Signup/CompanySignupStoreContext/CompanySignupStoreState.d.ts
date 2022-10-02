@@ -3,6 +3,7 @@ interface CompanySignupStoreState {
     errors: CompanySignupStoreElements;
     setValue: (name: string, value: string) => void;
     setError: (name: string, value: string) => void;
+    postResult: () => void;
 }
 
 interface CompanySignupStoreElements {

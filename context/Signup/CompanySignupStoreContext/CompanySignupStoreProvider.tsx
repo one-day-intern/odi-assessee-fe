@@ -1,20 +1,22 @@
+import { emptyValidator } from "@utils/validators/emptyValidator";
 import React, { createContext, useState } from "react";
+import { useCompanySignupStepContext } from "../CompanySignupStepContext";
 import { CompanySignupStoreProps } from "./CompanySignupStoreProps";
 
 const initialValue: CompanySignupStoreElements = {
-  email: "",
   company_address: "",
   company_description: "",
   company_name: "",
+  email: "",
   password: "",
   confirmed_password: "",
 };
 
 const initialErrors: CompanySignupStoreElements = {
-  email: "",
   company_address: "",
   company_description: "",
   company_name: "",
+  email: "",
   password: "",
   confirmed_password: ""
 }
@@ -22,6 +24,9 @@ const initialErrors: CompanySignupStoreElements = {
 const CompanySignupStoreContext = createContext({} as CompanySignupStoreState);
 
 const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
+  
+  const { selectStep } = useCompanySignupStepContext();
+  
   const [storeState, setStoreState] =
     useState(initialValue);
 
@@ -38,8 +43,22 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
     [name]: error
   }));
 
+  const postResult = () => {
+    const [_, companyNameError] = emptyValidator(storeState.company_name);
+    setError("company_name", companyNameError);
+
+    const [__, companyAddressError] = emptyValidator(storeState.company_address);
+    setError("company_address", companyAddressError);
+
+    const indexOfFirstError = Object.values(storeErrors).findIndex(error => error !== "");
+    
+    if (indexOfFirstError >= 0) {
+      selectStep(indexOfFirstError < 3 ? 1 : 2);
+    }
+  };
+
   return (
-    <CompanySignupStoreContext.Provider value={{ data: storeState, errors: storeErrors, setValue, setError }}>
+    <CompanySignupStoreContext.Provider value={{ data: storeState, errors: storeErrors, setValue, setError, postResult }}>
       {children}
     </CompanySignupStoreContext.Provider>
   );
