@@ -13,7 +13,7 @@ describe("Dashboard test suite", () => {
         expect(taskbarEl).toHaveAttribute("class", "taskbar")
     })
     test("testing open app", () => {
-        const { getByTestId,  } = render(<Dashboard />);
+        const { getByTestId  } = render(<Dashboard />);
         const windowContainer = getByTestId("FullscreenBounds");
         const taskbarEl = getByTestId("MainTaskbar");
         const shortcut = taskbarEl.children[1]
