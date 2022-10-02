@@ -43,22 +43,22 @@ describe("Dashboard Taskbar component test suite", () => {
   
   test("testing taskbar render", () => {
     const { getByTestId } = render(
-      <Taskbar height={50} virtualDesktop={dummyVirtualDesktop} />
+      <Taskbar isNotificationViewerOpen={false} onNotificationViewerOpen={() => {}} height={50} virtualDesktop={dummyVirtualDesktop} />
     );
   
     const taskbar = getByTestId("MainTaskbar");
   
-    expect(taskbar.children.length).toBe(1);
+    expect(taskbar.children.length).toBeTruthy();
   });
   
   test("testing taskbar open with shortcut", () => {
     const { getByTestId } = render(
-      <Taskbar height={50} virtualDesktop={dummyVirtualDesktop} />
+      <Taskbar isNotificationViewerOpen={false} onNotificationViewerOpen={() => {}} height={50} virtualDesktop={dummyVirtualDesktop} />
     );
   
     const taskbar = getByTestId("MainTaskbar");
     expect(taskbar.children.length).toBeTruthy();
-    const shortcut = taskbar.children[0];
+    const shortcut = getByTestId("Shortcut");
   
     fireEvent.mouseDown(shortcut.firstElementChild!);
     fireEvent.mouseUp(shortcut.firstElementChild!);

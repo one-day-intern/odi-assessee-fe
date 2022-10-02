@@ -5,19 +5,23 @@ import { motion, Variants } from "framer-motion";
 import FullscreenShadow from "./FullscreenShadow";
 import useWindowStateManager from "@hooks/Dashboard/useWindowStateManager";
 import useMouseScreenIntersection from "@hooks/Dashboard/useMouseScreenIntersection";
+import DashboardAPIProvider from "@context/Dashboard/DashboardAPIContext";
 
 interface Props {
   children?: React.ReactNode;
   fullScreenBounds: string;
   onClose?: (app: Application) => void;
   onFocus?: (app: Application) => void;
+  onNotification: (
+    app: Application,
+    notification: DashboardNotification
+  ) => void;
   onUpdatePos: (app: Application, pos: { x: number; y: number }) => void;
   onUpdateSize: (
     app: Application,
     size: { width: number; height: number }
   ) => void;
   toggleFullscreen: (app: Application, fullscreen: boolean) => void;
-  toggleReveal: (app: Application, reveal: boolean) => void;
   toggleMinimize: (app: Application, minimize: boolean) => void;
   app: Application;
 }
@@ -27,10 +31,10 @@ const Window: React.FC<Props> = ({
   fullScreenBounds,
   onClose,
   onFocus,
+  onNotification,
   onUpdatePos,
   onUpdateSize,
   toggleFullscreen,
-  toggleReveal,
   toggleMinimize,
 }) => {
   const rndRef = useRef<React.ElementRef<typeof Rnd>>(null);
@@ -43,6 +47,8 @@ const Window: React.FC<Props> = ({
     bounds,
     mobileMode,
     fullscreen,
+    setMobileMode,
+    setToNormalMode,
     setToOriginalSize,
     setToOriginalSizeMobile,
   } = useWindowStateManager(
@@ -81,12 +87,39 @@ const Window: React.FC<Props> = ({
 
   // this is the reveal 'event' listener that would be fired from the taskbar
   useEffect(() => {
-    if (app.reveal) {
-      rndRef.current!.updatePosition({ x: app.currentX, y: app.currentY });
-      rndRef.current!.updateSize({ width: app.width, height: app.height });
-      toggleReveal(app, false);
+    const revealSelf = () => {
+      if (bounds && !app.fullscreen) {
+        const newX = (bounds.width - app.width) * 0.5;
+        const newY = (bounds.height - app.height) * 0.5;
+        onUpdatePos(app, {
+          x: newX,
+          y: newY,
+        });
+        rndRef.current?.updatePosition({
+          x: newX,
+          y: newY,
+        });
+      }
+    };
+
+    addEventListener("reveal-windows" as keyof WindowEventMap, revealSelf);
+
+    return () =>
+      removeEventListener("reveal-windows" as keyof WindowEventMap, revealSelf);
+  }, [app, bounds, rndRef, onUpdatePos]);
+
+  // this the resize event listener that would automatically set window to mobile mode
+  useEffect(() => {
+    if (bounds) {
+      if (bounds?.width <= 1024 && !mobileMode) {
+        setMobileMode(true);
+        fullscreen();
+      } else if (bounds?.width > 1024 && mobileMode) {
+        setMobileMode(false);
+        setToNormalMode();
+      }
     }
-  }, [app, toggleReveal]);
+  }, [app, mobileMode, bounds, fullscreen, setToNormalMode, setMobileMode]);
 
   return (
     <motion.div
@@ -258,10 +291,19 @@ const Window: React.FC<Props> = ({
           </div>
         </div>
         <div
-          onMouseDown={() => onFocus && onFocus(app)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onFocus && onFocus(app);
+          }}
           className={styles["window__body"]}
         >
-          <Application />
+          <DashboardAPIProvider
+            onPushNotification={(notification) =>
+              onNotification(app, notification)
+            }
+          >
+            <Application />
+          </DashboardAPIProvider>
         </div>
       </Rnd>
     </motion.div>

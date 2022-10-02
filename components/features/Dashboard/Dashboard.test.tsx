@@ -13,12 +13,13 @@ describe("Dashboard test suite", () => {
         expect(taskbarEl).toHaveAttribute("class", "taskbar")
     })
     test("testing open app", () => {
-        const { getByTestId } = render(<Dashboard />);
+        const { getByTestId  } = render(<Dashboard />);
         const windowContainer = getByTestId("FullscreenBounds");
         const taskbarEl = getByTestId("MainTaskbar");
+        const shortcut = taskbarEl.children[1]
         
-        fireEvent.mouseDown(taskbarEl.firstElementChild?.firstElementChild!);
-        fireEvent.mouseUp(taskbarEl.firstElementChild?.firstElementChild!);
+        fireEvent.mouseDown(shortcut.firstElementChild!);
+        fireEvent.mouseUp(shortcut.firstElementChild!);
 
         expect(windowContainer.children.length).toBeGreaterThan(0);
     })
@@ -27,9 +28,10 @@ describe("Dashboard test suite", () => {
         const { getByTestId } = render(<Dashboard />);
         const windowContainer = getByTestId("FullscreenBounds");
         const taskbarEl = getByTestId("MainTaskbar");
+        const shortcut = taskbarEl.children[1]
         
-        fireEvent.mouseDown(taskbarEl.firstElementChild?.firstElementChild!);
-        fireEvent.mouseUp(taskbarEl.firstElementChild?.firstElementChild!);
+        fireEvent.mouseDown(shortcut.firstElementChild!);
+        fireEvent.mouseUp(shortcut.firstElementChild!);
 
         expect(windowContainer.children.length).toBeGreaterThan(0);
 
@@ -49,9 +51,10 @@ describe("Dashboard test suite", () => {
         const { getByTestId } = render(<Dashboard />);
         const windowContainer = getByTestId("FullscreenBounds");
         const taskbarEl = getByTestId("MainTaskbar");
+        const shortcut = taskbarEl.children[1]
         
-        fireEvent.mouseDown(taskbarEl.firstElementChild?.firstElementChild!);
-        fireEvent.mouseUp(taskbarEl.firstElementChild?.firstElementChild!);
+        fireEvent.mouseDown(shortcut.firstElementChild!);
+        fireEvent.mouseUp(shortcut.firstElementChild!);
 
         expect(windowContainer.children.length).toBeGreaterThan(0);
 
