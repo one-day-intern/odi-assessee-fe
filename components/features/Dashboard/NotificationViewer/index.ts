@@ -1,2 +1,2 @@
 export { default } from "./NotificationViewer";
-export { default as Notification } from "./Notification"
+export { default as Notification } from "./Notification/index"
