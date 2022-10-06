@@ -12,6 +12,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@100mslive/react-sdk": "^0.4.2",
     "framer-motion": "^7.3.5",
     "next": "12.3.0",
     "react": "18.2.0",
