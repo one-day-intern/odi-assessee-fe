@@ -59,9 +59,6 @@ const Conference: React.FC = () => {
         .preview({ userName: "wizzy", authToken: data?.token! })
         .catch((e: HMSException) => {
           switch (e.description) {
-            case "room is not active":
-              setRoomJoinable(false);
-              return;
             default:
               setRoomJoinable(false);
               return;
