@@ -1,0 +1,59 @@
+.room {
+  position: relative;
+  display: grid;
+  width: 100%;
+  min-height: 100%;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  place-items: center;
+  place-content: center;
+}
+
+.video-container_parent {
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  width: 100%;
+  max-width: 854px;
+  max-height: 480px;
+}
+
+.video-container_parent.multiple {
+  position: relative;
+  max-height: 640px;
+  max-height: 360px;
+}
+
+.room-controls {
+  position: fixed;
+  bottom: 25px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.single {
+  display: flex;
+}
+
+.double {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+}
+
+.mobile {
+  padding: 2rem;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.mobile.double {
+  grid-template-columns: repeat(1, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}

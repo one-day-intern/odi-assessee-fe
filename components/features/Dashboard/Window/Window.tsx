@@ -114,6 +114,7 @@ const Window: React.FC<Props> = ({
       if (bounds?.width <= 1024 && !mobileMode) {
         setMobileMode(true);
         fullscreen();
+        rndRef.current?.updatePosition({ x: 0, y: 0 });
       } else if (bounds?.width > 1024 && mobileMode) {
         setMobileMode(false);
         setToNormalMode();
@@ -201,6 +202,16 @@ const Window: React.FC<Props> = ({
         }}
         onResizeStart={(e, d, el) => {
           onFocus && onFocus(app);
+        }}
+        onResize={(e, d, el, delta, pos) => {
+          onUpdatePos(app, {
+            x: pos.x,
+            y: pos.y,
+          });
+          onUpdateSize(app, {
+            width: el.clientWidth,
+            height: el.clientHeight,
+          });
         }}
         onResizeStop={(e, d, el, delta, pos) => {
           onUpdatePos(app, {
@@ -298,6 +309,7 @@ const Window: React.FC<Props> = ({
           className={styles["window__body"]}
         >
           <DashboardAPIProvider
+            app={app}
             onPushNotification={(notification) =>
               onNotification(app, notification)
             }

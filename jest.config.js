@@ -45,7 +45,7 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
   },
   transformIgnorePatterns: [
-    '/node_modules/',
+    '/node_modules/(?!(uuid)/)',
     '^.+\\.module\\.(css|sass|scss)$',
   ],
   setupFilesAfterEnv: ["./jest.setup.ts"]
