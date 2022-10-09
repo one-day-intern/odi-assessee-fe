@@ -2,6 +2,7 @@ import React, { useContext, createContext } from "react";
 
 interface Props {
   children?: React.ReactNode;
+  app: Application;
   onPushNotification: (notification: DashboardNotification) => void;
 }
 
@@ -9,12 +10,13 @@ const DashboardAPIContext = createContext<DashboardAPIContextType>({} as Dashboa
 
 export const useDashboardAPI = () => useContext(DashboardAPIContext);
 
-const DashboardAPIProvider = ({ children, onPushNotification }: Props) => {
+const DashboardAPIProvider = ({ children, app, onPushNotification }: Props) => {
   const pushNotification = (notification: DashboardNotification) => {
     onPushNotification(notification);
   };
 
   const data = {
+    app,
     pushNotification,
   };
 
