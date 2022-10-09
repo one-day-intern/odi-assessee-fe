@@ -11,6 +11,8 @@
   grid-template-columns: fit-content(100%) 1fr;
 
   cursor: pointer;
+  
+  
 }
 
 .choice--selected {
