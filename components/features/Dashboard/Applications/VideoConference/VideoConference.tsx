@@ -1,23 +1,49 @@
-import React from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import styles from "./VideoConference.module.css";
-import { useDashboardAPI } from "@context/Dashboard/DashboardAPIContext";
+import Room, { PreviewVideo } from "./Room";
+import {
+  HMSRoomProvider,
+  useHMSActions,
+  selectIsInPreview,
+  selectIsConnectedToRoom,
+  useHMSStore,
+  HMSLogLevel,
+} from "@100mslive/react-sdk";
+import useSWRImmutable from "swr/immutable";
+import { getRoomToken } from "@services/Dashboard/VideoConference";
+
+const Spinner = () => {
+  return (
+    <div className={styles["lds-ring"]}>
+      <div />
+      <div />
+      <div />
+      <div />
+    </div>
+  );
+};
+
+const Conference: React.FC = () => {
+  return (
+    <div>
+    </div>
+  );
+};
 
 const VideoConference = () => {
-  const { pushNotification } = useDashboardAPI();
-
   return (
-    <div style={{ width: "100%", height: "100%", background: "white" }}>
-      <button
-        onClick={() =>
-          pushNotification({
-            id: "notification-1",
-            message: "hello from video conference",
-            priority: "high",
-          })
-        }
-      >
-        Push Notification
-      </button>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "white",
+        overflow: "auto",
+      }}
+    >
+      <HMSRoomProvider>
+        <Conference />
+      </HMSRoomProvider>
+      <div id="video-conference-modal" />
     </div>
   );
 };

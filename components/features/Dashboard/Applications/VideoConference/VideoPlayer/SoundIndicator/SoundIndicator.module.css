@@ -1,0 +1,40 @@
+.wave-container {
+  width: 10%;
+  height: 50px;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8%;
+}
+
+.wave-container_disabled {
+  background: red;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  bottom: 25px;
+  left: 25px;
+}
+
+.cross {
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background: white;
+  transform: rotate(-45deg);
+}
+
+.wave-container > svg {
+  height: 60%;
+  width: 60%;
+}
+
+.wave {
+  height: 30%;
+  width: 4px;
+  background-color: white;
+  border-radius: 5px;
+}
