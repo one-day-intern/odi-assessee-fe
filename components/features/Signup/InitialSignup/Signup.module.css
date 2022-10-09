@@ -23,5 +23,14 @@
   
     background: white;
   }
+
+  .window__text--heading {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 3rem;
+  
+    margin: 2.5rem 0;
+  }
+  
   
   
