@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import styles from "./VideoConference.module.css";
 import Room, { PreviewVideo } from "./Room";
 import {
@@ -8,6 +8,7 @@ import {
   selectIsConnectedToRoom,
   useHMSStore,
   HMSLogLevel,
+  HMSException,
 } from "@100mslive/react-sdk";
 import useSWRImmutable from "swr/immutable";
 import { getRoomToken } from "@services/Dashboard/VideoConference";
@@ -24,6 +25,7 @@ const Spinner = () => {
 };
 
 const Conference: React.FC = () => {
+  const [roomJoinable, setRoomJoinable] = useState(true);
   const connState = useRef({ joining: false, leaving: false });
   const conference = useHMSActions();
   const isPreviewReady = useHMSStore(selectIsInPreview);
@@ -55,7 +57,16 @@ const Conference: React.FC = () => {
     if (!isPreviewReady && !isInCall && data?.token) {
       conference
         .preview({ userName: "wizzy", authToken: data?.token! })
-        .catch((e: Error) => console.log("TOKEN ERROR"));
+        .catch((e: HMSException) => {
+          switch (e.description) {
+            case "room is not active":
+              setRoomJoinable(false);
+              return;
+            default:
+              setRoomJoinable(false);
+              return;
+          }
+        });
     }
 
     window.addEventListener("beforeunload", leaveConference);
@@ -73,6 +84,9 @@ const Conference: React.FC = () => {
   }
   if (isPreviewReady) {
     return <PreviewVideo onJoinCall={() => joinCall()} />;
+  }
+  if (!roomJoinable && !error) {
+    return <h1>Seems like the host has not started this conference yet</h1>;
   }
   if (!error || isValidating) {
     return <Spinner />;
