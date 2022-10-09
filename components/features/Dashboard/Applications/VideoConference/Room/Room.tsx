@@ -37,7 +37,14 @@ const Room: React.FC<Props> = ({ onLeave }) => {
         normalMode ? "" : styles.mobile
       }`}
     >
-      
+      {peers.slice(0, 4).map((peer, i) => (
+        <div className={`${styles["video-container_parent"]}`} key={i}>
+          <VideoPlayer peer={peer} />
+        </div>
+      ))}
+      <div className={`${styles["room-controls"]}`}>
+        <Controls onLeave={() => onLeave()} />
+      </div>
     </div>
   );
 };

@@ -13,7 +13,7 @@ const SettingsModal = () => {
   }, []);
 
   if (inBrowser) {
-    return <></>
+    return <div data-testid="SettingsModal"></div>
   }
 
   return null;

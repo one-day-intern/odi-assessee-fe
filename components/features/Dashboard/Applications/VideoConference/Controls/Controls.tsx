@@ -16,7 +16,33 @@ const Controls: React.FC<Props> = ({ onLeave }) => {
 
   return (
     <div className={`${styles.controls}`}>
-      
+      <motion.button
+        whileTap={{ scale: 0.8 }}
+        className={`${styles["controls-button"]} ${
+          isLocalVideoEnabled ? "" : styles.disabled
+        }`}
+        onClick={toggleVideo}
+      >
+        <VideoConferenceIcon color={isLocalVideoEnabled ? "black" : "white"} />
+      </motion.button>
+      <motion.button
+        whileTap={{ scale: 0.8 }}
+        className={`${styles["controls-button"]} ${
+          isLocalAudioEnabled ? "" : styles.disabled
+        }`}
+        onClick={toggleAudio}
+      >
+        <MicrophoneIcon color={isLocalAudioEnabled ? "black" : "white"} />
+      </motion.button>
+      {onLeave && (
+        <motion.button
+        whileTap={{ scale: 0.8 }}
+          onClick={() => onLeave()}
+          className={`${styles["controls-button"]} ${styles.disabled}`}
+        >
+          <LeaveIcon color="white" />
+        </motion.button>
+      )}
     </div>
   );
 };

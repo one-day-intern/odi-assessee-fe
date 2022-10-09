@@ -10,7 +10,14 @@ const Settings = () => {
 
   return (
     <>
-      
+      <motion.div
+        data-testid="VideoSettings"
+        onTap={() => setSettingsOpened(!settingsOpened)}
+        className={`${styles.icon} ${settingsOpened ? styles.active : ""}`}
+      >
+        <SettingsIcon />
+      </motion.div>
+      {settingsOpened && <SettingsModal />}
     </>
   );
 };

@@ -19,9 +19,30 @@ interface Props {
 }
 
 const VideoPlayer: React.FC<Props> = ({ children, peer }) => {
+  const { videoRef } = useVideo({
+    trackId: peer?.videoTrack,
+  });
+  const localPeer = useHMSStore(selectLocalPeer);
+  const audioLevel = useHMSStore(selectPeerAudioByID(peer?.id));
+  const micEnabled = useHMSStore(selectIsPeerAudioEnabled(peer?.id));
+  const videoEnabled = useHMSStore(selectIsPeerVideoEnabled(peer?.id));
 
   return (
     <div className={`${styles["video-container"]}`}>
+      {!videoEnabled && (
+        <div className={`${styles["video-off"]}`}>
+          <VideoConferenceIcon color="darkgray" />
+        </div>
+      )}
+      <video
+        ref={videoRef}
+        className={styles.video}
+        autoPlay
+        muted
+        playsInline
+      />
+      <SoundIndicator audioLevel={audioLevel} micDisabled={!micEnabled} />
+      {localPeer === peer && <Settings />}
     </div>
   );
 };
