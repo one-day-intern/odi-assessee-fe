@@ -1,0 +1,41 @@
+.controls {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.controls-button {
+  border: 0;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 200ms;
+  position: relative;
+}
+
+.controls-button > svg {
+  width: 75%;
+  height: 75%;
+}
+
+.disabled {
+  background: red;
+}
+
+.disabled::after {
+  content: "";
+  width: 90%;
+  height: 5px;
+  border-radius: 5px;
+  background-color: white;
+  position: absolute;
+  transform: rotate(-45deg);
+}
