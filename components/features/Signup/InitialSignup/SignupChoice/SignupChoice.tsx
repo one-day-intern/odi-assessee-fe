@@ -33,7 +33,7 @@ const SignupChoice = ({
         variants={signupChoiceVariants}
         initial={isSelected ? "selected" : "unselected"}
         animate={isSelected ? "selected" : "unselected"}
-        className={styles["signup-choice"]}
+        className={`${styles["signup-choice"]} ${styles["button"]}`}
         onClick={onClick}
         data-testid="signupChoice"
       >

@@ -31,7 +31,7 @@ const MultistepChoice = ({
   return (
     <button
       data-testid="choice-element"
-      className={`${styles["choice"]} ${
+      className={`${styles["choice"]} ${styles["button"]} ${
         isSelected ? styles["choice--selected"] : disabled ? styles["choice--disabled"] : ""
       }`}
       onClick={onClick}
