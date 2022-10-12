@@ -63,7 +63,7 @@ const Conference: React.FC<ConferenceProps> = ({ data }) => {
     window.addEventListener("onunload", leaveConference);
 
     return () => {
-      conference.leave();
+      leaveConference();
       window.removeEventListener("beforeunload", leaveConference);
       window.removeEventListener("onunload", leaveConference);
     };
