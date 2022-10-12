@@ -45,14 +45,11 @@
   font-size: 20px;
 }
 
-.join {
+.back {
+  text-decoration: underline;
+  color: grey;
   cursor: pointer;
-  border: 0;
-  padding: 16px;
-  border-radius: 25px;
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0.5rem;
-  background-color: rgb(50, 105, 255);
-  color: white;
+  font-size: 1em;
+  text-align: center;
+  user-select: none;
 }
