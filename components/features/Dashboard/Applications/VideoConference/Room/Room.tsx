@@ -7,10 +7,10 @@ import Controls from "../Controls";
 
 interface Props {
   children?: React.ReactNode;
-  onLeave: () => void;
+  onLeaveConference: () => void;
 }
 
-const Room: React.FC<Props> = ({ onLeave }) => {
+const Room: React.FC<Props> = ({ onLeaveConference }) => {
   const { app } = useDashboardAPI();
   const peers = useHMSStore(selectPeers);
 
@@ -43,7 +43,7 @@ const Room: React.FC<Props> = ({ onLeave }) => {
         </div>
       ))}
       <div className={`${styles["room-controls"]}`}>
-        <Controls onLeave={() => onLeave()} />
+        <Controls onLeave={() => onLeaveConference()} />
       </div>
     </div>
   );

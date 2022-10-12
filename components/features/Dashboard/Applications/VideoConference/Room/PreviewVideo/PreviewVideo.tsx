@@ -10,10 +10,11 @@ import { useDashboardAPI } from "@context/Dashboard/DashboardAPIContext";
 
 interface Props {
   children?: React.ReactNode;
-  onJoinCall: () => void;
+  onJoinConference: () => void;
+  onLeaveConference: () => void;
 }
 
-const PreviewVideo: React.FC<Props> = ({ onJoinCall }) => {
+const PreviewVideo: React.FC<Props> = ({ onJoinConference, onLeaveConference }) => {
   const peer = useHMSStore(selectLocalPeer);
   const { app } = useDashboardAPI();
 
@@ -30,7 +31,7 @@ const PreviewVideo: React.FC<Props> = ({ onJoinCall }) => {
           Ready to join?
         </h1>
         <Controls />
-        <button className={`${styles.join}`} onClick={() => onJoinCall()}>Join Room</button>
+        <button className={`${styles.join}`} onClick={() => onJoinConference()}>Join Conference</button>
       </div>
     </div>
   );
