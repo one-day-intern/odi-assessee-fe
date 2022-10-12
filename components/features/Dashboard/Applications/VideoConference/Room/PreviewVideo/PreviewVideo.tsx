@@ -7,6 +7,7 @@ import styles from "./PreviewVideo.module.css";
 import VideoPlayer from "../../VideoPlayer";
 import Controls from "../../Controls";
 import { useDashboardAPI } from "@context/Dashboard/DashboardAPIContext";
+import { Button } from "@components/shared/elements/Button"
 
 interface Props {
   children?: React.ReactNode;
@@ -31,7 +32,7 @@ const PreviewVideo: React.FC<Props> = ({ onJoinConference, onLeaveConference }) 
           Ready to join?
         </h1>
         <Controls />
-        <button className={`${styles.join}`} onClick={() => onJoinConference()}>Join Conference</button>
+        <Button variant="secondary" onClick={() => onJoinConference()} style={{ maxWidth: 200, fontSize: "1em",fontWeight: "bold" }}>Join Conference</Button>
       </div>
     </div>
   );
