@@ -5,9 +5,7 @@ describe("company signup", () => {
 
     // Click on company login choice
     cy.contains("I want to assess potential employees")
-      .parent()
-      .click()
-      .should("have.css", "box-shadow", "rgb(144, 118, 192) 0px 0px 0px 2px");
+      .click();
 
     // Continue to next page and check if it actually redirects
     cy.contains("Next").click();
@@ -15,7 +13,7 @@ describe("company signup", () => {
     cy.contains("Your details").should("exist");
 
     // Error when directly submit
-    cy.get("button").click();
+    cy.contains("Next").click();
 
     cy.contains("Please fill in this field.").should("exist");
 
@@ -23,14 +21,14 @@ describe("company signup", () => {
     cy.get("input").type("PT. Minterm Indonesia");
     cy.get("textarea").eq(0).type("Sudirman Central Business District");
     cy.get("textarea").eq(1).type("Company Description example");
-    cy.get("button").click();
+    cy.contains("Next").click();
 
     // Ensure that it's already in the next page
     cy.contains("Email Address *").should("exist");
 
     // Fill in the email and ensure error
     cy.contains("Email Address *").siblings("input").eq(0).type("rashad");
-    cy.get("button").click();
+    cy.contains("Submit").click();
     cy.contains("Please enter a valid email.").should("exist");
 
     // Fill in correct email
@@ -99,7 +97,7 @@ describe("company signup", () => {
     cy.get("input").eq(1).should("have.attr", "type", "password");
 
     // Submit form
-    cy.get("button").click();
+    cy.contains("Submit").click();
     
   });
 });

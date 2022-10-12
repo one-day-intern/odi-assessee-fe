@@ -13,6 +13,14 @@
   
     gap: 0 1rem;
     cursor: pointer;
+
+    border: none;
+    background: none;
+    width: 100%;
+  }
+
+  .button {
+    text-align: left;
   }
   
   .signup-choice__text {
