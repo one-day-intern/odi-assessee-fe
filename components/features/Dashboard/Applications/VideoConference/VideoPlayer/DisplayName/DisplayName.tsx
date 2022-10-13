@@ -1,8 +1,13 @@
 import React from 'react'
+import styles from "./DisplayName.module.css"
 
-const DisplayName = () => {
+interface Props {
+    name: string;
+}
+
+const DisplayName: React.FC<React.PropsWithChildren<Props>> = ({ name }) => {
   return (
-    <div>DisplayName</div>
+    <div data-testid={`DisplayName-${name}`} className={styles.container}>{name}</div>
   )
 }
 

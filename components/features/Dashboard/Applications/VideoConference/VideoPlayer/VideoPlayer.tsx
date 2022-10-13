@@ -12,6 +12,7 @@ import {
 } from "@100mslive/react-sdk";
 import { VideoConferenceIcon } from "../VideoConferenceIcon";
 import Settings from "./Settings";
+import DisplayName from "./DisplayName";
 
 interface Props {
   children?: React.ReactNode;
@@ -41,6 +42,7 @@ const VideoPlayer: React.FC<Props> = ({ children, peer }) => {
         muted
         playsInline
       />
+      <DisplayName name={peer?.isLocal ? "(You)" : peer?.name} />
       <SoundIndicator audioLevel={audioLevel} micDisabled={!micEnabled} />
       {localPeer === peer && <Settings />}
     </div>
