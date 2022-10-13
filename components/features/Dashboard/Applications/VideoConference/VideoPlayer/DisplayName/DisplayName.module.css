@@ -1,0 +1,18 @@
+.container {
+  position: absolute;
+  top: 25px;
+  left: min(10%, 25px);
+  color: black;
+  display: inline-block;
+  width: fit-content;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 4px;
+}

@@ -12,8 +12,8 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@types/react-flatpickr": "^3.8.7",
     "@100mslive/react-sdk": "^0.4.2",
+    "@types/react-flatpickr": "^3.8.7",
     "framer-motion": "^7.3.5",
     "next": "12.3.0",
     "react": "18.2.0",
@@ -22,6 +22,7 @@
     "react-phone-input-2": "^2.15.1",
     "react-phone-number-input": "^3.2.11",
     "react-rnd": "^10.3.7",
+    "react-select": "^5.5.0",
     "swr": "^1.3.0"
   },
   "devDependencies": {
