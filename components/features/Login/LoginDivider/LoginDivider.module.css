@@ -1,0 +1,28 @@
+.login-divider {
+    width: 100%;
+    margin: 2.5rem 0;
+    
+    display: grid;
+    grid-template-columns: 5fr 1fr 5fr;
+    place-items: center;
+}
+
+.login-divider__line {
+
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    height: 0px;
+}
+
+.login-divider__center {
+    display: grid;
+    place-items: center;
+}
+
+.login-divider__text {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.2);
+
+    font-size: 1.2rem;
+}
