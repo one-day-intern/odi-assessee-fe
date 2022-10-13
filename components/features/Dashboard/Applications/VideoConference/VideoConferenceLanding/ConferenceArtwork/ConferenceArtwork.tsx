@@ -5,6 +5,7 @@ import VideoConferenceArt from "./VideoConferenceArt";
 const ConferenceArtwork = () => {
   return (
     <div
+      data-testid="ConferenceArtwork"
       style={{
         width: "100%",
         height: "100%",
