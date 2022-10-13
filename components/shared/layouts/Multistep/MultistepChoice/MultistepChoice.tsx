@@ -29,12 +29,13 @@ const MultistepChoice = ({
   isSelected,
 }: MultistepForm) => {
   return (
-    <div
+    <button
       data-testid="choice-element"
-      className={`${styles["choice"]} ${
+      className={`${styles["choice"]} ${styles["button"]} ${
         isSelected ? styles["choice--selected"] : disabled ? styles["choice--disabled"] : ""
       }`}
       onClick={onClick}
+      tabIndex={isSelected ? -1 : disabled ? -1 : 0 }
     >
       <MultistepChoiceRadio disabled={disabled} isSelected={isSelected} />
       <motion.p
@@ -55,7 +56,7 @@ const MultistepChoice = ({
       >
         {description}
       </motion.p>
-    </div>
+    </button>
   );
 };
 

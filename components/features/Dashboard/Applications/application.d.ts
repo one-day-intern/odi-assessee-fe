@@ -1,5 +1,6 @@
 interface Application {
     appId: string;
+    appName: string;
     app: () => JSX.Element;
     icon: (() => JSX.Element) | React.FC<ApplicationIconProps>;
     width: number;
@@ -8,11 +9,11 @@ interface Application {
     currentY: number;
     fullscreen: boolean;
     minimized: boolean;
-    reveal: boolean;
     zIndex: number;
 }
 
 interface ApplicationIconProps {
     width?: number;
     height?: number;
+    color?: string;
 }

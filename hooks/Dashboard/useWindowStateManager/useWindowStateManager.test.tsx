@@ -77,7 +77,7 @@ beforeEach(() => {
     />
   );
   bounds = getByTestId("FullscreenBounds");
-  bounds.getBoundingClientRect = () => ({
+  bounds.getBoundingClientRect = jest.fn(() => ({
     bottom: 50,
     height: innerHeight - 50,
     width: innerWidth,
@@ -87,7 +87,7 @@ beforeEach(() => {
     toJSON: () => {},
     x: 0,
     y: 0,
-  });
+  }));
 });
 
 describe("useWindowStateManager hook test suite", () => {
@@ -287,10 +287,10 @@ describe("useWindowStateManager hook test suite", () => {
     expect(app.fullscreen).toBe(false);
     expect(result.current.bounds?.width).toBe(global.innerWidth);
 
-    global.innerWidth = 1024;
     act(() => {
-      global.dispatchEvent(new Event("resize"));
-    });
+      result.current.setMobileMode(true);
+      result.current.fullscreen();
+    })
 
     expect(result.current.mobileMode).toBe(true);
     expect(RndComponent.x).toBe(0);
@@ -317,9 +317,9 @@ describe("useWindowStateManager hook test suite", () => {
     expect(app.fullscreen).toBe(false);
     expect(result.current.bounds?.width).toBe(global.innerWidth);
 
-    global.innerWidth = 1024;
     act(() => {
-      global.dispatchEvent(new Event("resize"));
+      result.current.setMobileMode(true);
+      result.current.fullscreen();
     });
 
     expect(result.current.mobileMode).toBe(true);
@@ -328,9 +328,9 @@ describe("useWindowStateManager hook test suite", () => {
     expect(app.fullscreen).toBe(true);
     expect(result.current.bounds?.width).toBe(global.innerWidth);
 
-    global.innerWidth = 1920;
     act(() => {
-      global.dispatchEvent(new Event("resize"));
+      result.current.setMobileMode(false);
+      result.current.setToNormalMode();
     });
 
     expect(result.current.mobileMode).toBe(false);
@@ -368,9 +368,9 @@ describe("useWindowStateManager hook test suite", () => {
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
 
-    global.innerWidth = 1024;
     act(() => {
-      global.dispatchEvent(new Event("resize"));
+      result.current.setMobileMode(true);
+      result.current.fullscreen();
     });
 
     expect(result.current.mobileMode).toBe(true);
@@ -379,9 +379,9 @@ describe("useWindowStateManager hook test suite", () => {
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
 
-    global.innerWidth = 1920;
     act(() => {
-      global.dispatchEvent(new Event("resize"));
+      result.current.setMobileMode(false);
+      result.current.setToNormalMode();
     });
 
     expect(result.current.mobileMode).toBe(false);
@@ -418,9 +418,9 @@ describe("useWindowStateManager hook test suite", () => {
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
 
-    global.innerWidth = 1024;
     act(() => {
-      global.dispatchEvent(new Event("resize"));
+      result.current.setMobileMode(true);
+      result.current.fullscreen();
     });
 
     expect(result.current.mobileMode).toBe(true);
@@ -468,9 +468,9 @@ describe("useWindowStateManager hook test suite", () => {
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
 
-    global.innerWidth = 1024;
     act(() => {
-      global.dispatchEvent(new Event("resize"));
+      result.current.setMobileMode(true);
+      result.current.fullscreen();
     });
 
     expect(result.current.mobileMode).toBe(true);
@@ -526,9 +526,9 @@ describe("useWindowStateManager hook test suite", () => {
     expect(RndComponent.x).toBe(0);
     expect(RndComponent.y).toBe(0);
 
-    global.innerWidth = 1024;
     act(() => {
-      global.dispatchEvent(new Event("resize"));
+      result.current.setMobileMode(true);
+      result.current.fullscreen();
     });
 
     expect(result.current.mobileMode).toBe(true);

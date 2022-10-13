@@ -1,0 +1,46 @@
+.form__control {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  width: 100%;
+}
+
+.form__label {
+  font-size: 0.85rem;
+  margin-bottom: 0.6rem;
+}
+
+.form__input-text.form__input--phone {
+  background: rgba(41, 90, 87, 0.1);
+
+  border-radius: 0.75rem;
+  border: none;
+
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
+
+  padding: 1.3rem 2rem 1.3rem 3rem;
+
+  width: 100%;
+}
+
+.form__input-text.form__input--phone:focus,
+.form__input-text.form__input--phone:focus-visible {
+  border: none;
+  outline: none;
+}
+
+.form__error {
+  font-size: 0.7rem;
+  letter-spacing: -0.05em;
+  margin-top: 0.15rem;
+
+  color: #cc4037;
+}
+
+.country-options.input--phone {
+  background: none;
+  outline: none;
+  border: none;
+}

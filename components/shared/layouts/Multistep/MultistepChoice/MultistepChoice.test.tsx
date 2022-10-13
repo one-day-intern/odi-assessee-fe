@@ -11,7 +11,7 @@ describe("Multiple Choice Test", () => {
 
     const parent = getByTestId("choice-element");
     expect(parent).toBeInTheDocument();
-    expect(parent).toHaveAttribute("class", "choice choice--disabled");
+    expect(parent).toHaveAttribute("class", "choice button choice--disabled");
 
     const name = getByTestId("choice-name");
     expect(name).toHaveAttribute("style", "color: gray;");
@@ -28,7 +28,7 @@ describe("Multiple Choice Test", () => {
   
       const parent = getByTestId("choice-element");
       expect(parent).toBeInTheDocument();
-      expect(parent).toHaveAttribute("class", "choice ");
+      expect(parent).toHaveAttribute("class", "choice button ");
   
       const name = getByTestId("choice-name");
       expect(name).toHaveAttribute("style", "color: rgb(61, 101, 216);");

@@ -1,27 +1,44 @@
-import React, { useState } from "react";
-import CounterApp, {
-  CounterAppIcon,
-} from "@components/features/Dashboard/Applications/CounterApp";
+import { useState } from "react";
+import ResponseTest, {
+  ResponseTestIcon,
+} from "@components/features/Dashboard/Applications/ResponseTest";
+import InteractiveQuiz, {
+  InteractiveQuizIcon,
+} from "@components/features/Dashboard/Applications/InteractiveQuiz";
 import VideoConference, {
   VideoConferenceIcon,
 } from "@components/features/Dashboard/Applications/VideoConference";
 
-const applications: Application[] = [
+export const applications: Application[] = [
   {
-    appId: "counter",
-    app: CounterApp,
-    icon: CounterAppIcon,
+    appId: "response-test",
+    appName: "Response Test App",
+    app: ResponseTest,
+    icon: ResponseTestIcon,
+    width: 600,
+    height: 800,
+    currentX: 200,
+    currentY: 100,
+    fullscreen: false,
+    minimized: false,
+    zIndex: 0,
+  },
+  {
+    appId: "interactive-quiz",
+    appName: "Interactive Quiz App",
+    app: InteractiveQuiz,
+    icon: InteractiveQuizIcon,
     width: 600,
     height: 800,
     currentX: 800,
     currentY: 100,
     fullscreen: false,
-    reveal: false,
     minimized: false,
     zIndex: 0,
   },
   {
     appId: "video-conference",
+    appName: "Video Conference App",
     app: VideoConference,
     icon: VideoConferenceIcon,
     width: 600,
@@ -29,13 +46,12 @@ const applications: Application[] = [
     currentX: 500,
     currentY: 100,
     fullscreen: false,
-    reveal: false,
     minimized: false,
     zIndex: 0,
   },
 ];
 
-export default (): VirtualDesktop => {
+const useVirtualDesktop = (): VirtualDesktop => {
   const [openedApps, setOpenedApps] = useState<Application[]>([]);
   const [numberOfMinimizedApps, setNumberOfMinizedApps] = useState(0);
 
@@ -55,10 +71,10 @@ export default (): VirtualDesktop => {
   // set z-index of focused app to the amount of apps opened
   // decrease z-index of every other app by 1 so original order is maintained
   const focusApp = (app: Application) => {
+    if (app.zIndex === openedApps.length) {
+      return;
+    }
     setOpenedApps((prev) => {
-      if (app.zIndex === openedApps.length) {
-        return prev;
-      }
       const newArray = [];
       for (let _app of prev) {
         if (_app.appId === app.appId) {
@@ -68,38 +84,6 @@ export default (): VirtualDesktop => {
             ..._app,
             zIndex: _app.zIndex - (_app.zIndex > 1 ? 1 : 0),
           });
-        }
-      }
-      return newArray;
-    });
-  };
-
-  // workaround to trigger reveal 'event' in the window component
-  // useEffect would then sync the state changes
-  // LOGIC:
-  // set 'reveal' to true => useEffect dependent on 'reveal' would fire =>
-  // sync position and size of window => set reveal back to false =>
-  // useEffect dependent on 'reveal' would fire again, but we will not sync
-  // if 'reveal' is false
-  const toggleReveal = (app: Application, reveal: boolean) => {
-    setOpenedApps((prev) => {
-      const newArray: Application[] = [];
-      for (let _app of prev) {
-        if (_app.appId === app.appId) {
-          const originalApp = applications.find(
-            (_app_) => _app_.appId === app.appId
-          );
-          newArray.push({
-            ..._app,
-            currentX: reveal ? originalApp!.currentX : _app.currentX,
-            currentY: reveal ? originalApp!.currentY : _app.currentY,
-            width: reveal ? originalApp!.width : _app.width,
-            height: reveal ? originalApp!.height : _app.height,
-            fullscreen: reveal ? false : _app.fullscreen,
-            reveal: reveal,
-          });
-        } else {
-          newArray.push({ ..._app });
         }
       }
       return newArray;
@@ -182,10 +166,11 @@ export default (): VirtualDesktop => {
     openApp,
     closeApp,
     focusApp,
-    toggleReveal,
     updateAppPosition,
     updateAppSize,
     toggleFullscreen,
     toggleMinimize,
   };
 };
+
+export default useVirtualDesktop;
