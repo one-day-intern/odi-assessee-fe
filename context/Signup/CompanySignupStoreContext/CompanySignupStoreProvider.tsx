@@ -3,6 +3,10 @@ import React, { createContext, useState } from "react";
 import { useCompanySignupStepContext } from "../CompanySignupStepContext";
 import { CompanySignupStoreProps } from "./CompanySignupStoreProps";
 
+import { postCompany } from "@services/Signup/CompanySignup";
+
+const POST_COMPANY_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}users/register-company/`;
+
 const initialValue: CompanySignupStoreElements = {
   company_address: "",
   company_description: "",
@@ -43,7 +47,7 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
     [name]: error
   }));
 
-  const postResult = () => {
+  const postResult = async () => {
     const [_, companyNameError] = emptyValidator(storeState.company_name);
     setError("company_name", companyNameError);
 
@@ -54,7 +58,12 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
     
     if (indexOfFirstError >= 0) {
       selectStep(indexOfFirstError < 3 ? 1 : 2);
+      return;
     }
+
+    const registeredCompany = await postCompany(POST_COMPANY_URL, storeState);
+
+
   };
 
   return (
