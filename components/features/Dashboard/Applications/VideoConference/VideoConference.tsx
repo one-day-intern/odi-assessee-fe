@@ -32,29 +32,30 @@ const Spinner = () => {
 const Conference: React.FC<ConferenceProps> = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const conference = useHMSActions();
-  const [isEnteredConference, setIsEnteredConference] = useState(false);
   const isPreviewReady = useHMSStore(selectIsInPreview);
   const isInCall = useHMSStore(selectIsConnectedToRoom);
 
   const enterConference = async () => {
     setLoading(true);
     await conference
-      .preview({ userName: "Rashad Aziz", authToken: data?.token })
-      .then(() => setIsEnteredConference(true))
+      .join({ userName: "Rashad Aziz", authToken: data?.token })
       .catch((e: Error) => console.log(e));
-    setLoading(false)
+    setLoading(false);
   };
 
-  const joinConference = async () => {
-    await conference.join({ userName: "Rashad Aziz", authToken: data?.token! });
+  const enterConferenceWithPreview = async () => {
+    setLoading(true);
+    await conference
+      .preview({ userName: "Rashad Aziz", authToken: data?.token })
+      .catch((e: Error) => console.log(e));
+    setLoading(false);
   };
 
   const leaveConference = useCallback(async () => {
-    setLoading(true)
+    setLoading(true);
     await conference.leave();
-    setIsEnteredConference(false);
     setLoading(false);
-  }, [conference, setIsEnteredConference]);
+  }, [conference]);
 
   useEffect(() => {
     conference.setLogLevel(HMSLogLevel.NONE);
@@ -70,13 +71,21 @@ const Conference: React.FC<ConferenceProps> = ({ data }) => {
   }, [conference, leaveConference]);
 
   if (!loading) {
-    if (!isEnteredConference) {
+    if (!isPreviewReady && !isInCall) {
       return (
-        <VideoConferenceLanding onEnterConference={() => enterConference()} />
+        <VideoConferenceLanding
+          onEnterConference={() => enterConference()}
+          onEnterConferenceWithPreview={() => enterConferenceWithPreview()}
+        />
       );
     }
     if (isPreviewReady) {
-      return <PreviewVideo onJoinConference={() => joinConference()} onLeaveConference={() => leaveConference()}/>;
+      return (
+        <PreviewVideo
+          onJoinConference={() => enterConference()}
+          onLeaveConference={() => leaveConference()}
+        />
+      );
     }
     if (isInCall) {
       return <Room onLeaveConference={() => leaveConference()} />;
