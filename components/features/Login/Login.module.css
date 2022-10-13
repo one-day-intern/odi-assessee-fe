@@ -1,0 +1,57 @@
+.backdrop__center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 100%;
+}
+
+.glassmorph {
+    background: linear-gradient(164.75deg, rgba(255, 255, 255, 0.65) 2.91%, rgba(255, 255, 255, 0.25) 73.58%);
+    filter: drop-shadow(0px 4px 16px rgba(0, 0, 0, 0.1));
+    backdrop-filter: blur(2.5px);
+  /* Note: backdrop-filter has minimal browser support */
+  
+  border-radius: 24px;
+  width: clamp(400px, 50vw, 520px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 2rem 4rem;
+  z-index: 20;
+}
+
+.glassmorph__heading {
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 2.05rem;
+
+    text-shadow: 2px 1px 9px rgba(0,0,0,0.1);
+}
+
+.glassmorph__column {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.glassmorph__forgot {
+    color: #85AEFF;
+    font-weight: 700;
+    font-size: 0.8rem;
+
+    margin: 0;
+
+    font-family: "Inter", sans-serif;
+    user-select: none;
+    cursor: pointer;
+
+}
+
+.glassmorph__body {
+  font-size: 0.8rem;
+  font-family: "Inter", sans-serif;
+}
