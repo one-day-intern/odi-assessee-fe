@@ -1,14 +1,5 @@
 import React, { useState } from "react";
 
-interface LoginTextFields {
-  email: string;
-  password: string;
-}
-
-interface LoginDetails extends LoginTextFields {
-  remember: boolean;
-}
-
 const useLoginHandler = () => {
 
   const [data, setData] = useState<LoginDetails>({
