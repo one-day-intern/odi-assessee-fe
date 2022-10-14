@@ -15,7 +15,7 @@ const Checkbox = ({ isChecked, setIsChecked, label }: CheckboxProps) => {
         id={id}
         type="checkbox"
         checked={isChecked}
-        onClick={setIsChecked}
+        onChange={setIsChecked}
         data-testid="checkbox"
       />
       <label className={styles["checkbox__label"]} htmlFor={id}>{label}</label>
