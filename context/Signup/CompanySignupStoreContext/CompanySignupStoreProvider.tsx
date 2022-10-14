@@ -5,7 +5,7 @@ import { CompanySignupStoreProps } from "./CompanySignupStoreProps";
 
 import { postCompany } from "@services/Signup/CompanySignup";
 
-const POST_COMPANY_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}users/register-company/`;
+const POST_COMPANY_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/register-company/`;
 
 const initialValue: CompanySignupStoreElements = {
   company_address: "",
