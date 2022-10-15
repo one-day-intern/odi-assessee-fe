@@ -19,8 +19,6 @@ const useLocalStorage = (key: string): [string | null, Dispatch<SetStateAction<s
         }
         
         localStorage.setItem(key, value);
-        console.log("item saved", key)
-        console.warn(localStorage.getItem(key));
     }, [key, value]);
 
     return [value, setValue]
