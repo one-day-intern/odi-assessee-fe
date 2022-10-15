@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./ResponseTest.module.css";
 import { OdiLogo } from "@components/shared/svg/OdiLogo";
 import { AnimatePresence, motion } from "framer-motion";
 import ResponseTestIcon from "./ResponseTestIcon";
 import Searchbar from "./Searchbar";
-import EmailTile from "./Inbox/EmailTile";
 import RefreshIcon from "@components/shared/svg/RefreshIcon";
 import EmailPaginator from "./EmailPaginator";
 import EmailView from "./EmailView";
