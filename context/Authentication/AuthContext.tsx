@@ -55,7 +55,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       case AuthDispatchTypes.LOGIN:
         setAccessToken(payload.accessToken);
 
-        if (payload.remember) setRefreshToken(payload.refreshToken);
+        if (payload.remember) {
+          setRefreshToken(payload.refreshToken)
+        } else {
+          setRefreshToken(null);
+        };
         break;
       case AuthDispatchTypes.LOGOUT:
         setAccessToken(null);
@@ -68,15 +72,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [setAccessToken, setRefreshToken]);
 
   useEffect(() => {
+    
+    if (accessToken == null) return;
+
     dispatch({
       type: AuthDispatchTypes.LOGIN,
       payload: {
         user: null,
         accessToken,
         refreshToken,
-        remember: true
+        remember: !!refreshToken
       }
-    })
+    });
+
   }, [accessToken, refreshToken, dispatch])
 
 
