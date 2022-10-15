@@ -1,0 +1,41 @@
+.search {
+  height: 80%;
+  width: 100%;
+  max-width: 400px;
+  background: rgb(230, 230, 230);
+  margin: 0 0.5rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+.search.focused {
+  outline: 2px solid #9076C0;
+}
+
+.search > input[type="text"] {
+  width: 82%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: 1rem;
+  padding-left: 0;
+  font-size: 1em;
+  outline: none;
+  border-radius: inherit;
+  text-overflow: ellipsis;
+}
+
+.search > svg {
+  height: 50%;
+}
+
+.clear {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 26px;
+  color: grey;
+  right: 5px;
+}
