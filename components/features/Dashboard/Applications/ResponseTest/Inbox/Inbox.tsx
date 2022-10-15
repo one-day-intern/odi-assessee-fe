@@ -33,7 +33,7 @@ const Inbox: React.FC<React.PropsWithChildren<Props>> = ({ emails, filter, curre
         ))}
       {emails.length === 0 && (
         <h1
-          date-testid="InboxEmpty"
+          data-testid="InboxEmpty"
           style={{
             textAlign: "center",
             color: "grey",
