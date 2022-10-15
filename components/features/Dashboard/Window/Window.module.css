@@ -56,6 +56,7 @@
 
   user-select: none;
   -webkit-user-drag: none;
+  z-index: 1;
 }
 
 .window__head--actions {
@@ -133,7 +134,8 @@
 }
 
 .window__body {
-  position: relative;
+  overflow: hidden;
+  position: absolute;
   width: 100%;
   height: calc(100% - var(--window-head-height));
   border-bottom-left-radius: 10px;
