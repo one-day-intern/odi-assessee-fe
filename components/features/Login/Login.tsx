@@ -3,7 +3,7 @@ import { OdiLogo } from "@components/shared/elements/svg/OdiLogo";
 import { InputField } from "@components/shared/forms/InputField";
 import { PasswordField } from "@components/shared/forms/PasswordField";
 import { Backdrop } from "@components/shared/layouts/Backdrop";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 
 import styles from "./Login.module.css";
@@ -13,10 +13,18 @@ import { GoogleButton } from "@components/shared/elements/GoogleButton";
 import { emailValidator } from "@utils/validators/emailValidator";
 import { emptyValidator } from "@utils/validators/emptyValidator";
 import { useLoginHandler } from "@hooks/Login/useLoginHandler";
+import { postLogin } from "@services/Login";
+import { useAuthContext } from "@context/Authentication";
+import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
+
+
+const LOGIN_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/api/token/`;
 
 const Login = () => {
   const { data, errors, setDataValue, setErrorValue } = useLoginHandler();
   const { email, password, remember } = data;
+
+  const { dispatch } = useAuthContext();
 
   const validate = (): boolean => {
     const [isEmailValid, emailError] = emailValidator(email);
@@ -28,9 +36,23 @@ const Login = () => {
     return isEmailValid && isPasswordValid;
   };
 
-  const submitForm = () => {
+  const submitForm = async () => {
     const isValid = validate();
-    if (isValid) return;
+    if (!isValid) return;
+
+    const { data: responseData } = await postLogin(LOGIN_URL, data);
+    const { access, refresh } = responseData;
+
+    dispatch({
+      type: AuthDispatchTypes.LOGIN,
+      payload: {
+        user: null,
+        accessToken: access,
+        refreshToken: refresh,
+        remember: data.remember
+      }
+    })
+
   }
 
   return (
