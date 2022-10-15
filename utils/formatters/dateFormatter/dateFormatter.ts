@@ -13,8 +13,9 @@ const dateFormatter = (date: Date, nowDate?: Date): string => {
     "Nov",
     "Dec",
   ];
+  const jakartaOffset = 7 * 3600 * 1000; // 7 hours
   const now = nowDate ?? new Date(Date.now());
-  const diffrenceInMilliseconds = now.getTime() - date.getTime();
+  const diffrenceInMilliseconds = (now.getTime() + jakartaOffset) - (date.getTime() + jakartaOffset);
   const differenceInDays = Math.ceil(
     diffrenceInMilliseconds / (1000 * 60 * 60 * 24)
   );
