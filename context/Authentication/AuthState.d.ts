@@ -18,4 +18,5 @@ interface AuthDispatchAction {
 
 interface AuthContextProps extends AuthState {
   dispatch: Dispatch<AuthDispatchAction>;
+  isLoading: boolean;
 }
