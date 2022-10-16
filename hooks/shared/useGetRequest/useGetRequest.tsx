@@ -84,6 +84,8 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
         return;
       }
 
+      cache.current[url!] = json;
+
       dispatch({ type: "fetched", payload: json });
 
       return;
