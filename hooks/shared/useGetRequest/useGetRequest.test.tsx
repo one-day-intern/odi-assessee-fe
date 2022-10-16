@@ -34,7 +34,7 @@ describe("useGetRequest test", () => {
   });
 
   it("Hook renders properly", () => {
-    const { result } = renderHook(() => useGetRequest());
+    const { result } = renderHook(() => useGetRequest("/route/unprotected/"));
     expect(result.current).toBeDefined();
   });
 
@@ -49,6 +49,20 @@ describe("useGetRequest test", () => {
     act(() => {
       result.current.fetchData!();
     });
+
+    // Wait for fetch call to resolve
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    expect(result.current.data?.message).toBe("Unprotected route accessed");
+  });
+
+  it("Hook called when fetching unprotected data without calling fetchData", async () => {
+    const { result } = renderHook(() =>
+      useGetRequest<MockResponse>("/route/unprotected/", {
+        requiresToken: false,
+        useCache: false,
+      })
+    );
 
     // Wait for fetch call to resolve
     await new Promise((resolve) => setTimeout(resolve, 1000));
