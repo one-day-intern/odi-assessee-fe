@@ -141,6 +141,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
               user: null,
             },
           });
+          return;
         } catch (e) {
           authDispatch({
             type: AuthDispatchTypes.LOGOUT,
