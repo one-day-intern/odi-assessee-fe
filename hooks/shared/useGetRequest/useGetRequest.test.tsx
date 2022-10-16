@@ -103,10 +103,6 @@ describe("useGetRequest test", () => {
       { wrapper: AuthContextWrapper }
     );
 
-    act(() => {
-      hook.result.current.fetchData!();
-    });
-
     // Wait for fetch call to resolve
     await new Promise((resolve) => setTimeout(resolve, 1000));
     expect(hook.result.current.data?.message).toBe("Protected route accessed");
