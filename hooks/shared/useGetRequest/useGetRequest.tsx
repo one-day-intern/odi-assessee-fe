@@ -58,6 +58,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
     accessToken,
     refreshToken,
     dispatch: authDispatch,
+    user
   } = useAuthContext();
 
   const fetchData = useCallback(async () => {
@@ -138,9 +139,10 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
               accessToken: access,
               refreshToken: refresh,
               remember: !!refresh,
-              user: null,
+              user
             },
           });
+          return;
         } catch (e) {
           authDispatch({
             type: AuthDispatchTypes.LOGOUT,
@@ -156,6 +158,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
     url,
     options?.requiresToken,
     options?.useCache,
+    user
   ]);
 
   useEffect(() => {
