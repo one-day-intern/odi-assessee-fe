@@ -2,7 +2,7 @@ import { rest } from "msw";
 
 export const handlers = [
   rest.post(
-    `${process.env.NEXT_PUBLIC_DEFAULT_URL}/users/api/token/refresh/`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/api/token/refresh/`,
     (req, res, ctx) => {
       if (req)
         return res(
@@ -14,7 +14,7 @@ export const handlers = [
     }
   ),
   rest.get(
-    `${process.env.NEXT_PUBLIC_DEFAULT_URL}/route/protected/`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/route/protected/`,
     (req, res, ctx) => {
 
       const token = req.headers.get("Authorization")?.split(" ")[1];
@@ -31,7 +31,7 @@ export const handlers = [
     }
   ),
   rest.get(
-    `${process.env.NEXT_PUBLIC_DEFAULT_URL}/route/unprotected/`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/route/unprotected/`,
     (req, res, ctx) => {
       return res(
         ctx.json({
@@ -41,7 +41,7 @@ export const handlers = [
     }
   ),
   rest.get(
-    `${process.env.NEXT_PUBLIC_DEFAULT_URL}/route/unprotected-error/`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/route/unprotected-error/`,
     (req, res, ctx) => {
       return res(
         ctx.json({
@@ -52,7 +52,7 @@ export const handlers = [
     }
   ),
   rest.get(
-    `${process.env.NEXT_PUBLIC_DEFAULT_URL}/users/get-info/`, (req, res, ctx) => {
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/get-info/`, (req, res, ctx) => {
         return res(
             ctx.json({
                 "company_id": "cee7f64d-9316-4967-a5a8-770ea40075b8",
