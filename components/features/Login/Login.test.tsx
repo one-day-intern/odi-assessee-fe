@@ -1,38 +1,52 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Login } from "./Login";
+import { AuthProvider } from "../../../context/Authentication";
+import { act } from "react-dom/test-utils";
+
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve({ jo: "boss" }),
+  })
+) as jest.Mock;
 
 describe("Login Details Test", () => {
-    beforeEach(() => {
-        render(<Login/>);
+  beforeEach(() => {
+    render(
+      <AuthProvider>
+        <Login />
+      </AuthProvider>
+    );
+  });
+
+  it("Test if element renders properly", () => {
+    const backdrop = screen.getByTestId("backdrop");
+    expect(backdrop).toBeInTheDocument();
+  });
+
+  it("Test if error shows when button is clicked", () => {
+    const button = screen.getByTestId("button");
+
+    const emailInput = screen.getByTestId("inputField");
+    fireEvent.change(emailInput, {
+      target: {
+        value: "abc@abc.com",
+      },
     });
 
-    it("Test if element renders properly", () => {
-        const backdrop = screen.getByTestId("backdrop");
-        expect(backdrop).toBeInTheDocument();
+    const passwordInput = screen.getByTestId("password-input");
+    fireEvent.change(passwordInput, {
+      target: {
+        value: "Abca123@@",
+      },
     });
 
-    it("Test if error shows when button is clicked", () => {
-        const button = screen.getByTestId("button");
-
-        const emailInput = screen.getByTestId("inputField");
-        fireEvent.change(emailInput, {
-            target: {
-                value: "abc@abc.com"
-            }
-        })
-        
-        const passwordInput = screen.getByTestId("password-input");
-        fireEvent.change(passwordInput, {
-            target: {
-                value: "Abca123@@"
-            }
-        })
-
-        fireEvent.click(button);
-
-        const errorMessage = screen.queryByText(/Please fill in this field/g);
-        expect(errorMessage).not.toBeInTheDocument();
+    act(() => {
+      fireEvent.click(button);
     });
 
+    const errorMessage = screen.queryByText(/Please fill in this field/g);
+    expect(errorMessage).not.toBeInTheDocument();
+    expect(global.fetch).toBeCalledTimes(1);
+  });
 });
