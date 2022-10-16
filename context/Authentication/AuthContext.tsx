@@ -108,7 +108,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
       const user = await response.json();
 
-
       if (!response.ok) {
         if (response.status === 401) {
           const REQUEST_ACCESS_TOKEN_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/api/token/refresh/`;
@@ -137,7 +136,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             return;
           }
 
-          const { access, refresh } = await requestNewAccessToken.json()
+          const { access, refresh } = await requestNewAccessToken.json();
 
           const response = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/get-info/`,
@@ -178,8 +177,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsLoading(false);
     };
 
-    initialLogin();
-  }, [accessToken, refreshToken, authDispatch]);
+    if (isLoading) initialLogin();
+  }, [accessToken, refreshToken, authDispatch, isLoading]);
 
   return (
     <AuthContext.Provider
