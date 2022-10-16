@@ -29,6 +29,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
   const cache = useRef<Cache<T>>({});
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${uri}`;
+  
 
   // Used to prevent state update if the component is unmounted
   const cancelRequest = useRef<boolean>(false);
@@ -125,7 +126,6 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
           });
 
           const { access, refresh } = await requestNewAccessToken.json();
-          console.log(access);
 
 
           if (!requestNewAccessToken.ok) throw new Error();
@@ -159,9 +159,12 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
   useEffect(() => {
     if (!url) return;
 
-    if (!accessToken) {
+    if (accessToken === "") return;
+
+    if (options?.requiresToken && !accessToken) {
       return;
     }
+
 
     cancelRequest.current = false;
 
