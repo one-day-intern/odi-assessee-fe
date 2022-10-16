@@ -82,7 +82,16 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     if (accessToken === "") return;
 
-    if (accessToken == null) {
+    if (accessToken === null) {
+      authDispatch({
+        type: AuthDispatchTypes.LOGOUT,
+        payload: {
+          user: null,
+          accessToken: null,
+          refreshToken: null,
+          remember: false,
+        },
+      });
       setIsLoading(false);
       return;
     }
@@ -115,7 +124,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           });
 
           if (!requestNewAccessToken.ok) {
-            dispatch({
+            authDispatch({
               type: AuthDispatchTypes.LOGOUT,
               payload: {
                 user: null,
