@@ -1,0 +1,63 @@
+.backdrop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.modal {
+  position: absolute;
+  width: min(100%, 450px);
+  height: fit-content;
+  padding-bottom: 1rem;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* blue #3D65D8 */
+
+.modal-header {
+  width: 100%;
+  padding: 0 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #9076c0;
+  font-size: 1.5em;
+  letter-spacing: 2px;
+}
+
+.devices {
+  width: 100%;
+  height: 100%;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.device-dropdown {
+  width: 100%;
+  position: relative;
+}
+
+.device-dropdown-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.device-dropdown-group > h2 {
+  font-size: 0.85em;
+  margin: 0;
+  margin-bottom: 5px;
+  padding: 0;
+  width: 100%;
+}

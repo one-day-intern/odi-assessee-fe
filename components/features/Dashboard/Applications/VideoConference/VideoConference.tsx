@@ -8,10 +8,15 @@ import {
   selectIsConnectedToRoom,
   useHMSStore,
   HMSLogLevel,
-  HMSException,
 } from "@100mslive/react-sdk";
 import useSWRImmutable from "swr/immutable";
 import { getRoomToken } from "@services/Dashboard/VideoConference";
+import VideoConferenceLanding from "./VideoConferenceLanding";
+
+interface ConferenceProps {
+  data: any | undefined;
+  children?: React.ReactNode;
+}
 
 const Spinner = () => {
   return (
@@ -24,47 +29,36 @@ const Spinner = () => {
   );
 };
 
-const Conference: React.FC = () => {
-  const [roomJoinable, setRoomJoinable] = useState(true);
-  const connState = useRef({ joining: false, leaving: false });
+const Conference: React.FC<ConferenceProps> = ({ data }) => {
+  const [loading, setLoading] = useState(false);
   const conference = useHMSActions();
   const isPreviewReady = useHMSStore(selectIsInPreview);
   const isInCall = useHMSStore(selectIsConnectedToRoom);
-  const { data, error, isValidating, mutate } = useSWRImmutable(
-    "wizzy",
-    getRoomToken,
-    { errorRetryCount: 0 }
-  );
 
-  const joinCall = async () => {
-    connState.current.joining = true;
-    await conference.join({ userName: "wizzy", authToken: data?.token! });
-    connState.current.joining = false;
+  const enterConference = async () => {
+    setLoading(true);
+    await conference
+      .join({ userName: "Rashad Aziz", authToken: data?.token })
+      .catch((e: Error) => console.log(e));
+    setLoading(false);
+  };
+
+  const enterConferenceWithPreview = async () => {
+    setLoading(true);
+    await conference
+      .preview({ userName: "Rashad Aziz", authToken: data?.token })
+      .catch((e: Error) => console.log(e));
+    setLoading(false);
   };
 
   const leaveConference = useCallback(async () => {
-    if (isPreviewReady || isInCall) {
-      if (!connState.current.joining && !connState.current.leaving) {
-        connState.current.leaving = true;
-        await conference.leave();
-        connState.current.leaving = false;
-      }
-    }
-  }, [conference, isInCall, isPreviewReady]);
+    setLoading(true);
+    await conference.leave();
+    setLoading(false);
+  }, [conference]);
 
   useEffect(() => {
     conference.setLogLevel(HMSLogLevel.NONE);
-    if (!isPreviewReady && !isInCall && data?.token) {
-      conference
-        .preview({ userName: "wizzy", authToken: data?.token! })
-        .catch((e: HMSException) => {
-          switch (e.description) {
-            default:
-              setRoomJoinable(false);
-              return;
-          }
-        });
-    }
 
     window.addEventListener("beforeunload", leaveConference);
     window.addEventListener("onunload", leaveConference);
@@ -74,29 +68,39 @@ const Conference: React.FC = () => {
       window.removeEventListener("beforeunload", leaveConference);
       window.removeEventListener("onunload", leaveConference);
     };
-  }, [data, conference, isPreviewReady, isInCall, leaveConference]);
+  }, [conference, leaveConference]);
 
-  if (isInCall) {
-    return <Room onLeave={() => leaveConference()} />;
+  if (!loading) {
+    if (!isPreviewReady && !isInCall) {
+      return (
+        <VideoConferenceLanding
+          onEnterConference={() => enterConference()}
+          onEnterConferenceWithPreview={() => enterConferenceWithPreview()}
+        />
+      );
+    }
+    if (isPreviewReady) {
+      return (
+        <PreviewVideo
+          onJoinConference={() => enterConference()}
+          onLeaveConference={() => leaveConference()}
+        />
+      );
+    }
+    if (isInCall) {
+      return <Room onLeaveConference={() => leaveConference()} />;
+    }
   }
-  if (isPreviewReady) {
-    return <PreviewVideo onJoinCall={() => joinCall()} />;
-  }
-  if (!roomJoinable && !error) {
-    return <h1>Seems like the host has not started this conference yet</h1>;
-  }
-  if (!error || isValidating) {
-    return <Spinner />;
-  }
-  return (
-    <div>
-      <h1>500 internal server error</h1>
-      <button onClick={() => mutate()}>refresh</button>
-    </div>
-  );
+  return <Spinner />;
 };
 
 const VideoConference = () => {
+  const { data, error, isValidating, mutate } = useSWRImmutable(
+    "wizzy",
+    getRoomToken,
+    { errorRetryCount: 0 }
+  );
+
   return (
     <div
       style={{
@@ -107,7 +111,7 @@ const VideoConference = () => {
       }}
     >
       <HMSRoomProvider>
-        <Conference />
+        <Conference data={data} />
       </HMSRoomProvider>
       <div id="video-conference-modal" />
     </div>

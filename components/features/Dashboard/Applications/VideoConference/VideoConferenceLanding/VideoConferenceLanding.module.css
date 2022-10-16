@@ -1,0 +1,36 @@
+.landing-container {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+}
+
+.section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.svg-wrapper {
+  width: max(250px, 40%);
+  height: max(250px, 40%);
+  display: grid;
+  place-items: center;
+}
+
+.svg-wrapper > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  font-size: 3em;
+  letter-spacing: 2px;
+}
+
+.title.mobile {
+  font-size: 2em;
+}

@@ -1,7 +1,5 @@
 const getRoomToken = (userId: string) => {
-  return {
-    token: process.env.NEXT_PUBLIC_HMS_DEV_TOKEN,
-  };
+  return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/conference/join/?userId=${userId}`).then(res => res.json());
 };
 
 export { getRoomToken };

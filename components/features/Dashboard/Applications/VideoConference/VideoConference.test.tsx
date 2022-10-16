@@ -1,10 +1,14 @@
 import React from "react";
 import VideoConference from "./VideoConference";
 import { render } from "@testing-library/react";
-import { act } from "react-dom/test-utils";
+import DashboardAPIProvider from "../../../../../context/Dashboard/DashboardAPIContext";
 
 describe("Video conference component test suite", () => {
-    test("test render video conference", () => {
-        render(<VideoConference />)
-    })
-})
+  test("test render video conference", () => {
+    render(
+      <DashboardAPIProvider onPushNotification={() => {}} app={{}}>
+        <VideoConference />
+      </DashboardAPIProvider>
+    );
+  });
+});
