@@ -4,12 +4,6 @@ import { Login } from "./Login";
 import { AuthProvider } from "../../../context/Authentication";
 import { act } from "react-dom/test-utils";
 
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    json: () => Promise.resolve({ jo: "boss" }),
-  })
-) as jest.Mock;
-
 describe("Login Details Test", () => {
   beforeEach(() => {
     render(
@@ -47,6 +41,5 @@ describe("Login Details Test", () => {
 
     const errorMessage = screen.queryByText(/Please fill in this field/g);
     expect(errorMessage).not.toBeInTheDocument();
-    expect(global.fetch).toBeCalledTimes(1);
   });
 });

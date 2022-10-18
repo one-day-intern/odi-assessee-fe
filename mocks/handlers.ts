@@ -63,5 +63,24 @@ export const handlers = [
             })
         )
     }
+  ),
+  rest.post(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/route/unprotected-post/`, (req, res, ctx) => {
+      return res(
+        ctx.json({
+          message: "Unprotected route posted"
+        })
+      )
+    }
+  ),
+  rest.post(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/route/unprotected-post-error/`, (req, res, ctx) => {
+      return res(
+        ctx.json({
+          message: "Error unprotected route posted"
+        }),
+        ctx.status(400)
+      )
+    }
   )
 ];
