@@ -3,7 +3,8 @@ import { ReactNode, CSSProperties } from "react";
 interface ButtonProps {
   children: ReactNode;
   variant: "primary" | "secondary";
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
-  style?: CSSProperties
+  style?: CSSProperties;
+  type?: "button" | "submit" | "reset";
 }

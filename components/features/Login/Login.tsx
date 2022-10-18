@@ -3,7 +3,7 @@ import { OdiLogo } from "@components/shared/elements/svg/OdiLogo";
 import { InputField } from "@components/shared/forms/InputField";
 import { PasswordField } from "@components/shared/forms/PasswordField";
 import { Backdrop } from "@components/shared/layouts/Backdrop";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 
 import styles from "./Login.module.css";
@@ -16,15 +16,52 @@ import { useLoginHandler } from "@hooks/Login/useLoginHandler";
 import { postLogin } from "@services/Login";
 import { useAuthContext } from "@context/Authentication";
 import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
+import usePostRequest from "@hooks/shared/usePostRequest";
 
 
-const LOGIN_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/api/token/`;
+const LOGIN_URL = "/users/api/token/";
+
+interface TokenReturnType {
+  access: string;
+  refresh: string;
+}
 
 const Login = () => {
   const { data, errors, setDataValue, setErrorValue } = useLoginHandler();
   const { email, password, remember } = data;
+  const isMounted = useRef(false);
 
-  const { dispatch } = useAuthContext();
+  const { data: responseData, error: responseError, postData, status } = usePostRequest<LoginDetails, TokenReturnType>(LOGIN_URL, data, {
+    requiresToken: false
+  })
+
+  const { user, dispatch } = useAuthContext();
+
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
+
+    // In the case when first loaded, both are undefined. So no need to dispatch login
+    if (responseData == null && responseError == null) {
+      return;
+    }
+
+    if (responseData != null) {
+      const { access, refresh } = responseData! as TokenReturnType;
+      dispatch({
+        type: AuthDispatchTypes.LOGIN,
+        payload: {
+          user,
+          accessToken: access,
+          refreshToken: refresh,
+          remember: data.remember
+        }
+      });
+      return;
+    }
+  }, [responseData, responseError, dispatch, user, data.remember])
 
   const validate = (): boolean => {
     const [isEmailValid, emailError] = emailValidator(email);
@@ -36,29 +73,19 @@ const Login = () => {
     return isEmailValid && isPasswordValid;
   };
 
-  const submitForm = async () => {
+  const submitForm: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event?.preventDefault();
     const isValid = validate();
     if (!isValid) return;
 
-    const { data: responseData } = await postLogin(LOGIN_URL, data);
-    const { access, refresh } = responseData;
-
-    dispatch({
-      type: AuthDispatchTypes.LOGIN,
-      payload: {
-        user: null,
-        accessToken: access,
-        refreshToken: refresh,
-        remember: data.remember
-      }
-    })
+    postData!();
 
   }
 
   return (
     <Backdrop>
       <div className={styles["backdrop__center"]}>
-        <div className={styles["glassmorph"]}>
+        <form className={styles["glassmorph"]} onSubmit={submitForm}>
           <OdiLogo height={130} />
           <h2 className={styles["glassmorph__heading"]}>Welcome back!</h2>
           <InputField
@@ -73,7 +100,7 @@ const Login = () => {
             onChange={(e) => setDataValue("password", e.target?.value)}
             error={errors.password}
           />
-          <Button onClick={submitForm} variant="primary">
+          <Button variant="primary" type="submit">
             <h2>Login</h2>
           </Button>
           <div className={styles["glassmorph__column"]}>
@@ -89,7 +116,7 @@ const Login = () => {
           <LoginDivider />
           <GoogleButton onClick={() => {}} />
           <p className={ styles["glassmorph__body"] }>Dont have an account? <Link href="/accounts/signup/assessee"><span className={styles["glassmorph__forgot"]}>Sign up</span></Link>.</p>
-        </div>
+        </form>
       </div>
     </Backdrop>
   );
