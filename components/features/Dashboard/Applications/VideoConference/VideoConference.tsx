@@ -9,8 +9,6 @@ import {
   useHMSStore,
   HMSLogLevel,
 } from "@100mslive/react-sdk";
-import useSWRImmutable from "swr/immutable";
-import { getRoomToken } from "@services/Dashboard/VideoConference";
 import VideoConferenceLanding from "./VideoConferenceLanding";
 
 interface ConferenceProps {
