@@ -9,8 +9,6 @@ import {
   useHMSStore,
   HMSLogLevel,
 } from "@100mslive/react-sdk";
-import useSWRImmutable from "swr/immutable";
-import { getRoomToken } from "@services/Dashboard/VideoConference";
 import VideoConferenceLanding from "./VideoConferenceLanding";
 
 interface ConferenceProps {
@@ -95,11 +93,7 @@ const Conference: React.FC<ConferenceProps> = ({ data }) => {
 };
 
 const VideoConference = () => {
-  const { data, error, isValidating, mutate } = useSWRImmutable(
-    "wizzy",
-    getRoomToken,
-    { errorRetryCount: 0 }
-  );
+  const data = { token: process.env.NEXT_PUBLIC_HMS_DEV_TOKEN }
 
   return (
     <div
