@@ -95,11 +95,7 @@ const Conference: React.FC<ConferenceProps> = ({ data }) => {
 };
 
 const VideoConference = () => {
-  const { data, error, isValidating, mutate } = useSWRImmutable(
-    "wizzy",
-    getRoomToken,
-    { errorRetryCount: 0 }
-  );
+  const data = { token: process.env.NEXT_PUBLIC_HMS_DEV_TOKEN }
 
   return (
     <div
