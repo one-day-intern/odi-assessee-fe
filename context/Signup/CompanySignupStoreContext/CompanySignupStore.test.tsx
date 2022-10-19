@@ -6,6 +6,8 @@ import {
   CompanySignupStepProvider,
   useCompanySignupStepContext,
 } from "../CompanySignupStepContext";
+import { RouterContext } from "next/dist/shared/lib/router-context";
+import { createMockRouter } from "../../../mocks/createMockRouter";
 
 const MockCSSPChildrenValue = () => {
   const { data, setValue } = useCompanySignupStoreContext();
@@ -47,12 +49,16 @@ const MockCSSPChildrenPostResult = () => {
   );
 };
 
+const redirect = jest.fn();
+
 describe("Company Signup Store Provider Test", () => {
   it("Test change value", () => {
     render(
-      <CompanySignupStoreProvider>
-        <MockCSSPChildrenValue />
-      </CompanySignupStoreProvider>
+      <RouterContext.Provider value={createMockRouter({push: redirect})}>
+        <CompanySignupStoreProvider>
+          <MockCSSPChildrenValue />
+        </CompanySignupStoreProvider>
+      </RouterContext.Provider>
     );
 
     let email = screen.getByTestId("email");
@@ -67,9 +73,12 @@ describe("Company Signup Store Provider Test", () => {
 
   it("Test change error", () => {
     render(
+      <RouterContext.Provider value={createMockRouter({push: redirect})}>
+        
       <CompanySignupStoreProvider>
         <MockCSSPChildrenError />
       </CompanySignupStoreProvider>
+      </RouterContext.Provider>
     );
 
     let email = screen.getByTestId("email");
@@ -82,13 +91,16 @@ describe("Company Signup Store Provider Test", () => {
     expect(email).toHaveTextContent(/An error have occured./g);
   });
 
-  it("Test post result", () => {
+  it("Test post result", async () => {
     render(
+      <RouterContext.Provider value={createMockRouter({push: redirect})}>
+
       <CompanySignupStepProvider>
         <CompanySignupStoreProvider>
           <MockCSSPChildrenPostResult />
         </CompanySignupStoreProvider>
       </CompanySignupStepProvider>
+      </RouterContext.Provider>
     );
 
     const setErrorButton = screen.getByTestId("setError");
@@ -98,6 +110,6 @@ describe("Company Signup Store Provider Test", () => {
     fireEvent.click(postResultButton);
 
     const firstForm = screen.getByTestId("firstForm");
-    expect(firstForm).toHaveTextContent("");
+    expect(firstForm).toHaveTextContent(""); 
   });
 });
