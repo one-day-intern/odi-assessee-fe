@@ -15,6 +15,7 @@ module.exports = {
     '!<rootDir>/*.config.js',
     '!<rootDir>/*.config.ts',
     '!<rootDir>/coverage/**',
+    "!**/mocks/**"
   ],
   moduleNameMapper: {
     // Handle CSS imports (with CSS modules)
