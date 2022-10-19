@@ -7,7 +7,7 @@ import { useAssesseeSignupStoreContext } from '@context/Signup/AssesseeSignupSto
 import { confirmPasswordValidator } from '@utils/validators/confirmPasswordValidator';
 import { emailValidator } from '@utils/validators/emailValidator';
 import { passwordValidator } from '@utils/validators/passwordValidator';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { FormEventHandler, useEffect, useMemo, useRef } from 'react';
 
 import styles from "./AssesseePassword.module.css";
 
@@ -37,18 +37,8 @@ const AssesseePassword = () => {
       }
     }, [errors, inputRefs])
   
-    const handleSubmit = () => {
-      const [isEmailValid, emailError] = emailValidator(email);
-      setError("email", emailError);
-      
-      const [isPasswordValid, passwordError] = passwordValidator(password);
-      setError("password", passwordError);
-  
-      const [isConfirmedPasswordValid, confirmedPasswordError] = confirmPasswordValidator(password, confirmedPassword);
-      setError("confirmed_password", confirmedPasswordError);
-  
-      const isValid = isEmailValid && isPasswordValid && isConfirmedPasswordValid;
-      if (!isValid) return;
+    const handleSubmit: FormEventHandler<Element> = (e) => {
+      e.preventDefault();
       postResult();
     }
   
