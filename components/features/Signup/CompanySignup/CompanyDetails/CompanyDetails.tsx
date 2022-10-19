@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { FormEventHandler, useEffect, useMemo, useRef } from "react";
 
 import { OdiLogo } from "@components/shared/elements/svg/OdiLogo";
 import styles from "./CompanyDetails.module.css";
@@ -44,8 +44,8 @@ const CompanyDetails = () => {
     company_description: companyDescription
   } = data;
 
-  const continueNext = () => {
-
+  const continueNext: FormEventHandler<Element> = (e) => {
+    e.preventDefault();
 
     const [isCompanyNameValid, companyNameError] = emptyValidator(companyName);
     setError("company_name", companyNameError);
@@ -67,7 +67,7 @@ const CompanyDetails = () => {
 
       <h2 className={styles["window__text--heading"]}>Your Details</h2>
 
-      <div className={styles["window__form"]} data-testid="form">
+      <form className={styles["window__form"]} data-testid="form" onSubmit={continueNext}>
         <InputField
           label="Company Name *"
           ref={inputRefs.company_name}
@@ -89,10 +89,10 @@ const CompanyDetails = () => {
           onChange={(e) => setValue("company_description", e.target.value)}
           rows={5}
         />
-        <Button variant="primary" onClick={continueNext}>
+        <Button variant="primary" type="submit">
           <h2>Next</h2>
         </Button>
-      </div>
+      </form>
 
       <SigninNotice />
     </>
