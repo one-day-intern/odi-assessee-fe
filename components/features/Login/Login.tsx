@@ -13,10 +13,11 @@ import { GoogleButton } from "@components/shared/elements/GoogleButton";
 import { emailValidator } from "@utils/validators/emailValidator";
 import { emptyValidator } from "@utils/validators/emptyValidator";
 import { useLoginHandler } from "@hooks/Login/useLoginHandler";
-import { postLogin } from "@services/Login";
+import { toast } from "react-toastify";
 import { useAuthContext } from "@context/Authentication";
 import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
 import usePostRequest from "@hooks/shared/usePostRequest";
+import { useRouter } from "next/router";
 
 
 const LOGIN_URL = "/users/api/token/";
@@ -36,6 +37,7 @@ const Login = () => {
   })
 
   const { user, dispatch } = useAuthContext();
+  const router = useRouter();
 
   useEffect(() => {
     if (!isMounted.current) {
@@ -43,10 +45,12 @@ const Login = () => {
       return;
     }
 
-    // In the case when first loaded, both are undefined. So no need to dispatch login
-    if (responseData == null && responseError == null) {
+    // In the case when first loaded, status is initial. When status is login, we also don't need to dispatch any action.
+    if (status === "loading" || status === "initial") {
       return;
     }
+
+    console.log(responseError)
 
     if (responseData != null) {
       const { access, refresh } = responseData! as TokenReturnType;
@@ -59,9 +63,29 @@ const Login = () => {
           remember: data.remember
         }
       });
+      toast.success("Login successful!", {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "colored",
+        containerId: "root-toast",
+        autoClose: 2000
+      });
+      router.push("/")
       return;
     }
-  }, [responseData, responseError, dispatch, user, data.remember])
+
+    if (responseError != null) {
+      console.log("Here")
+      toast.error(responseError.message, {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "colored",
+        containerId: "root-toast",
+        autoClose: 2000
+      });
+      return;
+    }
+
+
+  }, [responseData, responseError, dispatch, user, data.remember, status, router])
 
   const validate = (): boolean => {
     const [isEmailValid, emailError] = emailValidator(email);
