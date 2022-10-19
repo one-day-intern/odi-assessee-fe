@@ -4,7 +4,6 @@ import { CompanySignupStoreProps } from "./CompanySignupStoreProps";
 
 import usePostRequest from "@hooks/shared/usePostRequest";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import { emailValidator } from "@utils/validators/emailValidator";
 import { passwordValidator } from "@utils/validators/passwordValidator";

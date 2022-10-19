@@ -12,7 +12,6 @@ const PhoneField = ({
   return (
     <div className={styles["form__control"]}>
       <label className={styles["form__label"]}>{label}</label>
-      <div className={styles["form__error"]}>{error ?? ""}</div>
       <PhoneInput
         inputClass={`${styles["form__input-text"]} ${styles["form__input--phone"]}`}
         value={value}
@@ -20,6 +19,7 @@ const PhoneField = ({
         buttonClass={`${styles["country-options"]} ${styles["input--phone"]}`}
         disableDropdown
       />
+      <div className={styles["form__error"]}>{error ?? ""}</div>
     </div>
   );
 };

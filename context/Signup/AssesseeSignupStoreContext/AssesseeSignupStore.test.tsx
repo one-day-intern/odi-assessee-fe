@@ -1,10 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
-import { useAssesseeSignupStoreContext, AssesseeSignupStoreProvider } from "./index";
+import {
+  useAssesseeSignupStoreContext,
+  AssesseeSignupStoreProvider,
+} from "./index";
 import {
   AssesseeSignupStepProvider,
   useAssesseeSignupStepContext,
 } from "../AssesseeSignupStepContext";
+import { RouterContext } from "next/dist/shared/lib/router-context";
+import { createMockRouter } from "../../../mocks/createMockRouter";
 
 const MockCSSPChildrenValue = () => {
   const { data, setValue } = useAssesseeSignupStoreContext();
@@ -46,12 +51,16 @@ const MockCSSPChildrenPostResult = () => {
   );
 };
 
+const mockPush = jest.fn();
+
 describe("Company Signup Store Provider Test", () => {
   it("Test change value", () => {
     render(
-      <AssesseeSignupStoreProvider>
-        <MockCSSPChildrenValue />
-      </AssesseeSignupStoreProvider>
+      <RouterContext.Provider value={createMockRouter({ push: mockPush })}>
+        <AssesseeSignupStoreProvider>
+          <MockCSSPChildrenValue />
+        </AssesseeSignupStoreProvider>
+      </RouterContext.Provider>
     );
 
     let email = screen.getByTestId("email");
@@ -66,9 +75,11 @@ describe("Company Signup Store Provider Test", () => {
 
   it("Test change error", () => {
     render(
-      <AssesseeSignupStoreProvider>
-        <MockCSSPChildrenError />
-      </AssesseeSignupStoreProvider>
+      <RouterContext.Provider value={createMockRouter({ push: mockPush })}>
+        <AssesseeSignupStoreProvider>
+          <MockCSSPChildrenError />
+        </AssesseeSignupStoreProvider>
+      </RouterContext.Provider>
     );
 
     let email = screen.getByTestId("email");
@@ -83,11 +94,13 @@ describe("Company Signup Store Provider Test", () => {
 
   it("Test post result", () => {
     render(
-      <AssesseeSignupStepProvider>
-        <AssesseeSignupStoreProvider>
-          <MockCSSPChildrenPostResult />
-        </AssesseeSignupStoreProvider>
-      </AssesseeSignupStepProvider>
+      <RouterContext.Provider value={createMockRouter({ push: mockPush })}>
+        <AssesseeSignupStepProvider>
+          <AssesseeSignupStoreProvider>
+            <MockCSSPChildrenPostResult />
+          </AssesseeSignupStoreProvider>
+        </AssesseeSignupStepProvider>
+      </RouterContext.Provider>
     );
 
     const setErrorButton = screen.getByTestId("setError");
