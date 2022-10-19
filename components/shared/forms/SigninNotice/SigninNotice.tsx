@@ -5,7 +5,7 @@ import styles from "./SigninNotice.module.css"
 
 const SigninNotice = () => {
   return (
-    <p data-testid="signinNotice" className={ styles["signin-notice"] }>Already have an account? <Link href="/account/signin/assessee"><a className={ styles["signin-notice--link"] }>Sign in</a></Link>.</p>
+    <p data-testid="signinNotice" className={ styles["signin-notice"] }>Already have an account? <Link href="/accounts/login/assessee"><a className={ styles["signin-notice--link"] }>Sign in</a></Link>.</p>
   )
 }
 

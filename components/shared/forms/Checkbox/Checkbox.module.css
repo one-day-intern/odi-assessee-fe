@@ -1,0 +1,14 @@
+.checkbox__label {
+    font-family: "Inter", sans-serif;
+    font-size: 0.8rem;
+
+    
+    user-select: none;
+    cursor: pointer;
+}
+
+.checkbox--group {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}

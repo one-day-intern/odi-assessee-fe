@@ -1,0 +1,19 @@
+.paginator {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.paginator > p {
+  white-space: nowrap;
+  color: grey;
+  font-size: 0.9em;
+  text-align: center;
+}
+.paginator > button {
+  background: none;
+  color: grey;
+  border: none;
+  cursor: pointer;
+}

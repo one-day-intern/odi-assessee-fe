@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styles from "./Settings.module.css";
 import { motion } from "framer-motion";
-import { useDevices, DeviceType } from "@100mslive/react-sdk";
 import SettingsIcon from "./SettingsIcon";
 import SettingsModal from "./SettingsModal";
+import { AnimatePresence } from "framer-motion";
 
 const Settings = () => {
   const [settingsOpened, setSettingsOpened] = useState(false);
@@ -17,7 +17,11 @@ const Settings = () => {
       >
         <SettingsIcon />
       </motion.div>
-      {settingsOpened && <SettingsModal />}
+      <AnimatePresence>
+        {settingsOpened && (
+          <SettingsModal setSettingsOpened={setSettingsOpened} />
+        )}
+      </AnimatePresence>
     </>
   );
 };
