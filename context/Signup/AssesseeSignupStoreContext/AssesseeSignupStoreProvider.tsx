@@ -150,6 +150,7 @@ const AssesseeSignupStoreProvider = ({
         setValue,
         setError,
         postResult,
+        loadingStatus: status
       }}
     >
       {children}
