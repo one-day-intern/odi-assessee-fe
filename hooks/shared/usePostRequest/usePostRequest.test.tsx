@@ -76,5 +76,43 @@ describe("usePostRequest test", () => {
     expect(result.current.error?.message).toBe("Error unprotected route posted");
   });
 
+  it("Hook called when posting protected routes on success", async () => {
+    const { result } = renderHook(() =>
+      usePostRequest<MockResponse, MockResponse>("/route/protected-post/", {
+        message: "rashad aziz"
+      }, {
+        requiresToken: true
+      }), { wrapper: AuthContextWrapper }
+    );
+
+    act(() => {
+      result.current.postData!();
+    });
+
+    // Wait for fetch call to resolve
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    expect(result.current.data?.message).toBe("Protected route posted");
+  });
+
+  it("Hook called when posting protected routes on error", async () => {
+    const { result } = renderHook(() =>
+      usePostRequest<MockResponse, MockResponse>("/route/protected-post/error/", {
+        message: "rashad aziz"
+      }, {
+        requiresToken: true
+      }), { wrapper: AuthContextWrapper }
+    );
+
+    act(() => {
+      result.current.postData!();
+    });
+
+    // Wait for fetch call to resolve
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    expect(result.current.error?.message).toBe("Error protected route posted");
+  });
+
  
 });
