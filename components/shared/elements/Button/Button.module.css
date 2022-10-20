@@ -1,17 +1,17 @@
 .button {
-    border: none;
-    border-radius: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
 
-    padding: 0.5rem 1rem;
-    margin: 2rem 0;
+  padding: 0.5rem 1rem;
+  margin: 2rem 0;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    width: 100%;
+  width: 100%;
 }
 
 .button p,
@@ -21,21 +21,32 @@
 .button h4,
 .button h5,
 .button h6 {
-    font-size: 1.15rem;
-    line-height: 1.35rem;
+  font-size: 1.15rem;
+  line-height: 1.35rem;
 
-    font-family: "Roboto", sans-serif;
-    font-weight: 500;
-    margin: 0;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  margin: 0;
 }
 
-
 .button--primary {
-    background-color: #9076C0;
-    color: white;
+  background-color: #9076c0;
+  color: white;
 }
 
 .button--secondary {
-    background-color: #3D65D8;
-    color: white;
+  background-color: #3d65d8;
+  color: white;
+}
+
+.button.button--disabled {
+  background: rgb(157, 157, 157)
+    linear-gradient(
+      90deg,
+      rgba(157, 157, 157, 0.927608543417367) 0%,
+      rgba(179, 179, 179, 0.9752275910364145) 51%,
+      rgba(171, 171, 171, 1) 100%
+    );
+  cursor: not-allowed;
+  color: white;
 }
