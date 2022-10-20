@@ -72,7 +72,6 @@ const Login = () => {
     }
 
     if (responseError != null) {
-      console.log("Here")
       toast.error(responseError.message, {
         position: toast.POSITION.TOP_CENTER,
         theme: "colored",
