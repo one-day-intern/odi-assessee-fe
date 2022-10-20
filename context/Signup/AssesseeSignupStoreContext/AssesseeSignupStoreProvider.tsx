@@ -41,8 +41,6 @@ const AssesseeSignupStoreProvider = ({
 
   const [storeErrors, setStoreErrors] = useState(initialErrors);
 
-  const [isValidating, setValidating] = useState(false);
-
   const isFirstMount = useRef(false);
 
   const router = useRouter();
@@ -109,7 +107,6 @@ const AssesseeSignupStoreProvider = ({
     }));
 
   const validate = (): boolean => {
-    setValidating(true);
 
     const [isFirstNameValid, firstNameError] = emptyValidator(storeState.first_name);
     setError("first_name", firstNameError);
@@ -130,8 +127,7 @@ const AssesseeSignupStoreProvider = ({
     setError("password", passwordError);
 
     const [isConfirmedPasswordValid, confirmedPasswordError] = confirmPasswordValidator(storeState.password, storeState.confirmed_password);
-    setError("confirmedPassword", confirmedPasswordError);
-    setValidating(false);
+    setError("confirmed_password", confirmedPasswordError);
 
     
     

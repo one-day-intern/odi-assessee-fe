@@ -50,8 +50,6 @@ const Login = () => {
       return;
     }
 
-    console.log(responseError)
-
     if (responseData != null) {
       const { access, refresh } = responseData! as TokenReturnType;
       dispatch({
