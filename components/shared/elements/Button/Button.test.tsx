@@ -16,7 +16,7 @@ describe("Button element test -- primary", () => {
   it("Test if element rendered properly", () => {
     const buttonElement = screen.getByTestId("button");
     expect(buttonElement).toBeInTheDocument();
-    expect(buttonElement).toHaveAttribute("class", "button button--primary")
+    expect(buttonElement).toHaveAttribute("class", "button button--primary ")
   });
 
   it("Test if event fired when clicked", () => {
@@ -31,7 +31,16 @@ describe("Button element test -- secondary", () => {
     render(<Button variant="secondary" onClick={ mockedFunction }>Hello</Button>);
     const buttonElement = screen.getByTestId("button");
     expect(buttonElement).toBeInTheDocument();
-    expect(buttonElement).toHaveAttribute("class", "button button--secondary")
+    expect(buttonElement).toHaveAttribute("class", "button button--secondary ")
+  })
+})
+
+describe("Button element test -- disabled", () => {
+  it("Test if element rendered properly", () => {
+    render(<Button variant="primary" disabled onClick={ mockedFunction }>Hello</Button>);
+    const buttonElement = screen.getByTestId("button");
+    expect(buttonElement).toBeInTheDocument();
+    expect(buttonElement).toHaveAttribute("class", "button button--primary button--disabled")
   })
 })
 
