@@ -28,7 +28,7 @@ describe("company signup", () => {
 
     // Fill in the email and ensure error
     cy.contains("Email Address *").siblings("input").eq(0).type("rashad");
-    cy.contains("Submit").click();
+    cy.contains("Sign Up").click();
     cy.contains("Please enter a valid email.").should("exist");
 
     // Fill in correct email
@@ -39,12 +39,12 @@ describe("company signup", () => {
       );
 
     // Check if password and confirm password still needs to be fiilled
-    cy.contains("Submit").click();
+    cy.contains("Sign Up").click();
     cy.contains("Please fill in this field").should("exist");
 
     // Check all possible password combinations
     cy.get("input").eq(1).type("abcd");
-    cy.contains("Submit").click();
+    cy.contains("Sign Up").click();
     cy.contains("Your password should have at least 8 characters").should(
       "exist"
     );
@@ -53,7 +53,7 @@ describe("company signup", () => {
     cy.get("input")
       .eq(1)
       .type("{backspace}{backspace}{backspace}{backspace}abcdefghi");
-    cy.contains("Submit").click();
+    cy.contains("Sign Up").click();
     cy.contains("Your password should have at least 1 uppercase letter").should(
       "exist"
     );
@@ -64,7 +64,7 @@ describe("company signup", () => {
       .type(
         "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}ABCDEasdfdI"
       );
-    cy.contains("Submit").click();
+    cy.contains("Sign Up").click();
     cy.contains("Your password should have at least 1 number");
 
     // Check if passwod errors doesn't exist
@@ -73,7 +73,7 @@ describe("company signup", () => {
       .type(
         "{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}{backspace}12345AabC"
       );
-    cy.contains("Submit").click();
+    cy.contains("Sign Up").click();
     cy.contains("Your password should have at least 8 characters").should(
       "not.exist"
     );
@@ -86,7 +86,7 @@ describe("company signup", () => {
 
     // Check if input confirmed password different with real password
     cy.get("input").eq(2).type("ajdsfkljkj");
-    cy.contains("Submit").click();
+    cy.contains("Sign Up").click();
     cy.contains("Your password is not identical to your confirmed password.").should("exist");
 
     // Click eye icon change type of password
@@ -97,7 +97,7 @@ describe("company signup", () => {
     cy.get("input").eq(1).should("have.attr", "type", "password");
 
     // Submit form
-    cy.contains("Submit").click();
+    cy.contains("Sign Up").click();
     
   });
 });

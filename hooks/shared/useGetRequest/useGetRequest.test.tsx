@@ -90,7 +90,7 @@ describe("useGetRequest test", () => {
     );
   });
 
-  it("Hook called when fetching protected data", async () => {
+  it("Hook called when fetching protected data with token", async () => {
     localStorage.setItem("accessToken", "accesstoken");
     localStorage.setItem("refreshToken", "refreshtoken");
 
@@ -103,8 +103,52 @@ describe("useGetRequest test", () => {
       { wrapper: AuthContextWrapper }
     );
 
+    act(() => {
+     hook.result.current.fetchData!() 
+    })
+
     // Wait for fetch call to resolve
     await new Promise((resolve) => setTimeout(resolve, 1000));
     expect(hook.result.current.data?.message).toBe("Protected route accessed");
+  });
+
+  it("Hook called when fetching protected data without token", async () => {
+
+    const hook = renderHook(
+      () =>
+        useGetRequest<MockResponse>("/route/protected/", {
+          requiresToken: true,
+          useCache: false,
+        }),
+      { wrapper: AuthContextWrapper }
+    );
+
+    act(() => {
+     hook.result.current.fetchData!() 
+    })
+
+    // Wait for fetch call to resolve
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    expect(hook.result.current.data?.message).toBe("Protected route accessed");
+  });
+
+  it("Hook called when fetching protected data error without token", async () => {
+
+    const hook = renderHook(
+      () =>
+        useGetRequest<MockResponse>("/route/protected/error/", {
+          requiresToken: true,
+          useCache: false,
+        }),
+      { wrapper: AuthContextWrapper }
+    );
+
+    act(() => {
+     hook.result.current.fetchData!() 
+    })
+
+    // Wait for fetch call to resolve
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    expect(hook.result.current.error?.message).toBe("Error protected route accessed");
   });
 });

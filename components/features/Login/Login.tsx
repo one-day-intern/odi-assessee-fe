@@ -18,6 +18,7 @@ import { useAuthContext } from "@context/Authentication";
 import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
 import usePostRequest from "@hooks/shared/usePostRequest";
 import { useRouter } from "next/router";
+import { Loader } from "@components/shared/elements/Loader";
 
 
 const LOGIN_URL = "/users/api/token/";
@@ -50,8 +51,6 @@ const Login = () => {
       return;
     }
 
-    console.log(responseError)
-
     if (responseData != null) {
       const { access, refresh } = responseData! as TokenReturnType;
       dispatch({
@@ -74,7 +73,6 @@ const Login = () => {
     }
 
     if (responseError != null) {
-      console.log("Here")
       toast.error(responseError.message, {
         position: toast.POSITION.TOP_CENTER,
         theme: "colored",
@@ -124,8 +122,13 @@ const Login = () => {
             onChange={(e) => setDataValue("password", e.target?.value)}
             error={errors.password}
           />
-          <Button variant="primary" type="submit">
-            <h2>Login</h2>
+          <Button variant="primary" type="submit" disabled={ status === "loading" }>
+            {
+              status === "loading" ? 
+              <Loader/>
+              :
+              <h2>Login</h2>
+            }
           </Button>
           <div className={styles["glassmorph__column"]}>
             <Checkbox
