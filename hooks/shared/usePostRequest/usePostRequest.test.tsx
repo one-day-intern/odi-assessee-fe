@@ -41,14 +41,14 @@ describe("usePostRequest test", () => {
   it("Hook called when posting unprotected routes", async () => {
     const { result } = renderHook(() =>
       usePostRequest<MockResponse, MockResponse>("/route/unprotected-post/", {
-        message: "rashad aziz"
-      }, {
         requiresToken: false
       })
     );
 
     act(() => {
-      result.current.postData!();
+      result.current.postData!({
+        message: "rashad aziz"
+      });
     });
 
     // Wait for fetch call to resolve
@@ -60,14 +60,14 @@ describe("usePostRequest test", () => {
   it("Hook called when posting unprotected routes on error", async () => {
     const { result } = renderHook(() =>
       usePostRequest<MockResponse, MockResponse>("/route/unprotected-post-error/", {
-        message: "rashad aziz"
-      }, {
         requiresToken: false
       })
     );
 
     act(() => {
-      result.current.postData!();
+      result.current.postData!({
+        message: "rashad aziz"
+      });
     });
 
     // Wait for fetch call to resolve
@@ -79,14 +79,14 @@ describe("usePostRequest test", () => {
   it("Hook called when posting protected routes on success", async () => {
     const { result } = renderHook(() =>
       usePostRequest<MockResponse, MockResponse>("/route/protected-post/", {
-        message: "rashad aziz"
-      }, {
         requiresToken: true
       }), { wrapper: AuthContextWrapper }
     );
 
     act(() => {
-      result.current.postData!();
+      result.current.postData!({
+        message: "rashad aziz"
+      });
     });
 
     // Wait for fetch call to resolve
@@ -97,15 +97,15 @@ describe("usePostRequest test", () => {
 
   it("Hook called when posting protected routes on error", async () => {
     const { result } = renderHook(() =>
-      usePostRequest<MockResponse, MockResponse>("/route/protected-post/error/", {
-        message: "rashad aziz"
-      }, {
+      usePostRequest<MockResponse, MockResponse>("/route/protected-post/error/",  {
         requiresToken: true
       }), { wrapper: AuthContextWrapper }
     );
 
     act(() => {
-      result.current.postData!();
+      result.current.postData!({
+        message: "rashad aziz"
+      });
     });
 
     // Wait for fetch call to resolve
