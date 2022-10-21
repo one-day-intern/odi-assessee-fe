@@ -1,13 +1,12 @@
 import { useAuthContext } from "@context/Authentication";
 import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
-import { response } from "msw";
 import { useEffect, useReducer, useRef } from "react";
 
-interface State<T> {
-  data?: T;
+interface State<T, V> {
+  data?: V;
   error?: PostError;
   status?: "loading" | "fetched" | "error" | "initial";
-  postData?: () => void;
+  postData?: (postBody: T) => void;
 }
 
 interface PostError extends Error {
@@ -27,9 +26,8 @@ type Action<T> =
 // T is the type of the post body, V is the type returned from fetch request
 function usePostRequest<T, V>(
   uri: string,
-  postBody: T,
   options?: Options
-): State<V> {
+): State<T,V> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${uri}`;
   const {
     user,
@@ -42,7 +40,7 @@ function usePostRequest<T, V>(
   // Used to prevent state update if the component is unmounted
   const cancelRequest = useRef<boolean>(false);
 
-  const initialState: State<V> = {
+  const initialState: State<T,V> = {
     error: undefined,
     data: undefined,
     status: "initial",
@@ -57,7 +55,7 @@ function usePostRequest<T, V>(
   })
 
   // Keep state logic separated
-  const fetchReducer = (state: State<V>, action: Action<V>): State<V> => {
+  const fetchReducer = (state: State<T,V>, action: Action<V>): State<T,V> => {
     switch (action.type) {
       case "loading":
         return { ...initialState, status: "loading" };
@@ -72,7 +70,7 @@ function usePostRequest<T, V>(
 
   const [state, dispatch] = useReducer(fetchReducer, initialState);
 
-  const postData = async () => {
+  const postData = async (postBody: T) => {
     dispatch({ type: "loading" });
 
     // Directly post data if doesn't require token

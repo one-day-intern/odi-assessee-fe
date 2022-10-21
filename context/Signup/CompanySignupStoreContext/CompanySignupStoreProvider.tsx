@@ -39,7 +39,7 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
   const { data, error, postData, status } = usePostRequest<
     CompanySignupStoreElements,
     CompanySignupStoreElements
-  >(POST_COMPANY_URL, storeState, {
+  >(POST_COMPANY_URL, {
     requiresToken: false,
   });
 
@@ -48,7 +48,6 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
   const [storeErrors, setStoreErrors] = useState(initialErrors);
 
   useEffect(() => {
-    
     if (!isMounted.current) {
       isMounted.current = true;
       return;
@@ -61,7 +60,7 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
         position: toast.POSITION.TOP_CENTER,
         theme: "colored",
         containerId: "root-toast",
-        autoClose: 2000
+        autoClose: 2000,
       });
       return;
     }
@@ -71,14 +70,12 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
         position: toast.POSITION.TOP_CENTER,
         theme: "colored",
         containerId: "root-toast",
-        autoClose: 2000
-      })
+        autoClose: 2000,
+      });
 
       router.push("/accounts/login/assessee");
       return;
     }
-
-
   }, [data, error, status, router]);
 
   const setValue = (name: string, value: string) =>
@@ -93,18 +90,25 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
       [name]: error,
     }));
 
-  const validate = () : boolean => {
-    
+  const validate = (): boolean => {
     const [isEmailValid, emailError] = emailValidator(storeState.email);
     setError("email", emailError);
-    
-    const [isPasswordValid, passwordError] = passwordValidator(storeState.password);
+
+    const [isPasswordValid, passwordError] = passwordValidator(
+      storeState.password
+    );
     setError("password", passwordError);
 
-    const [isConfirmedPasswordValid, confirmedPasswordError] = confirmPasswordValidator(storeState.password, storeState.confirmed_password);
+    const [isConfirmedPasswordValid, confirmedPasswordError] =
+      confirmPasswordValidator(
+        storeState.password,
+        storeState.confirmed_password
+      );
     setError("confirmed_password", confirmedPasswordError);
-    
-    const [isCompanyNameValid, companyNameError] = emptyValidator(storeState.company_name);
+
+    const [isCompanyNameValid, companyNameError] = emptyValidator(
+      storeState.company_name
+    );
     setError("company_name", companyNameError);
 
     const [isCompanyAddressValid, companyAddressError] = emptyValidator(
@@ -112,15 +116,22 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
     );
     setError("company_address", companyAddressError);
 
-    return isEmailValid && isPasswordValid && isConfirmedPasswordValid && isCompanyNameValid && isCompanyAddressValid;
-  } 
+    return (
+      isEmailValid &&
+      isPasswordValid &&
+      isConfirmedPasswordValid &&
+      isCompanyNameValid &&
+      isCompanyAddressValid
+    );
+  };
 
-  const postResult  = () => {
-
+  const postResult = () => {
     const isValid = validate();
     if (!isValid) return;
 
-    postData!();
+    const result = storeState;
+
+    postData!(result);
   };
 
   return (
@@ -132,7 +143,7 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
         setError,
         postResult,
         loadingStatus: status,
-        validate
+        validate,
       }}
     >
       {children}
