@@ -118,7 +118,8 @@ const AssesseeSignupStoreProvider = ({
 
     const parsedPhoneNumber = phoneParser(storeState.phone_number);
     const [isPhoneNumberValid, phoneNumberError] = phoneNumberValidator(parsedPhoneNumber);
-
+    setError("phone_number", phoneNumberError);
+    
     const [isEmailValid, emailError] = emailValidator(storeState.email);
     setError("email", emailError);
 
@@ -136,7 +137,7 @@ const AssesseeSignupStoreProvider = ({
     
     
     
-    return [isFirstNameValid && isLastNameValid && isDateOfBirthValid && isEmailValid && isPasswordValid && isConfirmedPasswordValid, postedObject];
+    return [isFirstNameValid && isPhoneNumberValid && isLastNameValid && isDateOfBirthValid && isEmailValid && isPasswordValid && isConfirmedPasswordValid, postedObject];
   }
   
   const postResult = () => {
