@@ -7,6 +7,7 @@ import { AssesseeSignupStoreProps } from "./AsseesseeSignupStoreProps";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { phoneParser } from "@utils/formatters/phoneParser";
+import { phoneNumberValidator } from "@utils/validators/phoneNumberValidator";
 
 const initialValue: AssesseeSignupStoreElements = {
   first_name: "",
@@ -55,7 +56,6 @@ const AssesseeSignupStoreProvider = ({
     AssesseeSignupStoreElements
   >(
     ASSESSEE_SIGNUP_URL,
-    storeState,
     {
       requiresToken: false
     }
@@ -94,10 +94,9 @@ const AssesseeSignupStoreProvider = ({
 
   const setValue = (name: string, value: string) =>
     setStoreState((prevState) => {
-      const result = name === "phone_number" ? phoneParser(value) : value
       return ({
       ...prevState,
-      [name]: result,
+      [name]: value,
     })});
 
   const setError = (name: string, error: string) =>
@@ -106,7 +105,7 @@ const AssesseeSignupStoreProvider = ({
       [name]: error,
     }));
 
-  const validate = (): boolean => {
+  const validate = (): [boolean, AssesseeSignupStoreElements] => {
 
     const [isFirstNameValid, firstNameError] = emptyValidator(storeState.first_name);
     setError("first_name", firstNameError);
@@ -114,12 +113,13 @@ const AssesseeSignupStoreProvider = ({
     const [isLastNameValid, lastNameError] = emptyValidator(storeState.last_name);
     setError("last_name", lastNameError);
 
-    const [isPhoneNumberValid, phoneNumberError] = emptyValidator(storeState.phone_number);
-    setError("phone_number", phoneNumberError);
-
     const [isDateOfBirthValid, dateOfBirthError] = emptyValidator(storeState.date_of_birth);
     setError("date_of_birth", dateOfBirthError);
 
+    const parsedPhoneNumber = phoneParser(storeState.phone_number);
+    const [isPhoneNumberValid, phoneNumberError] = phoneNumberValidator(parsedPhoneNumber);
+    setError("phone_number", phoneNumberError);
+    
     const [isEmailValid, emailError] = emailValidator(storeState.email);
     setError("email", emailError);
 
@@ -129,17 +129,22 @@ const AssesseeSignupStoreProvider = ({
     const [isConfirmedPasswordValid, confirmedPasswordError] = confirmPasswordValidator(storeState.password, storeState.confirmed_password);
     setError("confirmed_password", confirmedPasswordError);
 
+    const postedObject = {
+      ...storeState,
+      phone_number: parsedPhoneNumber
+    }
+
     
     
     
-    return isFirstNameValid && isLastNameValid && isPhoneNumberValid && isDateOfBirthValid && isEmailValid && isPasswordValid && isConfirmedPasswordValid;
+    return [isFirstNameValid && isPhoneNumberValid && isLastNameValid && isDateOfBirthValid && isEmailValid && isPasswordValid && isConfirmedPasswordValid, postedObject];
   }
   
   const postResult = () => {
-    const isValid = validate();
+    const [isValid, postedObject] = validate();
     if (!isValid) return;
 
-    postData!();
+    postData!(postedObject);
   };
 
   return (

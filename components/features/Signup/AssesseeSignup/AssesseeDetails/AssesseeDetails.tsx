@@ -12,6 +12,8 @@ import { emptyValidator } from "@utils/validators/emptyValidator";
 import { dateValidator } from "@utils/validators/dateValidator/dateValidator";
 import { PhoneField } from "@components/shared/forms/PhoneField";
 import { useAssesseeSignupStepContext } from "@context/Signup/AssesseeSignupStepContext";
+import { phoneNumberValidator } from "@utils/validators/phoneNumberValidator";
+import { phoneParser } from "@utils/formatters/phoneParser";
 
 const AssesseeDetails = () => {
   const { selectStep, selectedId } = useAssesseeSignupStepContext();
@@ -61,7 +63,7 @@ const AssesseeDetails = () => {
     const [isLastNameValid, lastNameError] = emptyValidator(data.last_name);
     setError("last_name", lastNameError);
 
-    const [isPhoneNumberValid, phoneNumberError] = emptyValidator(data.phone_number);
+    const [isPhoneNumberValid, phoneNumberError] = phoneNumberValidator(phoneParser(data.phone_number));
     setError("phone_number", phoneNumberError);
 
     const [isDobValid, dobError] = dateValidator(data.date_of_birth);

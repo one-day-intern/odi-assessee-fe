@@ -59,7 +59,7 @@ const MultistepChoiceRadio = ({
         <motion.path
           d="M1 10.0456L7.95441 17L23.9544 1"
           stroke="white"
-          stroke-width="2.82067"
+          strokeWidth="2.82067"
           animate={{
             pathLength: disabled ? 0 : isSelected ? 0 : 1
           }}

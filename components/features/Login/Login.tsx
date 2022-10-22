@@ -33,7 +33,7 @@ const Login = () => {
   const { email, password, remember } = data;
   const isMounted = useRef(false);
 
-  const { data: responseData, error: responseError, postData, status } = usePostRequest<LoginDetails, TokenReturnType>(LOGIN_URL, data, {
+  const { data: responseData, error: responseError, postData, status } = usePostRequest<LoginDetails, TokenReturnType>(LOGIN_URL, {
     requiresToken: false
   })
 
@@ -100,7 +100,9 @@ const Login = () => {
     const isValid = validate();
     if (!isValid) return;
 
-    postData!();
+    const loginData = data;
+
+    postData!(loginData);
 
   }
 
