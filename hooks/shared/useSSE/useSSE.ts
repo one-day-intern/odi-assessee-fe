@@ -27,7 +27,74 @@ function useSSE(subscribeUrl: string, options?: SSEOptions) {
   } = useAuthContext();
 
   const subscribeToServer = useCallback(() => {
-    
+    if (accessToken) {
+      const eventSource = new EventSource(
+        `${
+          process.env.NODE_ENV === "test"
+            ? "http://localhost:8000"
+            : process.env.NEXT_PUBLIC_BACKEND_URL
+        }${subscribeUrl}`,
+        {
+          headers: {
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Origin": "*",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: false,
+        }
+      );
+      eventSource.onerror = async (e) => {
+        if (e.status === 401) {
+          try {
+            const REQUEST_ACCESS_TOKEN_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/api/token/refresh/`;
+
+            const requestNewAccessToken = await fetch(
+              REQUEST_ACCESS_TOKEN_URL,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  refresh: refreshToken,
+                }),
+              }
+            );
+
+            const { access, refresh } = await requestNewAccessToken.json();
+
+            if (!requestNewAccessToken.ok) throw new Error();
+
+            authDispatch({
+              type: AuthDispatchTypes.LOGIN,
+              payload: {
+                accessToken: access,
+                refreshToken: refresh,
+                remember: !!refresh,
+                user,
+              },
+            });
+            return;
+          } catch (e) {
+            authDispatch({
+              type: AuthDispatchTypes.LOGOUT,
+            });
+            return;
+          }
+        } else if (e.status) {
+          setConnectionState(CONNECTION_STATE.ERROR);
+          if (!options?.retryOnError) {
+            connectionRef.current = undefined;
+            eventSource.close();
+            return;
+          }
+        }
+      };
+      setConnectionState(CONNECTION_STATE.OPENED);
+      connectionRef.current = eventSource;
+      return eventSource;
+    }
+    // accessToken, refreshToken, and user always updates together
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscribeUrl, options?.retryOnError, accessToken]);
 
