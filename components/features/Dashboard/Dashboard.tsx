@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useCallback } from "react";
 import useVirtualDesktop from "@hooks/Dashboard/useVirtualDesktop";
 import Screen from "./Screen";
 import Taskbar from "./Taskbar";
@@ -6,9 +6,13 @@ import Window from "./Window";
 import styles from "./Dashboard.module.css";
 import NotificationViewer from "./NotificationViewer";
 import { AnimatePresence, MotionConfig } from "framer-motion";
+import { applications } from "@hooks/Dashboard/useVirtualDesktop/useVirtualDesktop";
+import { useRouter } from "next/router";
+import useSSE from "@hooks/shared/useSSE";
 
 const Dashboard = () => {
   const TASKBAR_HEIGHT = 50;
+  const router = useRouter();
   const fullscreenBoundRef = useRef<HTMLDivElement>(null);
   const virtualDesktop = useVirtualDesktop();
   const [isNotificationViewerOpened, setIsNotificationViewerOpened] =
@@ -17,28 +21,71 @@ const Dashboard = () => {
     []
   );
 
-  const onNotification = (
-    app: Application,
-    notification: DashboardNotification
-  ) => {
-    if (
-      !notifications.find(
-        (_notification) =>
-          _notification.id === `${notification.id}-${app.appId}`
-      )
-    ) {
-      setNotifications((prev) => [
-        ...prev,
-        { app: app, ...notification, id: `${notification.id}-${app.appId}` },
-      ]);
-    }
-  };
+  const onNotification = useCallback(
+    (app: Application, notification: DashboardNotification) => {
+      if (
+        !notifications.find(
+          (_notification) =>
+            _notification.id === `${notification.id}-${app.appId}`
+        )
+      ) {
+        setNotifications((prev) => [
+          ...prev,
+          { app: app, ...notification, id: `${notification.id}-${app.appId}` },
+        ]);
+      }
+    },
+    [notifications]
+  );
 
   const onNotificationClose = (notification: AssesseeNotification) => {
     setNotifications((prev) =>
       prev.filter((_notification) => _notification.id !== notification.id)
     );
   };
+
+  const handleServerNotification = useCallback(
+    (serverNotificationRaw: any) => {
+      let serverNotification: ServerNotification;
+      try {
+        serverNotification = JSON.parse(serverNotificationRaw);
+      } catch (e) {
+        return;
+      }
+      // will refactor applications in the future so that we won't need to manually find
+      let app: Application | undefined;
+      const vidconApp = applications.find(
+        (_app) => _app.appId === "video-conference"
+      );
+      const responseTestApp = applications.find(
+        (_app) => _app.appId === "response-test"
+      );
+      const interactiveQuizApp = applications.find(
+        (_app) => _app.appId === "interactive-quiz"
+      );
+      switch (serverNotification.type) {
+        case "assignment":
+          app = interactiveQuizApp;
+          break;
+        default:
+          app = undefined;
+          break;
+      }
+      if (app) {
+        onNotification(app, {
+          id: serverNotification.id,
+          message: serverNotification.description,
+          priority: "high",
+        });
+      }
+    },
+    [onNotification]
+  );
+
+  const sse = useSSE(
+    `/assessment/assessment-event/subscribe/?assessment-event-id=${router.query["assessment-event-id"]}`,
+    { onMessage: handleServerNotification }
+  );
 
   return (
     <MotionConfig reducedMotion="user">
