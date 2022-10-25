@@ -16,11 +16,13 @@ export const handlers = [
   rest.get(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/route/protected/`,
     (req, res, ctx) => {
-
       const token = req.headers.get("Authorization")?.split(" ")[1];
-      console.log(req.headers.get("Authorization"))
+      console.log(req.headers.get("Authorization"));
       if (token !== "accesstoken") {
-        return res(ctx.status(401), ctx.json({ message: "Authentication error occured"}));
+        return res(
+          ctx.status(401),
+          ctx.json({ message: "Authentication error occured" })
+        );
       }
 
       return res(
@@ -52,35 +54,61 @@ export const handlers = [
     }
   ),
   rest.get(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/get-info/`, (req, res, ctx) => {
-        return res(
-            ctx.json({
-                "company_id": "cee7f64d-9316-4967-a5a8-770ea40075b8",
-                "email": "johaneslew@gmail.com",
-                "company_name": "Tayo Mabok",
-                "description": "Bus Company",
-                "address": "Fasilkom UI"
-            })
-        )
-    }
-  ),
-  rest.post(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/route/unprotected-post/`, (req, res, ctx) => {
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/get-info/`,
+    (req, res, ctx) => {
       return res(
         ctx.json({
-          message: "Unprotected route posted"
+          company_id: "cee7f64d-9316-4967-a5a8-770ea40075b8",
+          email: "johaneslew@gmail.com",
+          company_name: "Tayo Mabok",
+          description: "Bus Company",
+          address: "Fasilkom UI",
         })
-      )
+      );
     }
   ),
   rest.post(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/route/unprotected-post-error/`, (req, res, ctx) => {
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/route/unprotected-post/`,
+    (req, res, ctx) => {
       return res(
         ctx.json({
-          message: "Error unprotected route posted"
+          message: "Unprotected route posted",
+        })
+      );
+    }
+  ),
+  rest.post(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/route/unprotected-post-error/`,
+    (req, res, ctx) => {
+      return res(
+        ctx.json({
+          message: "Error unprotected route posted",
         }),
         ctx.status(400)
-      )
+      );
     }
-  )
+  ),
+  rest.get(
+    `http://localhost:8000/assessment/assessment-event/subscribe/`,
+    (req, res, ctx) => {
+      const testCase = req.url.searchParams.get('assessment-event-id');
+
+      if (testCase === "serverError") {
+        return res(
+          ctx.status(500),
+        )
+      } else if (testCase === "authError") {
+        return res(
+          ctx.status(401),
+        )
+      }
+
+      return res(
+        ctx.status(200),
+        ctx.set("Connection", "keep-alive"),
+        ctx.set("Content-Type", "text/event-stream"),
+        ctx.body(`data: ${JSON.stringify({ id: "test", type: "assignment", name: "Assignment 3", message: "Hello from sse" })}\n\n`)
+      );
+    }
+  ),
 ];
