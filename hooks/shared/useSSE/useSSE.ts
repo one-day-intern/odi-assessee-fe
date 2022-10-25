@@ -36,8 +36,6 @@ function useSSE(subscribeUrl: string, options?: SSEOptions) {
         }${subscribeUrl}`,
         {
           headers: {
-            "Access-Control-Allow-Headers": "*",
-            "Access-Control-Allow-Origin": "*",
             Authorization: `Bearer ${accessToken}`,
           },
           withCredentials: false,
