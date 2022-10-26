@@ -1,8 +1,13 @@
+import usePostRequest from "@hooks/shared/usePostRequest";
+import { confirmPasswordValidator } from "@utils/validators/confirmPasswordValidator";
+import { emailValidator } from "@utils/validators/emailValidator";
 import { emptyValidator } from "@utils/validators/emptyValidator";
-import React, { createContext, useState } from "react";
-import { useAssesseeSignupStepContext } from "../AssesseeSignupStepContext";
-import { useCompanySignupStepContext } from "../CompanySignupStepContext";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import { AssesseeSignupStoreProps } from "./AsseesseeSignupStoreProps";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { phoneParser } from "@utils/formatters/phoneParser";
+import { phoneNumberValidator } from "@utils/validators/phoneNumberValidator";
 
 const initialValue: AssesseeSignupStoreElements = {
   first_name: "",
@@ -11,7 +16,7 @@ const initialValue: AssesseeSignupStoreElements = {
   date_of_birth: "",
   email: "",
   password: "",
-  confirmed_password: ""
+  confirmed_password: "",
 };
 
 const initialErrors: AssesseeSignupStoreElements = {
@@ -21,28 +26,78 @@ const initialErrors: AssesseeSignupStoreElements = {
   date_of_birth: "",
   email: "",
   password: "",
-  confirmed_password: ""
+  confirmed_password: "",
 };
 
 const AssesseeSignupStoreContext = createContext(
   {} as AssesseeSignupStoreState
 );
 
+const ASSESSEE_SIGNUP_URL = "/users/register-assessee/";
+
 const AssesseeSignupStoreProvider = ({
   children,
 }: AssesseeSignupStoreProps) => {
-
-  const { selectStep } = useAssesseeSignupStepContext();
-
   const [storeState, setStoreState] = useState(initialValue);
 
   const [storeErrors, setStoreErrors] = useState(initialErrors);
 
+  const isFirstMount = useRef(false);
+
+  const router = useRouter();
+
+  const {
+    data: responseData,
+    error: responseError,
+    postData,
+    status
+  } = usePostRequest<
+    AssesseeSignupStoreElements,
+    AssesseeSignupStoreElements
+  >(
+    ASSESSEE_SIGNUP_URL,
+    {
+      requiresToken: false
+    }
+  );
+
+  useEffect(() => {
+    if (!isFirstMount.current) {
+      isFirstMount.current = true;
+      return;
+    }
+
+    if (status === "loading") return;
+
+    if (responseData != null) {
+      toast.success("Your new account has been created", {
+        containerId: "root-toast",
+        position: toast.POSITION.TOP_CENTER,
+        theme: "colored",
+        autoClose: 2000
+      });
+
+      router.push("/accounts/login/assessee");
+      return;
+    }
+
+    if (responseError != null) {
+      toast.error(responseError.message, {
+        containerId: "root-toast",
+        position: toast.POSITION.TOP_CENTER,
+        theme: "colored",
+        autoClose: 2000
+      });
+      return;
+    }
+  }, [responseData, responseError, status, router]);
+
   const setValue = (name: string, value: string) =>
-    setStoreState((prevState) => ({
+    setStoreState((prevState) => {
+      return ({
       ...prevState,
       [name]: value,
-    }));
+    })});
 
   const setError = (name: string, error: string) =>
     setStoreErrors((prevState) => ({
@@ -50,26 +105,46 @@ const AssesseeSignupStoreProvider = ({
       [name]: error,
     }));
 
-  const postResult = () => {
-    const [_, firstNameError] = emptyValidator(storeState.first_name);
+  const validate = (): [boolean, AssesseeSignupStoreElements] => {
+
+    const [isFirstNameValid, firstNameError] = emptyValidator(storeState.first_name);
     setError("first_name", firstNameError);
 
-    const [__, lastNameError] = emptyValidator(storeState.last_name);
+    const [isLastNameValid, lastNameError] = emptyValidator(storeState.last_name);
     setError("last_name", lastNameError);
 
-    const [___, phoneNumberError] = emptyValidator(storeState.phone_number);
-    setError("phone_number", phoneNumberError);
-
-    const [_a, dateOfBirthError] = emptyValidator(storeState.date_of_birth);
+    const [isDateOfBirthValid, dateOfBirthError] = emptyValidator(storeState.date_of_birth);
     setError("date_of_birth", dateOfBirthError);
 
-    const indexOfFirstError = Object.values(storeErrors).findIndex(
-      (error) => error !== ""
-    );
+    const parsedPhoneNumber = phoneParser(storeState.phone_number);
+    const [isPhoneNumberValid, phoneNumberError] = phoneNumberValidator(parsedPhoneNumber);
+    setError("phone_number", phoneNumberError);
+    
+    const [isEmailValid, emailError] = emailValidator(storeState.email);
+    setError("email", emailError);
 
-    if (indexOfFirstError >= 0) {
-      selectStep(indexOfFirstError < 4 ? 1 : 2);
+    const [isPasswordValid, passwordError] = emptyValidator(storeState.password);
+    setError("password", passwordError);
+
+    const [isConfirmedPasswordValid, confirmedPasswordError] = confirmPasswordValidator(storeState.password, storeState.confirmed_password);
+    setError("confirmed_password", confirmedPasswordError);
+
+    const postedObject = {
+      ...storeState,
+      phone_number: parsedPhoneNumber
     }
+
+    
+    
+    
+    return [isFirstNameValid && isPhoneNumberValid && isLastNameValid && isDateOfBirthValid && isEmailValid && isPasswordValid && isConfirmedPasswordValid, postedObject];
+  }
+  
+  const postResult = () => {
+    const [isValid, postedObject] = validate();
+    if (!isValid) return;
+
+    postData!(postedObject);
   };
 
   return (
@@ -80,6 +155,7 @@ const AssesseeSignupStoreProvider = ({
         setValue,
         setError,
         postResult,
+        loadingStatus: status
       }}
     >
       {children}

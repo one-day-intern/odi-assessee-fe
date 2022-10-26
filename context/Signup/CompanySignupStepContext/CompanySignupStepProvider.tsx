@@ -36,7 +36,7 @@ const CompanySignupStepProvider = ({ children }: CompanySignupStepProps) => {
       prevState.map((form) => {
         const newForm = form;
         form.isSelected = form.id === selectedId ? true : false;
-        form.disabled = form.id <= lastEnabledInd ? false : true;
+        form.disabled = form.id <= selectedId ? false : true;
         return newForm;
       })
     );

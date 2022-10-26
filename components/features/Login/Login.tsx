@@ -13,10 +13,12 @@ import { GoogleButton } from "@components/shared/elements/GoogleButton";
 import { emailValidator } from "@utils/validators/emailValidator";
 import { emptyValidator } from "@utils/validators/emptyValidator";
 import { useLoginHandler } from "@hooks/Login/useLoginHandler";
-import { postLogin } from "@services/Login";
+import { toast } from "react-toastify";
 import { useAuthContext } from "@context/Authentication";
 import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
 import usePostRequest from "@hooks/shared/usePostRequest";
+import { useRouter } from "next/router";
+import { Loader } from "@components/shared/elements/Loader";
 
 
 const LOGIN_URL = "/users/api/token/";
@@ -31,11 +33,12 @@ const Login = () => {
   const { email, password, remember } = data;
   const isMounted = useRef(false);
 
-  const { data: responseData, error: responseError, postData, status } = usePostRequest<LoginDetails, TokenReturnType>(LOGIN_URL, data, {
+  const { data: responseData, error: responseError, postData, status } = usePostRequest<LoginDetails, TokenReturnType>(LOGIN_URL, {
     requiresToken: false
   })
 
   const { user, dispatch } = useAuthContext();
+  const router = useRouter();
 
   useEffect(() => {
     if (!isMounted.current) {
@@ -43,8 +46,8 @@ const Login = () => {
       return;
     }
 
-    // In the case when first loaded, both are undefined. So no need to dispatch login
-    if (responseData == null && responseError == null) {
+    // In the case when first loaded, status is initial. When status is login, we also don't need to dispatch any action.
+    if (status === "loading" || status === "initial") {
       return;
     }
 
@@ -59,9 +62,28 @@ const Login = () => {
           remember: data.remember
         }
       });
+      toast.success("Login successful!", {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "colored",
+        containerId: "root-toast",
+        autoClose: 2000
+      });
+      router.push("/")
       return;
     }
-  }, [responseData, responseError, dispatch, user, data.remember])
+
+    if (responseError != null) {
+      toast.error(responseError.message, {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "colored",
+        containerId: "root-toast",
+        autoClose: 2000
+      });
+      return;
+    }
+
+
+  }, [responseData, responseError, dispatch, user, data.remember, status, router])
 
   const validate = (): boolean => {
     const [isEmailValid, emailError] = emailValidator(email);
@@ -78,7 +100,9 @@ const Login = () => {
     const isValid = validate();
     if (!isValid) return;
 
-    postData!();
+    const loginData = data;
+
+    postData!(loginData);
 
   }
 
@@ -100,8 +124,13 @@ const Login = () => {
             onChange={(e) => setDataValue("password", e.target?.value)}
             error={errors.password}
           />
-          <Button variant="primary" type="submit">
-            <h2>Login</h2>
+          <Button variant="primary" type="submit" disabled={ status === "loading" }>
+            {
+              status === "loading" ? 
+              <Loader/>
+              :
+              <h2>Login</h2>
+            }
           </Button>
           <div className={styles["glassmorph__column"]}>
             <Checkbox

@@ -41,14 +41,14 @@ describe("usePostRequest test", () => {
   it("Hook called when posting unprotected routes", async () => {
     const { result } = renderHook(() =>
       usePostRequest<MockResponse, MockResponse>("/route/unprotected-post/", {
-        message: "rashad aziz"
-      }, {
         requiresToken: false
       })
     );
 
     act(() => {
-      result.current.postData!();
+      result.current.postData!({
+        message: "rashad aziz"
+      });
     });
 
     // Wait for fetch call to resolve
@@ -60,20 +60,58 @@ describe("usePostRequest test", () => {
   it("Hook called when posting unprotected routes on error", async () => {
     const { result } = renderHook(() =>
       usePostRequest<MockResponse, MockResponse>("/route/unprotected-post-error/", {
-        message: "rashad aziz"
-      }, {
         requiresToken: false
       })
     );
 
     act(() => {
-      result.current.postData!();
+      result.current.postData!({
+        message: "rashad aziz"
+      });
     });
 
     // Wait for fetch call to resolve
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     expect(result.current.error?.message).toBe("Error unprotected route posted");
+  });
+
+  it("Hook called when posting protected routes on success", async () => {
+    const { result } = renderHook(() =>
+      usePostRequest<MockResponse, MockResponse>("/route/protected-post/", {
+        requiresToken: true
+      }), { wrapper: AuthContextWrapper }
+    );
+
+    act(() => {
+      result.current.postData!({
+        message: "rashad aziz"
+      });
+    });
+
+    // Wait for fetch call to resolve
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    expect(result.current.data?.message).toBe("Protected route posted");
+  });
+
+  it("Hook called when posting protected routes on error", async () => {
+    const { result } = renderHook(() =>
+      usePostRequest<MockResponse, MockResponse>("/route/protected-post/error/",  {
+        requiresToken: true
+      }), { wrapper: AuthContextWrapper }
+    );
+
+    act(() => {
+      result.current.postData!({
+        message: "rashad aziz"
+      });
+    });
+
+    // Wait for fetch call to resolve
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    expect(result.current.error?.message).toBe("Error protected route posted");
   });
 
  

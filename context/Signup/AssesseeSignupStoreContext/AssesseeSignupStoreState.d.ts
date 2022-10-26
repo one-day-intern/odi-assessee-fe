@@ -4,6 +4,7 @@ interface AssesseeSignupStoreState {
     setValue: (name: string, value: string) => void;
     setError: (name: string, value: string) => void;
     postResult: () => void;
+    loadingStatus?: "loading" | "fetched" | "initial" | "error"
 }
 
 interface AssesseeSignupStoreElements {

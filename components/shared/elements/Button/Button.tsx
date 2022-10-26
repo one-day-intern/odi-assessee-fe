@@ -15,11 +15,11 @@ const Button = ({
   return (
     <motion.button
       data-testid="button"
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
       disabled={disabled ?? false}
       onClick={onClick}
       style={style}
-      className={`${styles["button"]} ${styles[buttonVariant]}`}
+      className={`${styles["button"]} ${styles[buttonVariant]} ${disabled ? styles["button--disabled"] : ""}`}
       type={type}
     >
       {children}

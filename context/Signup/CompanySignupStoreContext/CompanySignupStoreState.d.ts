@@ -4,6 +4,8 @@ interface CompanySignupStoreState {
     setValue: (name: string, value: string) => void;
     setError: (name: string, value: string) => void;
     postResult: () => void;
+    validate: () => boolean;
+    loadingStatus?: "loading" | "initial" | "fetched" | "error";
 }
 
 interface CompanySignupStoreElements {

@@ -34,7 +34,7 @@ const Multistep = ({ elements, selectedId, selectStep }: MultistepProps) => {
   const currentElement = elements.filter(
     (element) => element.id === selectedId
   )[0];
-  console.log(currentElement);
+
 
   return (
     <Backdrop>
