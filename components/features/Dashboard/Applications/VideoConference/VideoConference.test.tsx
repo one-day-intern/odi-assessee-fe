@@ -6,7 +6,7 @@ import DashboardAPIProvider from "../../../../../context/Dashboard/DashboardAPIC
 describe("Video conference component test suite", () => {
   test("test render video conference", () => {
     render(
-      <DashboardAPIProvider onPushNotification={() => {}} app={{}}>
+      <DashboardAPIProvider onPushNotification={() => {}} parentRef={{ current: document.createElement("div") }}>
         <VideoConference />
       </DashboardAPIProvider>
     );

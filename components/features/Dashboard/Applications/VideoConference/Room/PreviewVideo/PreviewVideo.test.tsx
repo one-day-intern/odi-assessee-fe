@@ -13,7 +13,7 @@ describe("Preview video component test suite", () => {
       .fn()
       .mockImplementation(intersectionObserverMock);
     render(
-      <DashboardAPIProvider app={{}} onPushNotification={() => {}}>
+      <DashboardAPIProvider parentRef={{ current: document.createElement("div") }} onPushNotification={() => {}}>
         <HMSRoomProvider>
           <PreviewVideo onJoinCall={() => {}} />
         </HMSRoomProvider>
