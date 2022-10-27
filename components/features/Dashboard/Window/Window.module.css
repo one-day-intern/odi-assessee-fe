@@ -14,14 +14,14 @@
 }
 
 .odi-window {
-  transition: 300ms ease-out;
+  transition: width 300ms ease-out, height 300ms ease-out, transform 300ms ease-out;
   transform-origin: center center;
 }
 
 .odi-window-fullscreen {
   width: 100% !important;
   height: 100% !important;
-  transition: 300ms ease-out;
+  transition: width 300ms ease-out, height 300ms ease-out, transform 300ms ease-out;
 }
 
 .no-transition {
