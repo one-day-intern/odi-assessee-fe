@@ -141,7 +141,6 @@ const Window: React.FC<Props> = ({
         };
 
   return (
-    // @ts-ignore
     <Draggable
       handle={`.${styles["window__head"]}`}
       defaultClassName={className}
