@@ -7,7 +7,7 @@ import DashboardAPIProvider from "../../../../../../context/Dashboard/DashboardA
 describe("Room component test suite", () => {
   test("testing render room", () => {
     render(
-      <DashboardAPIProvider app={{}} onPushNotification={() => {}}>
+      <DashboardAPIProvider parentRef={{ current: document.createElement("div") }} onPushNotification={() => {}}>
         <HMSRoomProvider>
           <Room onLeave={() => {}} />
         </HMSRoomProvider>

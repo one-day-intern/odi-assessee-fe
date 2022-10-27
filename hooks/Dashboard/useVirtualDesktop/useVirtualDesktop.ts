@@ -67,6 +67,17 @@ const useVirtualDesktop = (): VirtualDesktop => {
     setOpenedApps((prev) => {
       return prev.filter((_app) => _app.appId !== app.appId);
     });
+    const removedAppArray = openedApps.filter(
+      (_app) => _app.appId !== app.appId
+    );
+    const sortByZindex = removedAppArray
+      .slice()
+      .sort((a, b) => a.zIndex - b.zIndex);
+    for (let i = 0; i < sortByZindex.length; i++) {
+      const currentApp = sortByZindex[i];
+      currentApp.zIndex = i + 1;
+    }
+    setOpenedApps(sortByZindex);
   };
   // set z-index of focused app to the amount of apps opened
   // decrease z-index of every other app by 1 so original order is maintained

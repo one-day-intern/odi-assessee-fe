@@ -6,7 +6,10 @@ import DashboardAPIProvider from "../../../../../../context/Dashboard/DashboardA
 describe("Video Conference Landing component test suite", () => {
   test("testing render component", () => {
     const { getByTestId } = render(
-      <DashboardAPIProvider onPushNotification={() => {}} app={{}}>
+      <DashboardAPIProvider
+        onPushNotification={() => {}}
+        parentRef={{ current: document.createElement("div") }}
+      >
         <VideoConferenceLanding
           onEnterConference={() => {}}
           onEnterConferenceWithPreview={() => {}}

@@ -1,9 +1,11 @@
 import React from "react";
 import styles from "./FullscreenShadow.module.css";
 import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
 
 interface Props {
   children?: React.ReactNode;
+  zIndex: number;
   shouldRender: boolean;
   startWidth: number;
   startHeight: number;
@@ -19,8 +21,9 @@ const FullscreenShadow: React.FC<Props> = ({
   startX,
   startY,
   bounds,
+  zIndex,
 }) => {
-  return (
+  return createPortal(
     <AnimatePresence>
       {shouldRender && (
         <motion.div
@@ -28,7 +31,10 @@ const FullscreenShadow: React.FC<Props> = ({
           transition={{
             type: "tween",
             ease: "easeOut",
-            duration: 0.3
+            duration: 0.3,
+          }}
+          style={{ 
+            zIndex: zIndex,
           }}
           className={styles["fullscreen__shadow"]}
           initial={{
@@ -51,7 +57,8 @@ const FullscreenShadow: React.FC<Props> = ({
           }}
         />
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.getElementById("shadow-container")!
   );
 };
 
