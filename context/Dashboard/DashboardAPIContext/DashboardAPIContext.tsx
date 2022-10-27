@@ -1,8 +1,9 @@
-import React, { useContext, createContext } from "react";
+import useResizeObserver from "@react-hook/resize-observer";
+import React, { useContext, createContext, useState } from "react";
 
 interface Props {
   children?: React.ReactNode;
-  app: Application;
+  parentRef: React.RefObject<HTMLDivElement>;
   onPushNotification: (notification: DashboardNotification) => void;
 }
 
@@ -10,13 +11,15 @@ const DashboardAPIContext = createContext<DashboardAPIContextType>({} as Dashboa
 
 export const useDashboardAPI = () => useContext(DashboardAPIContext);
 
-const DashboardAPIProvider = ({ children, app, onPushNotification }: Props) => {
+const DashboardAPIProvider = ({ children, parentRef, onPushNotification }: Props) => {
   const pushNotification = (notification: DashboardNotification) => {
     onPushNotification(notification);
   };
+  const [window, setWindow] = useState<DOMRect>(parentRef.current!.getBoundingClientRect());
+  useResizeObserver(parentRef, (entry) => setWindow(entry.contentRect));
 
   const data = {
-    app,
+    window,
     pushNotification,
   };
 
