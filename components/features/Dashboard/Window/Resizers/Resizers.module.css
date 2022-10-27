@@ -1,0 +1,76 @@
+.resizer {
+  position: absolute;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  z-index: 10;
+}
+
+.left-and-right {
+  height: 100%;
+  width: 12px;
+  cursor: w-resize;
+}
+
+.top-and-bottom {
+  width: 100%;
+  height: 12px;
+  cursor: n-resize;
+}
+
+.corners {
+  width: 14px;
+  height: 14px;
+}
+
+.ne {
+  right: -8px;
+  top: -8px;
+  cursor: ne-resize;
+}
+
+.se {
+  bottom: -8px;
+  right: -8px;
+  cursor: se-resize;
+}
+
+.sw {
+  left: -8px;
+  bottom: -8px;
+  cursor: sw-resize;
+}
+
+.nw {
+  left: -8px;
+  top: -8px;
+  cursor: nw-resize;
+}
+
+.north {
+  top: -8px;
+  left: 2px;
+}
+
+.east {
+  right: -8px;
+  top: 2px;
+}
+
+.south {
+  bottom: -8px;
+  left: 2px;
+}
+
+.west {
+  left: -8px;
+  top: 2px;
+}

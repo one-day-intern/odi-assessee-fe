@@ -10,11 +10,22 @@
 
   overflow: hidden;
   border: 0.5px solid #b4b4b4;
+  position: absolute;
 }
 
-.window--fullscreen {
-  height: 100% !important;
+.odi-window {
+  transition: 300ms ease-out;
+  transform-origin: center center;
+}
+
+.odi-window-fullscreen {
   width: 100% !important;
+  height: 100% !important;
+  transition: 300ms ease-out;
+}
+
+.no-transition {
+  transition: none;
 }
 
 .window__head {
@@ -95,11 +106,11 @@
 
 .arrow {
   position: absolute;
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  
+
   border-bottom: 4px solid black;
 }
 
@@ -135,9 +146,16 @@
 
 .window__body {
   overflow: hidden;
-  position: absolute;
+  position: relative;
   width: 100%;
-  height: calc(100% - var(--window-head-height));
+  height: 100%;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+}
+
+.window-head {
+  width: 100%;
+  height: 30px;
+  border-bottom: 1px solid black;
+  user-select: none;
 }
