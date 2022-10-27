@@ -9,10 +9,11 @@ interface QuestionTabProps extends React.PropsWithChildren {
 
 const QuestionsTab: React.FC<QuestionTabProps> = ({ onClose }) => {
   const questions = Array.from(Array(100).keys());
-  const isCurrent = 5
+  const isCurrent = 5;
 
   return (
     <motion.div
+      data-testid="QuestionMenuTab"
       className={`${styles["question-menu"]}`}
       initial={{ x: "-100%" }}
       animate={{ x: 0 }}
@@ -52,7 +53,10 @@ const QuestionMenu = () => {
 
   return (
     <>
-      <div className={`${styles["menu-button_container"]}`}>
+      <div
+        data-testid="QuestionMenu"
+        className={`${styles["menu-button_container"]}`}
+      >
         <motion.button
           onTap={() => setMenuOpened(!menuOpened)}
           whileTap={{ scale: 0.8 }}

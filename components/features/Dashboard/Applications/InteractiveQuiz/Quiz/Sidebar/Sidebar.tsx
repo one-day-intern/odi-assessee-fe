@@ -9,21 +9,21 @@ import QuestionMenu from "./QuestionMenu";
 
 const Sidebar = () => {
   return (
-    <div className={`${styles["sidebar"]}`}>
+    <div data-testid="QuizSidebar" className={`${styles["sidebar"]}`}>
       <ProgressBar />
       <div className={`${styles["sidebar-quiz_info"]}`}>
         <div className={`${styles["info-container"]}`}>
-          <ProgressCircle currentProgress={9/11} />
+          <ProgressCircle currentProgress={9 / 11} />
         </div>
         <div className={`${styles["info-container"]}`}>
           <QuestionMenu />
         </div>
       </div>
       <div className={`${styles["sidebar-logo_container"]}`}>
-          <OdiLogo />
+        <OdiLogo />
       </div>
     </div>
   );
 };
 
-export default Sidebar
+export default Sidebar;
