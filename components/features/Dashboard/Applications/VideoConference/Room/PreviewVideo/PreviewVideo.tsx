@@ -17,10 +17,9 @@ const PreviewVideo: React.FC<Props> = ({
   onLeaveConference,
 }) => {
   const peer = useHMSStore(selectLocalPeer);
-  const { app } = useDashboardAPI();
+  const { window } = useDashboardAPI();
 
-  const normalMode =
-    (app?.width >= 1280 || app.fullscreen) && window.innerWidth >= 1280;
+  const normalMode = window.width >= 1280;
 
   return (
     <div

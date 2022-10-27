@@ -16,7 +16,8 @@ module.exports = {
     '!<rootDir>/*.config.ts',
     '!<rootDir>/coverage/**',
     '!**/DashboardEvents.ts',
-    "!**/mocks/**"
+    "!**/mocks/**",
+    "!**/Resizers.tsx"
   ],
   moduleNameMapper: {
     // Handle CSS imports (with CSS modules)
@@ -47,7 +48,7 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!(uuid)/)',
+    `/node_modules/(?!${['uuid', '@react-hook'].join('|')})`,
     '^.+\\.module\\.(css|sass|scss)$',
   ],
   setupFilesAfterEnv: ["./jest.setup.ts"]

@@ -6,6 +6,13 @@ import { act } from "react-dom/test-utils";
 
 let mockLocalStorage = {};
 
+class WebkitCSSMatrixMock {
+  matrix: DOMMatrix;
+  constructor(init?: string | number) {
+    this.matrix = { m42: 100, m41: 100 } as unknown as DOMMatrix;
+  }
+}
+
 jest.mock("next/router", () => ({
   useRouter() {
     return {
@@ -22,6 +29,8 @@ describe("Dashboard test suite", () => {
     global.Storage.prototype.removeItem = jest.fn(
       (key) => delete mockLocalStorage[key]
     );
+    // @ts-ignore
+    window.WebKitCSSMatrix = WebkitCSSMatrixMock;
   });
 
   beforeEach(() => {
@@ -29,11 +38,7 @@ describe("Dashboard test suite", () => {
     localStorage.setItem("refreshToken", "refreshtoken");
   });
   test("testing render dashboard", () => {
-    const { getByTestId } = render(
-      <AuthProvider>
-        <Dashboard />
-      </AuthProvider>
-    );
+    const { getByTestId } = render(<Dashboard />);
     const screenEl = getByTestId("MainScreen");
     const taskbarEl = getByTestId("MainTaskbar");
 
@@ -41,60 +46,47 @@ describe("Dashboard test suite", () => {
     expect(taskbarEl).toHaveAttribute("class", "taskbar");
   });
   test("testing open app", () => {
-    const { getByTestId } = render(
-      <AuthProvider>
-        <Dashboard />
-      </AuthProvider>
-    );
+    const { getByTestId } = render(<Dashboard />);
     const windowContainer = getByTestId("FullscreenBounds");
     const taskbarEl = getByTestId("MainTaskbar");
     const shortcut = taskbarEl.children[1];
 
-    act(() => {
-      fireEvent.mouseDown(shortcut.firstElementChild!);
-      fireEvent.mouseUp(shortcut.firstElementChild!);
-    });
+    fireEvent.mouseDown(shortcut.firstElementChild!);
+    fireEvent.mouseUp(shortcut.firstElementChild!);
 
     expect(windowContainer.children.length).toBeGreaterThan(0);
   });
 
   test("testing minimize app", async () => {
-    const { getByTestId } = render(
-      <AuthProvider>
-        <Dashboard />
-      </AuthProvider>
-    );
+    const { getByTestId } = render(<Dashboard />);
     const windowContainer = getByTestId("FullscreenBounds");
     const taskbarEl = getByTestId("MainTaskbar");
     const shortcut = taskbarEl.children[1];
+
+    expect(windowContainer.children.length).toBe(1);
 
     act(() => {
       fireEvent.mouseDown(shortcut.firstElementChild!);
       fireEvent.mouseUp(shortcut.firstElementChild!);
     });
 
-    expect(windowContainer.children.length).toBeGreaterThan(0);
+    expect(windowContainer.children.length).toBe(2);
 
     const windowHead = getByTestId("window-head");
     const windowMinimizeBtn = windowHead.querySelector(".minimize");
 
     act(() => {
-      fireEvent.mouseDown(windowMinimizeBtn!);
-      fireEvent.mouseUp(windowMinimizeBtn!);
+      fireEvent.click(windowMinimizeBtn!);
     });
 
     // wait for animation
     await new Promise((resolve) => setTimeout(resolve, 500));
-
-    expect(windowContainer.children.length).toBe(1);
+    // fullscreen shadow container and window
+    expect(windowContainer.children.length).toBe(2);
   });
 
   test("testing close app", async () => {
-    const { getByTestId } = render(
-      <AuthProvider>
-        <Dashboard />
-      </AuthProvider>
-    );
+    const { getByTestId } = render(<Dashboard />);
     const windowContainer = getByTestId("FullscreenBounds");
     const taskbarEl = getByTestId("MainTaskbar");
     const shortcut = taskbarEl.children[1];
@@ -110,14 +102,13 @@ describe("Dashboard test suite", () => {
     const windowCloseBtn = windowHead.querySelector(".exit");
 
     act(() => {
-      fireEvent.mouseDown(windowCloseBtn!);
-      fireEvent.mouseUp(windowCloseBtn!);
-    });
+      fireEvent.click(windowCloseBtn!);
+    })
 
     // wait for animation
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    expect(windowContainer.children.length).toBe(0);
+    expect(windowContainer.children.length).toBe(1);
   });
   test("testing server sent notifications", async () => {
     const { getByTestId } = render(

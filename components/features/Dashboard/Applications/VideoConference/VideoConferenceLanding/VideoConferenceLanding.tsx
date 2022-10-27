@@ -21,10 +21,9 @@ const VideoConferenceLanding: React.FC<Props> = ({
   onEnterConference,
   onEnterConferenceWithPreview,
 }) => {
-  const { app } = useDashboardAPI();
+  const { window } = useDashboardAPI();
 
-  const normalMode =
-    (app?.width >= 1220 || app.fullscreen) && window.innerWidth >= 1220;
+  const normalMode = window.width >= 1220;
 
   return (
     <div

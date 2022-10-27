@@ -11,11 +11,10 @@ interface Props {
 }
 
 const Room: React.FC<Props> = ({ onLeaveConference }) => {
-  const { app } = useDashboardAPI();
+  const { window } = useDashboardAPI();
   const peers = useHMSStore(selectPeers);
 
-  const normalMode =
-    (app?.width >= 1024 || app.fullscreen) && window.innerWidth >= 1024;
+  const normalMode = window.width >= 1024;
 
   let participantLayout = "single";
 

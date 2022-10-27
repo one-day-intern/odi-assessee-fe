@@ -91,17 +91,19 @@ const Dashboard = () => {
     <MotionConfig reducedMotion="user">
       <Screen onMouseDown={(e) => setIsNotificationViewerOpened(false)}>
         <div
+          id="FullscreenBounds"
           data-testid="FullscreenBounds"
           ref={fullscreenBoundRef}
           className={styles["screen__fullscreen--bounds"]}
           style={{ height: `calc(100vh - ${TASKBAR_HEIGHT}px)` }}
         >
-          <AnimatePresence initial={false}>
+          <div id="shadow-container"></div>
+          <AnimatePresence>
             {virtualDesktop.openedApps.map((app) => (
               <Window
                 key={app.appId}
                 app={app}
-                fullScreenBounds={styles["screen__fullscreen--bounds"]}
+                fullscreenParentRef={fullscreenBoundRef}
                 onFocus={(_app) => {
                   virtualDesktop.focusApp(_app);
                   setIsNotificationViewerOpened(false);

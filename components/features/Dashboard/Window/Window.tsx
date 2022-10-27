@@ -1,15 +1,15 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./Window.module.css";
-import { Rnd } from "react-rnd";
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import FullscreenShadow from "./FullscreenShadow";
-import useWindowStateManager from "@hooks/Dashboard/useWindowStateManager";
-import useMouseScreenIntersection from "@hooks/Dashboard/useMouseScreenIntersection";
 import DashboardAPIProvider from "@context/Dashboard/DashboardAPIContext";
+import Draggable from "react-draggable";
+import WindowActions from "./WindowActions";
+import Resizers from "./Resizers";
 
 interface Props {
   children?: React.ReactNode;
-  fullScreenBounds: string;
+  fullscreenParentRef: React.RefObject<HTMLDivElement>;
   onClose?: (app: Application) => void;
   onFocus?: (app: Application) => void;
   onNotification: (
@@ -28,7 +28,7 @@ interface Props {
 
 const Window: React.FC<Props> = ({
   app,
-  fullScreenBounds,
+  fullscreenParentRef,
   onClose,
   onFocus,
   onNotification,
@@ -37,269 +37,154 @@ const Window: React.FC<Props> = ({
   toggleFullscreen,
   toggleMinimize,
 }) => {
-  const rndRef = useRef<React.ElementRef<typeof Rnd>>(null);
   // it is important that this should NEVER be unmounted
   // this window needs to preserve Application state across
   // all animations
   const Application = app.app;
 
-  const {
-    bounds,
-    mobileMode,
-    fullscreen,
-    setMobileMode,
-    setToNormalMode,
-    setToOriginalSize,
-    setToOriginalSizeMobile,
-  } = useWindowStateManager(
-    app,
-    toggleFullscreen,
-    fullScreenBounds,
-    rndRef.current!
-  );
-
-  const { intersecting, mousePos, mouseDown } = useMouseScreenIntersection();
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const [windowReady, setWindowReady] = useState(false);
+  const [mobileMode, setMobileMode] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  const [mousePosition, setMousePosition] = useState<{
+    x: number | null;
+    y: number | null;
+  }>({ x: null, y: null });
+  const [mouseIntersectingWithTop, setMouseIntersectingWithTop] =
+    useState(false);
   const [dragging, setDragging] = useState(false);
 
-  const topLeftMaximizeArrow: Variants = {
-    hover: {
-      x: -1,
-      y: -1,
-      transition: {
-        repeat: Infinity,
-        repeatType: "reverse",
-        duration: 0.3,
-      },
-    },
-  };
-
-  const bottomRightMaximizeArrow: Variants = {
-    hover: {
-      x: 1,
-      y: 1,
-      transition: {
-        repeat: Infinity,
-        repeatType: "reverse",
-        duration: 0.3,
-      },
-    },
-  };
-
-  // this is the reveal 'event' listener that would be fired from the taskbar
   useEffect(() => {
-    const revealSelf = () => {
-      if (bounds && !app.fullscreen) {
-        const newX = (bounds.width - app.width) * 0.5;
-        const newY = (bounds.height - app.height) * 0.5;
-        onUpdatePos(app, {
-          x: newX,
-          y: newY,
-        });
-        rndRef.current?.updatePosition({
-          x: newX,
-          y: newY,
-        });
+    const snapToCursor = (e: MouseEvent) => {
+      if (dragging && app.fullscreen) {
+        const dragBias = 10;
+        const capturedMousePos = mousePosition;
+        if (
+          Math.abs(e.clientY - capturedMousePos.y!) >= dragBias ||
+          Math.abs(e.clientX - capturedMousePos.x!) >= dragBias
+        ) {
+          const mouseToFullscreenRatio = e.clientX / window.innerWidth;
+
+          toggleFullscreen(app, false);
+          onUpdatePos(app, {
+            x: e.clientX - app.width * mouseToFullscreenRatio,
+            y: e.clientY - 15,
+          });
+        }
       }
     };
 
-    addEventListener("reveal-windows" as keyof WindowEventMap, revealSelf);
+    window.addEventListener("mousemove", snapToCursor);
 
-    return () =>
-      removeEventListener("reveal-windows" as keyof WindowEventMap, revealSelf);
-  }, [app, bounds, rndRef, onUpdatePos]);
+    return () => window.removeEventListener("mousemove", snapToCursor);
+  }, [dragging, mousePosition, app, onUpdatePos, toggleFullscreen]);
 
-  // this the resize event listener that would automatically set window to mobile mode
   useEffect(() => {
-    if (bounds) {
-      if (bounds?.width <= 1024 && !mobileMode) {
-        setMobileMode(true);
-        fullscreen();
-        rndRef.current?.updatePosition({ x: 0, y: 0 });
-      } else if (bounds?.width > 1024 && mobileMode) {
-        setMobileMode(false);
-        setToNormalMode();
+    const fullscreenShadow = (e: MouseEvent) => {
+      if (dragging) {
+        if (e.clientY <= 0 && !mouseIntersectingWithTop) {
+          setMousePosition({ x: e.clientX, y: e.clientY });
+          setMouseIntersectingWithTop(true);
+        } else if (mouseIntersectingWithTop && e.clientY >= 0) {
+          setMouseIntersectingWithTop(false);
+        }
       }
+    };
+
+    const killShadow = (e: MouseEvent) => setMouseIntersectingWithTop(false);
+
+    window.addEventListener("mousemove", fullscreenShadow);
+    window.addEventListener("mouseup", killShadow);
+    window.addEventListener("mouseout", killShadow);
+
+    return () => {
+      window.removeEventListener("mousemove", fullscreenShadow);
+      window.removeEventListener("mouseup", killShadow);
+      window.removeEventListener("mouseout", killShadow);
+    };
+  }, [dragging, mouseIntersectingWithTop]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1024) {
+        setMobileMode(true);
+      } else if (window.innerWidth > 1024) {
+        setMobileMode(false);
+      }
+    };
+    if (window.innerWidth <= 1024) {
+      setMobileMode(true);
     }
-  }, [app, mobileMode, bounds, fullscreen, setToNormalMode, setMobileMode]);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (nodeRef.current) {
+      setWindowReady(true);
+    }
+  }, []);
+
+  const className = `${styles["odi-window"]}${
+    app.fullscreen || mobileMode ? " " + styles["odi-window-fullscreen"] : ""
+  }${isResizing ? " " + styles["no-transition"] : ""}`;
+
+  const currentPos =
+    app.fullscreen || mobileMode
+      ? {
+          x: 0,
+          y: app.minimized ? window.innerHeight : 0,
+        }
+      : {
+          x: app.currentX,
+          y: app.minimized ? window.innerHeight + app.currentY : app.currentY,
+        };
 
   return (
-    <motion.div
-      data-testid="WindowWrapper"
-      transition={{ type: "tween", ease: "easeOut" }}
-      style={{
-        pointerEvents: "none",
-        zIndex: app.zIndex,
-        position: "absolute",
-        x: app.fullscreen ? app.currentX : undefined,
-        y: app.fullscreen ? app.currentY : undefined,
-        width: app.fullscreen ? bounds?.width : app.width,
-        height: app.fullscreen ? bounds?.height : app.height,
-      }}
-      initial={{
-        opacity: 0,
-      }}
-      animate={
-        app.fullscreen
-          ? {
-              opacity: 1,
-              width: bounds?.width,
-              height: bounds?.height,
-              x: 0,
-              y: app.minimized ? "100vh" : 0,
-            }
-          : {
-              opacity: 1,
-              width: app.width,
-              height: app.height,
-              translateY: app.minimized ? "100vh" : 0,
-            }
-      }
-      exit={{ opacity: 0 }}
-    >
-      <FullscreenShadow
-        shouldRender={intersecting.includes("top") && dragging && mouseDown}
-        startHeight={app.height}
-        startWidth={app.width}
-        startX={mousePos.x!}
-        startY={mousePos.y!}
-        bounds={bounds!}
-      />
-      <Rnd
-        ref={rndRef}
-        disableDragging={mobileMode}
-        enableResizing={!app.fullscreen}
-        style={{ pointerEvents: "auto" }}
-        dragHandleClassName={styles["window__head"]}
-        className={
-          app.fullscreen
-            ? `${styles.window} ${styles["window--fullscreen"]}`
-            : styles.window
+    // @ts-ignore
+    <Draggable
+      handle={`.${styles["window__head"]}`}
+      defaultClassName={className}
+      defaultClassNameDragging={styles["no-transition"]}
+      position={currentPos}
+      onStart={() => setDragging(true)}
+      onStop={(_, data) => {
+        if (!app.fullscreen) onUpdatePos(app, { x: data.x, y: data.y });
+        if (dragging) {
+          setDragging(false);
+          if (mouseIntersectingWithTop) {
+            toggleFullscreen(app, true);
+          }
         }
-        default={{
+      }}
+      nodeRef={nodeRef}
+    >
+      <motion.div
+        data-testid={`Window-${app.appId}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        style={{
           width: app.width,
           height: app.height,
-          x: app.currentX,
-          y: app.currentY,
+          zIndex: app.zIndex,
         }}
-        minHeight={32}
-        minWidth={100}
-        resizeHandleStyles={{
-          top: { cursor: "n-resize" },
-          bottom: { cursor: "n-resize" },
-          right: { cursor: "w-resize" },
-          left: { cursor: "w-resize" },
-        }}
-        onDragStop={(_, data) => {
-          onUpdatePos(app, {
-            x: data.x,
-            y: data.y,
-          });
-          // while dragging, if user's mouse hits top of
-          // viewport, we initiate fullscreen
-          if (intersecting.includes("top")) {
-            fullscreen();
-          }
-        }}
-        onResizeStart={(e, d, el) => {
-          onFocus && onFocus(app);
-        }}
-        onResize={(e, d, el, delta, pos) => {
-          onUpdatePos(app, {
-            x: pos.x,
-            y: pos.y,
-          });
-          onUpdateSize(app, {
-            width: el.clientWidth,
-            height: el.clientHeight,
-          });
-        }}
-        onResizeStop={(e, d, el, delta, pos) => {
-          onUpdatePos(app, {
-            x: pos.x,
-            y: pos.y,
-          });
-          onUpdateSize(app, {
-            width: el.clientWidth,
-            height: el.clientHeight,
-          });
-        }}
+        ref={nodeRef}
+        className={styles.window}
       >
         <div
+          onMouseDown={(e) => onFocus && onFocus(app)}
           data-testid="window-head"
-          onTouchStart={(e) => {
-            onFocus && onFocus(app);
-            setToOriginalSizeMobile(e);
-            setDragging(true);
-          }}
-          onMouseDown={(e) => {
-            onFocus && onFocus(app);
-            setToOriginalSize(e);
-            setDragging(true);
-          }}
-          onMouseUp={() => {
-            setDragging(false);
-          }}
-          onTouchEnd={() => {
-            setDragging(false);
-          }}
           className={styles["window__head"]}
         >
-          <div className={styles["window__head--actions"]}>
-            <motion.button
-              data-testid="window-close"
-              whileHover={{ scale: 1.1, rotate: 360 }}
-              className={`${styles["window__head--button"]} ${styles.exit}`}
-              onMouseDown={(e) => e.stopPropagation()}
-              onTap={() => onClose && onClose(app)}
-            >
-              &times;
-            </motion.button>
-            <motion.button
-              data-testid="window-minimize"
-              whileHover={{ scale: 1.1, rotate: 180 }}
-              className={`${styles["window__head--button"]} ${styles.minimize}`}
-              onTouchStart={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-              onTap={() => {
-                if (!app.minimized) {
-                  toggleMinimize(app, true);
-                }
-              }}
-            >
-              &minus;
-            </motion.button>
-            {!mobileMode && (
-              <motion.button
-                data-testid="window-fullscreen"
-                whileHover={{ scale: 1.1, rotate: 360 }}
-                className={`${styles["window__head--button"]} ${styles.maximize}`}
-                onTap={() => {
-                  if (!app.fullscreen) {
-                    if (onFocus) {
-                      onFocus(app);
-                    }
-                    fullscreen();
-                  }
-                }}
-              >
-                <motion.div
-                  whileHover="hover"
-                  className={`${styles["maximize__wrapper"]}`}
-                >
-                  <motion.div
-                    initial={{ rotate: -45, x: 0, y: 0 }}
-                    variants={topLeftMaximizeArrow}
-                    className={`${styles.arrow} ${styles["arrow--topleft"]}`}
-                  />
-                  <motion.div
-                    initial={{ rotate: 135, x: 0, y: 0 }}
-                    variants={bottomRightMaximizeArrow}
-                    className={`${styles.arrow} ${styles["arrow--bottomright"]}`}
-                  />
-                </motion.div>
-              </motion.button>
-            )}
-          </div>
+          <WindowActions
+            app={app}
+            mobileMode={mobileMode}
+            toggleFullscreen={toggleFullscreen}
+            toggleMinimize={toggleMinimize}
+            onClose={onClose}
+            onFocus={onFocus}
+          />
         </div>
         <div
           onClick={(e) => {
@@ -308,17 +193,42 @@ const Window: React.FC<Props> = ({
           }}
           className={styles["window__body"]}
         >
-          <DashboardAPIProvider
-            app={app}
-            onPushNotification={(notification) =>
-              onNotification(app, notification)
-            }
-          >
-            <Application />
-          </DashboardAPIProvider>
+          {windowReady && (
+            <DashboardAPIProvider
+              parentRef={nodeRef}
+              onPushNotification={(notification) =>
+                onNotification(app, notification)
+              }
+            >
+              <Application />
+            </DashboardAPIProvider>
+          )}
         </div>
-      </Rnd>
-    </motion.div>
+        <FullscreenShadow
+          shouldRender={mouseIntersectingWithTop}
+          zIndex={app.zIndex}
+          bounds={fullscreenParentRef.current!.getBoundingClientRect()}
+          startHeight={app.height}
+          startWidth={app.width}
+          startX={mousePosition.x!}
+          startY={0}
+        />
+        {!(app.fullscreen || mobileMode) && (
+          <Resizers
+            parentRef={nodeRef}
+            onResizeStart={() => onFocus && onFocus(app)}
+            onResizeEnd={(data) => {
+              onUpdatePos(app, { x: data.x!, y: data.y! });
+              onUpdateSize(app, { width: data.width!, height: data.height! });
+            }}
+            isResizing={isResizing}
+            setIsResizing={setIsResizing}
+            minHeight={100}
+            minWidth={32}
+          />
+        )}
+      </motion.div>
+    </Draggable>
   );
 };
 

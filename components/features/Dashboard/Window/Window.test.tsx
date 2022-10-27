@@ -28,18 +28,19 @@ const resetApplications = () => {
   app.zIndex = 0;
 };
 
+const dummyRef = {
+  current: document.createElement("div")
+}
+
+const windowId = `Window-${app.appId}`
+
 const MyTestComponent = (
-  <div
-    className="fullscreen-bounds"
-    style={{
-      position: "relative",
-      height: "calc(100vh - 50px)",
-      width: "100vw",
-    }}
-  >
+  <>
+    <div id="shadow-container"></div>
     <Window
       app={applications[0]}
-      fullScreenBounds="fullscreen-bounds"
+      fullscreenParentRef={dummyRef}
+      onNotification={() => {}}
       onFocus={(_app) => {
         app.zIndex = 10;
       }}
@@ -61,28 +62,46 @@ const MyTestComponent = (
         app.minimized = minimize;
       }}
     />
-  </div>
+  </>
 );
+class WebkitCSSMatrixMock {
+  matrix: DOMMatrix;
+  constructor(init?: string | number) {
+    this.matrix = { m42: 100, m41: 100 } as unknown as DOMMatrix;
+  }
+}
+
+let spy: jest.SpyInstance;
+beforeAll(() => {
+  spy = jest.spyOn(document, 'getElementById');
+})
 
 describe("Dashboard Window component test suite", () => {
   beforeEach(() => {
     global.innerWidth = 1920;
     global.innerHeight = 1080;
   });
-  
+
+  beforeAll(() => {
+    // @ts-ignore
+    window.WebKitCSSMatrix = WebkitCSSMatrixMock;
+    const shadowDiv = document.createElement("div");
+    spy.mockReturnValue(shadowDiv);
+  });
+
   afterEach(() => {
     resetApplications();
   });
   
   test("testing render window", () => {
     const { getByTestId } = render(MyTestComponent);
-    getByTestId("WindowWrapper");
+    getByTestId(windowId);
   });
   
   test("testing window drag", () => {
     const { getByTestId } = render(MyTestComponent);
     const dragHandle = getByTestId("window-head");
-  
+    
     fireEvent.mouseDown(dragHandle!);
     fireEvent.mouseMove(dragHandle!, { clientX: 100, clientY: 100 });
     fireEvent.mouseUp(dragHandle!, { clientX: 100, clientY: 100 });
@@ -93,9 +112,9 @@ describe("Dashboard Window component test suite", () => {
   
   test("testing window resize", () => {
     const { getByTestId } = render(MyTestComponent);
-    const window = getByTestId("WindowWrapper");
+    const window = getByTestId(windowId);
     const allResizeHandles = window.firstElementChild?.lastElementChild;
-    const eastResizeHandle = allResizeHandles?.children[4];
+    const eastResizeHandle = allResizeHandles?.children[2];
   
     const from = {
       clientX: app.width,
@@ -117,16 +136,15 @@ describe("Dashboard Window component test suite", () => {
     // js-dom limitations means we can only test that resize is called
     // and sets height and width to be 0, since in js-dom elements
     // are virtualized and have no actual dimensions
-    expect(app.width).toBe(0);
-    expect(app.height).toBe(0);
+    expect(app.width).toBe(600);
+    expect(app.height).toBe(800);
   });
   
   test("testing window fullscreen", () => {
     const { getByTestId } = render(MyTestComponent);
     const fullscreenButton = getByTestId("window-fullscreen");
   
-    fireEvent.mouseDown(fullscreenButton!);
-    fireEvent.mouseUp(fullscreenButton!);
+    fireEvent.click(fullscreenButton!);
   
     expect(app.fullscreen).toBeTruthy();
   });
@@ -135,8 +153,7 @@ describe("Dashboard Window component test suite", () => {
     const { getByTestId } = render(MyTestComponent);
     const minimizeButton = getByTestId("window-minimize");
   
-    fireEvent.mouseDown(minimizeButton!);
-    fireEvent.mouseUp(minimizeButton!);
+    fireEvent.click(minimizeButton!)
   
     expect(app.minimized).toBeTruthy();
   });
@@ -154,8 +171,7 @@ describe("Dashboard Window component test suite", () => {
     const { getByTestId } = render(MyTestComponent);
     const closeButton = getByTestId("window-close");
   
-    fireEvent.mouseDown(closeButton!);
-    fireEvent.mouseUp(closeButton!);
+    fireEvent.click(closeButton!)
   
     expect(app.zIndex).toBe(-1);
   });

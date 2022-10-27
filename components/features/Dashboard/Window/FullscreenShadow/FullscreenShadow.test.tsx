@@ -14,10 +14,21 @@ const dummyDomRect: DOMRect = {
   toJSON: () => {},
 };
 
+let spy: jest.SpyInstance;
+beforeAll(() => {
+  spy = jest.spyOn(document, 'getElementById');
+})
+
 describe("Dashboard Fullscreen Shadow component test suite", () => {
+  beforeAll(() => {
+    const shadowDiv = document.createElement("div");
+    document.body.appendChild(shadowDiv)
+    spy.mockReturnValue(shadowDiv);
+  });
   test("testing fullscreen shadow render", () => {
     const { getByTestId } = render(
       <FullscreenShadow
+        zIndex={10}
         bounds={dummyDomRect}
         shouldRender={true}
         startHeight={0}

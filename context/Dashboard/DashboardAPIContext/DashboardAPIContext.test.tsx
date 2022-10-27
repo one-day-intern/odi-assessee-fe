@@ -27,11 +27,16 @@ const DummyConsumer = () => {
   );
 };
 
+const dummyRef = {
+  current: document.createElement("div")
+}
+
 describe("Dashboard API Context test suite", () => {
   test("testing push notification from consumer", () => {
     let notification: DashboardNotification | null = null;
     const { getByTestId } = render(
       <DashboardAPIProvider
+        parentRef={dummyRef}
         onPushNotification={(receivedNotification) => {
           notification = receivedNotification;
         }}
