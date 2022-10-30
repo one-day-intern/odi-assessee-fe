@@ -114,6 +114,7 @@ function usePostRequest<T, V>(
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
+        body: JSON.stringify(postBody)
       });
 
       const data = await response.json();
