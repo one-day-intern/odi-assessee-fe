@@ -5,7 +5,10 @@ import { useCallback, useEffect, useReducer, useRef } from "react";
 interface State<T> {
   data?: T;
   error?: Error;
-  fetchData?: () => void;
+}
+
+interface UseGetRequest<T> extends State<T> {
+  fetchData: () => Promise<T | FetchError>;
 }
 
 interface FetchError extends Error {
@@ -15,6 +18,7 @@ interface FetchError extends Error {
 interface Options {
   useCache?: boolean;
   requiresToken?: boolean;
+  disableFetchOnMount?: boolean;
 }
 
 type Cache<T> = { [url: string]: T };
@@ -25,7 +29,7 @@ type Action<T> =
   | { type: "fetched"; payload: T }
   | { type: "error"; payload: FetchError };
 
-function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
+function useGetRequest<T = unknown>(uri?: string, options?: Options): UseGetRequest<T> {
   const cache = useRef<Cache<T>>({});
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${uri}`;
@@ -68,7 +72,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
     // If token is required, cache is automatically disabled
     if (!options?.requiresToken && options?.useCache && cache.current[url!]) {
       dispatch({ type: "fetched", payload: cache.current[url!] });
-      return;
+      return cache.current[url!];
     }
 
     if (!options?.requiresToken) {
@@ -89,7 +93,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
 
       dispatch({ type: "fetched", payload: json });
 
-      return;
+      return json;
     }
 
     try {
@@ -111,6 +115,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
       if (cancelRequest.current) return;
 
       dispatch({ type: "fetched", payload: data });
+      return data;
     } catch (error) {
       if (cancelRequest.current) return;
 
@@ -142,7 +147,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
               user
             },
           });
-          return;
+          return error as FetchError;
         } catch (e) {
           authDispatch({
             type: AuthDispatchTypes.LOGOUT,
@@ -150,6 +155,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
         }
       }
       dispatch({ type: "error", payload: error as FetchError });
+      return error as FetchError
     }
   }, [
     accessToken,
@@ -162,7 +168,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
   ]);
 
   useEffect(() => {
-    if (!url) return;
+    if (!url || options?.disableFetchOnMount) return;
 
     if (accessToken === "") return;
 
@@ -179,7 +185,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): State<T> {
       cancelRequest.current = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url, accessToken, fetchData]);
+  }, [url, accessToken, options?.disableFetchOnMount, fetchData]);
 
   return { ...state, fetchData };
 }
