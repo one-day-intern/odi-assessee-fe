@@ -6,7 +6,10 @@ interface State<T, V> {
   data?: V;
   error?: PostError;
   status?: "loading" | "fetched" | "error" | "initial";
-  postData?: (postBody: T) => void;
+}
+
+interface UsePostRequest<T, V> extends State<T, V> {
+  postData: (postBody: T) => Promise<void>;
 }
 
 interface PostError extends Error {
@@ -27,14 +30,13 @@ type Action<T> =
 function usePostRequest<T, V>(
   uri: string,
   options?: Options
-): State<T,V> {
+): UsePostRequest<T,V> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${uri}`;
   const {
     user,
     accessToken,
     refreshToken,
     dispatch: authDispatch,
-    remember,
   } = useAuthContext();
 
   // Used to prevent state update if the component is unmounted
@@ -114,6 +116,7 @@ function usePostRequest<T, V>(
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
+        body: JSON.stringify(postBody)
       });
 
       const data = await response.json();
