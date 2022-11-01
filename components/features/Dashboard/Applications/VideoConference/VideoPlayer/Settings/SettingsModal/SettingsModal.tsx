@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import styles from "./SettingsModal.module.css";
 import Select from "react-select";
 import { Button } from "@components/shared/elements/Button";
-import { useDevices, DeviceType } from "@100mslive/react-sdk";
+import { useDevices, DeviceType, useHMSActions } from "@100mslive/react-sdk";
 import { motion } from "framer-motion";
 import { createPortal } from "react-dom";
+import { toast } from "react-toastify";
 
 interface SettingsProps {
   setSettingsOpened: React.Dispatch<React.SetStateAction<boolean>>;
@@ -15,6 +16,7 @@ const DeviceSettings: React.FC<React.PropsWithChildren<SettingsProps>> = ({
 }) => {
   const { allDevices, selectedDeviceIDs, updateDevice } = useDevices();
   const { videoInput, audioInput, audioOutput } = allDevices;
+  const actions = useHMSActions();
 
   const deviceOptionMapper = (device?: MediaDeviceInfo) => {
     if (!device) {
@@ -41,7 +43,10 @@ const DeviceSettings: React.FC<React.PropsWithChildren<SettingsProps>> = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        onClick={() => setSettingsOpened(false)}
+        onClick={() => {
+          setSettingsOpened(false);
+          actions.setLocalAudioEnabled(true);
+        }}
       />
       <motion.div
         className={`${styles.modal}`}
@@ -63,12 +68,13 @@ const DeviceSettings: React.FC<React.PropsWithChildren<SettingsProps>> = ({
                 )
               )}
               options={devicesOptionMapper(videoInput)}
-              onChange={(device) =>
+              onChange={(device) => {
                 updateDevice({
                   deviceType: DeviceType.videoInput,
                   deviceId: device?.value.id!,
-                })
-              }
+                });
+                toast.success(`Video input changed to ${device?.label}`);
+              }}
             />
           </div>
           <div className={`${styles["device-dropdown-group"]}`}>
@@ -82,12 +88,13 @@ const DeviceSettings: React.FC<React.PropsWithChildren<SettingsProps>> = ({
                 )
               )}
               options={devicesOptionMapper(audioInput)}
-              onChange={(device) =>
+              onChange={(device) => {
                 updateDevice({
                   deviceType: DeviceType.audioInput,
                   deviceId: device?.value.id!,
-                })
-              }
+                });
+                toast.success(`Audio input changed to ${device?.label}`);
+              }}
             />
           </div>
           <div className={`${styles["device-dropdown-group"]}`}>
@@ -101,19 +108,23 @@ const DeviceSettings: React.FC<React.PropsWithChildren<SettingsProps>> = ({
                 )
               )}
               options={devicesOptionMapper(audioOutput)}
-              onChange={(device) =>
+              onChange={(device) => {
                 updateDevice({
                   deviceType: DeviceType.audioOutput,
                   deviceId: device?.value.id!,
-                })
-              }
+                });
+                toast.success(`Audio output changed to ${device?.label}`);
+              }}
             />
           </div>
           <div
             style={{ width: "100%", display: "flex", justifyContent: "end" }}
           >
             <Button
-              onClick={() => setSettingsOpened(false)}
+              onClick={() => {
+                setSettingsOpened(false);
+                actions.setLocalAudioEnabled(true);
+              }}
               variant="secondary"
               style={{ margin: 0, maxWidth: "100px", fontWeight: "bold" }}
             >

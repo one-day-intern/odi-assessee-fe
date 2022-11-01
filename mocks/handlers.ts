@@ -171,4 +171,5 @@ export const handlers = [
       )
     }
   ),
+  rest.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/video-conference/rooms/join/assessee/`, (req, res, ctx) => {})
 ];

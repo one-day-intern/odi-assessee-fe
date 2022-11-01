@@ -5,6 +5,9 @@ import { Button } from "@components/shared/elements/Button";
 import { useAuthContext } from "@context/Authentication";
 import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
+import useGetRequest from "@hooks/shared/useGetRequest";
+import { Loader } from "@components/shared/elements/Loader";
 
 const buttonStyles: React.CSSProperties = {
   fontWeight: "bold",
@@ -28,9 +31,11 @@ const enterButtonStyles: React.CSSProperties = {
 
 interface AssessmentEvent {
   name: string;
+  event_id: string;
 }
 
-const AssessmentEventCard: React.FC<AssessmentEvent> = ({ name }) => {
+const AssessmentEventCard: React.FC<AssessmentEvent> = ({ name, event_id }) => {
+  const router = useRouter();
   return (
     <motion.div
       initial={{ scale: 0 }}
@@ -39,7 +44,11 @@ const AssessmentEventCard: React.FC<AssessmentEvent> = ({ name }) => {
       className={styles["assessment-event-card"]}
     >
       <h2 className={styles["assessment-event-card_header"]}>{name}</h2>
-      <Button style={enterButtonStyles} variant="secondary">
+      <Button
+        onClick={() => router.push(`/dashboard/${event_id}`)}
+        style={enterButtonStyles}
+        variant="secondary"
+      >
         Enter Dashboard &rarr;
       </Button>
     </motion.div>
@@ -48,6 +57,22 @@ const AssessmentEventCard: React.FC<AssessmentEvent> = ({ name }) => {
 
 const AssessmentEventList: NextPage = () => {
   const { dispatch } = useAuthContext();
+  const { data } = useGetRequest<AssessmentEvent[]>(
+    "/assessee/assessment-events/",
+    {
+      requiresToken: true,
+    }
+  );
+
+  if (!data) {
+    return (
+      <ProtectedRoute>
+        <div className={styles["loader-container"]}>
+          <Loader />
+        </div>
+      </ProtectedRoute>
+    );
+  }
 
   return (
     <ProtectedRoute>
@@ -55,7 +80,14 @@ const AssessmentEventList: NextPage = () => {
         <div className={styles.container}>
           <h1 className={styles["main-header"]}>Your Assessments</h1>
           <div className={styles["assessment-list"]}>
-            <AssessmentEventCard name="Assessment Event 25" />
+            {data &&
+              data.map((event) => (
+                <AssessmentEventCard
+                  key={event.event_id}
+                  name={event.name}
+                  event_id={event.event_id}
+                />
+              ))}
           </div>
         </div>
         <Button

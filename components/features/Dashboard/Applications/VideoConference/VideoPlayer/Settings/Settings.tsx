@@ -4,15 +4,20 @@ import { motion } from "framer-motion";
 import SettingsIcon from "./SettingsIcon";
 import SettingsModal from "./SettingsModal";
 import { AnimatePresence } from "framer-motion";
+import { useHMSActions } from "@100mslive/react-sdk";
 
 const Settings = () => {
   const [settingsOpened, setSettingsOpened] = useState(false);
+  const actions = useHMSActions();
 
   return (
     <>
       <motion.div
         data-testid="VideoSettings"
-        onTap={() => setSettingsOpened(!settingsOpened)}
+        onTap={() => {
+          setSettingsOpened(!settingsOpened);
+          actions.setLocalAudioEnabled(false);
+        }}
         className={`${styles.icon} ${settingsOpened ? styles.active : ""}`}
       >
         <SettingsIcon />
