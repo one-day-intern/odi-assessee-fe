@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import styles from "./VideoConference.module.css";
 import Room, { PreviewVideo } from "./Room";
 import {
@@ -8,44 +8,64 @@ import {
   selectIsConnectedToRoom,
   useHMSStore,
   HMSLogLevel,
+  selectLocalPeer,
+  HMSNotificationTypes,
+  useHMSNotifications,
 } from "@100mslive/react-sdk";
 import VideoConferenceLanding from "./VideoConferenceLanding";
+import useGetRequest from "@hooks/shared/useGetRequest";
+import { useAuthContext } from "@context/Authentication";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { Loader } from "@components/shared/elements/Loader";
 
 interface ConferenceProps {
-  data: any | undefined;
   children?: React.ReactNode;
 }
 
-const Spinner = () => {
-  return (
-    <div className={styles["lds-ring"]}>
-      <div />
-      <div />
-      <div />
-      <div />
-    </div>
-  );
-};
-
-const Conference: React.FC<ConferenceProps> = ({ data }) => {
+const Conference: React.FC<ConferenceProps> = () => {
   const [loading, setLoading] = useState(false);
   const conference = useHMSActions();
+  const localPeer = useHMSStore(selectLocalPeer);
   const isPreviewReady = useHMSStore(selectIsInPreview);
   const isInCall = useHMSStore(selectIsConnectedToRoom);
+  const roomEnded = useHMSNotifications(HMSNotificationTypes.ROOM_ENDED);
+  const router = useRouter();
+  const { fetchData } = useGetRequest<{ token: string }>(
+    `/video-conference/rooms/join/assessee/?assessment_event_id=${router.query["assessment-event-id"]}`,
+    { requiresToken: true, disableFetchOnMount: true }
+  );
+  const { user } = useAuthContext();
+  const fullName = `${user?.first_name} ${user?.last_name}`;
 
   const enterConference = async () => {
     setLoading(true);
-    await conference
-      .join({ userName: "Rashad Aziz", authToken: data?.token })
-      .catch((e: Error) => console.log(e));
+    const response = await fetchData();
+    if (response instanceof Error) {
+      toast.error(response.message);
+      if (isPreviewReady) {
+        await conference.leave();
+      }
+    } else {
+      const token = response.token;
+      await conference
+        .join({ userName: fullName, authToken: token })
+        .catch((e: Error) => console.log(e));
+    }
     setLoading(false);
   };
 
   const enterConferenceWithPreview = async () => {
     setLoading(true);
-    await conference
-      .preview({ userName: "Rashad Aziz", authToken: data?.token })
-      .catch((e: Error) => console.log(e));
+    const response = await fetchData();
+    if (response instanceof Error) {
+      toast.error(response.message);
+    } else {
+      const token = response.token;
+      await conference
+        .preview({ userName: fullName, authToken: token })
+        .catch((e: Error) => console.log(e));
+    }
     setLoading(false);
   };
 
@@ -68,6 +88,12 @@ const Conference: React.FC<ConferenceProps> = ({ data }) => {
     };
   }, [conference, leaveConference]);
 
+  useEffect(() => {
+    if (roomEnded) {
+      toast.info(roomEnded.data.reason);
+    }
+  }, [roomEnded]);
+
   if (!loading) {
     if (!isPreviewReady && !isInCall) {
       return (
@@ -86,15 +112,25 @@ const Conference: React.FC<ConferenceProps> = ({ data }) => {
       );
     }
     if (isInCall) {
+      if (localPeer.roleName === "waiting-room") {
+        return (
+          <div className={styles["waiting-room"]}>
+            <h1>You are now in the waiting room</h1>
+            <h2>Please wait until the host has let you in</h2>
+          </div>
+        );
+      }
       return <Room onLeaveConference={() => leaveConference()} />;
     }
   }
-  return <Spinner />;
+  return (
+    <div className={styles["loader-container"]}>
+      <Loader />
+    </div>
+  );
 };
 
 const VideoConference = () => {
-  const data = { token: process.env.NEXT_PUBLIC_HMS_DEV_TOKEN }
-
   return (
     <div
       style={{
@@ -105,7 +141,7 @@ const VideoConference = () => {
       }}
     >
       <HMSRoomProvider>
-        <Conference data={data} />
+        <Conference />
       </HMSRoomProvider>
       <div id="video-conference-modal" />
     </div>

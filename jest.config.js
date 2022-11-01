@@ -17,7 +17,7 @@ module.exports = {
     '!<rootDir>/coverage/**',
     '!**/DashboardEvents.ts',
     "!**/mocks/**",
-    "!**/Resizers.tsx"
+    "!**/Resizers.tsx",
   ],
   moduleNameMapper: {
     // Handle CSS imports (with CSS modules)
@@ -53,3 +53,7 @@ module.exports = {
   ],
   setupFilesAfterEnv: ["./jest.setup.ts"]
 }
+
+process.env = Object.assign(process.env, {
+  NEXT_PUBLIC_BACKEND_URL: 'http://localhost:8000',
+});

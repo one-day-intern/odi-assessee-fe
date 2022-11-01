@@ -7,8 +7,10 @@ describe("Settings component test suite", () => {
   test("testing render settings", () => {
     render(
       <>
-        <Settings />
-        <div id="video-conference-modal"></div>
+        <HMSRoomProvider>
+          <Settings />
+          <div id="video-conference-modal"></div>
+        </HMSRoomProvider>
       </>
     );
   });
@@ -26,6 +28,4 @@ describe("Settings component test suite", () => {
     });
     getByTestId("SettingsModal");
   });
-
-  
 });
