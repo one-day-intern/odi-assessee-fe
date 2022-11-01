@@ -19,7 +19,7 @@ import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
 import usePostRequest from "@hooks/shared/usePostRequest";
 import { useRouter } from "next/router";
 import { Loader } from "@components/shared/elements/Loader";
-
+import useGetRequest from "@hooks/shared/useGetRequest";
 
 const LOGIN_URL = "/users/api/token/";
 
@@ -31,59 +31,17 @@ interface TokenReturnType {
 const Login = () => {
   const { data, errors, setDataValue, setErrorValue } = useLoginHandler();
   const { email, password, remember } = data;
-  const isMounted = useRef(false);
-
-  const { data: responseData, error: responseError, postData, status } = usePostRequest<LoginDetails, TokenReturnType>(LOGIN_URL, {
-    requiresToken: false
-  })
-
-  const { user, dispatch } = useAuthContext();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-      return;
+  const { postData, status } = usePostRequest<LoginDetails, TokenReturnType>(
+    LOGIN_URL,
+    {
+      requiresToken: false,
     }
-
-    // In the case when first loaded, status is initial. When status is login, we also don't need to dispatch any action.
-    if (status === "loading" || status === "initial") {
-      return;
-    }
-
-    if (responseData != null) {
-      const { access, refresh } = responseData! as TokenReturnType;
-      dispatch({
-        type: AuthDispatchTypes.LOGIN,
-        payload: {
-          user,
-          accessToken: access,
-          refreshToken: refresh,
-          remember: data.remember
-        }
-      });
-      toast.success("Login successful!", {
-        position: toast.POSITION.TOP_CENTER,
-        theme: "colored",
-        containerId: "root-toast",
-        autoClose: 2000
-      });
-      router.push("/")
-      return;
-    }
-
-    if (responseError != null) {
-      toast.error(responseError.message, {
-        position: toast.POSITION.TOP_CENTER,
-        theme: "colored",
-        containerId: "root-toast",
-        autoClose: 2000
-      });
-      return;
-    }
-
-
-  }, [responseData, responseError, dispatch, user, data.remember, status, router])
+  );
+  const { dispatch } = useAuthContext();
+  const { fetchData } = useGetRequest<AuthUser>("/users/get-info/", {
+    disableFetchOnMount: true,
+    requiresToken: true,
+  });
 
   const validate = (): boolean => {
     const [isEmailValid, emailError] = emailValidator(email);
@@ -95,16 +53,57 @@ const Login = () => {
     return isEmailValid && isPasswordValid;
   };
 
-  const submitForm: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const submitForm: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event?.preventDefault();
     const isValid = validate();
     if (!isValid) return;
-
     const loginData = data;
-
-    postData!(loginData);
-
-  }
+    const response = await postData(loginData);
+    if (response instanceof Error) {
+      toast.error(response.message, {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "colored",
+        containerId: "root-toast",
+        autoClose: 2000,
+      });
+      return;
+    }
+    const { access, refresh } = response;
+    const requestUser = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/get-info/`,
+      {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      }
+    );
+    const user = await requestUser.json();
+    if (!requestUser.ok) {
+      toast.error((requestUser as any).message, {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "colored",
+        containerId: "root-toast",
+        autoClose: 2000,
+      });
+      return;
+    }
+    dispatch({
+      type: AuthDispatchTypes.LOGIN,
+      payload: {
+        user,
+        accessToken: access,
+        refreshToken: refresh,
+        remember: data.remember,
+      },
+    });
+    toast.success("Login successful!", {
+      position: toast.POSITION.TOP_CENTER,
+      theme: "colored",
+      containerId: "root-toast",
+      autoClose: 2000,
+    });
+    return;
+  };
 
   return (
     <Backdrop>
@@ -124,13 +123,12 @@ const Login = () => {
             onChange={(e) => setDataValue("password", e.target?.value)}
             error={errors.password}
           />
-          <Button variant="primary" type="submit" disabled={ status === "loading" }>
-            {
-              status === "loading" ? 
-              <Loader/>
-              :
-              <h2>Login</h2>
-            }
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={status === "loading"}
+          >
+            {status === "loading" ? <Loader /> : <h2>Login</h2>}
           </Button>
           <div className={styles["glassmorph__column"]}>
             <Checkbox
@@ -144,7 +142,13 @@ const Login = () => {
           </div>
           <LoginDivider />
           <GoogleButton onClick={() => {}} />
-          <p className={ styles["glassmorph__body"] }>Dont have an account? <Link href="/accounts/signup/assessee"><span className={styles["glassmorph__forgot"]}>Sign up</span></Link>.</p>
+          <p className={styles["glassmorph__body"]}>
+            Dont have an account?{" "}
+            <Link href="/accounts/signup/assessee">
+              <span className={styles["glassmorph__forgot"]}>Sign up</span>
+            </Link>
+            .
+          </p>
         </form>
       </div>
     </Backdrop>

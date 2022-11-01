@@ -13,7 +13,7 @@ const LoggedOutOnlyRoute = ({ children }: LoggedOutOnlyRouteProps) => {
 
   useEffect(() => {
     if (!isLoading && user) {
-        router.push("/");
+        router.push("/dashboard");
     }
   }, [router, isLoading, user]);
 
