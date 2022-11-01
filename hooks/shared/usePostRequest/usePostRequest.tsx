@@ -9,7 +9,7 @@ interface State<T, V> {
 }
 
 interface UsePostRequest<T, V> extends State<T, V> {
-  postData: (postBody: T) => Promise<void>;
+  postData: (postBody: T) => Promise<V | PostError>;
 }
 
 interface PostError extends Error {
@@ -97,7 +97,7 @@ function usePostRequest<T, V>(
           type: "error",
           payload: error as PostError,
         });
-        return;
+        return error as PostError;
       }
 
 
@@ -105,7 +105,7 @@ function usePostRequest<T, V>(
         type: "fetched",
         payload: json,
       });
-      return;
+      return json;
     }
 
     try {
@@ -184,7 +184,7 @@ function usePostRequest<T, V>(
               type: "error",
               payload: error as PostError,
             });
-            return;
+            return error as PostError;
           }
 
           dispatch({
@@ -192,7 +192,7 @@ function usePostRequest<T, V>(
             payload: json as V
           })
 
-          return;
+          return json;
         } catch (err) {
           authDispatch({
             type: AuthDispatchTypes.LOGOUT,
