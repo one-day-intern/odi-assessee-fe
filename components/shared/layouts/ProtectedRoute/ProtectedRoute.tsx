@@ -1,3 +1,4 @@
+import { Loader } from "@components/shared/elements/Loader";
 import { useAuthContext } from "@context/Authentication";
 import { useRouter } from "next/router";
 import React, { ReactNode, useEffect } from "react";
@@ -5,6 +6,15 @@ import React, { ReactNode, useEffect } from "react";
 interface ProtectedRouteProps {
   children: ReactNode;
 }
+
+const loaderContainerStyle: React.CSSProperties = {
+  width: "100%",
+  height: "100vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  color: "var(--primary)",
+};
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, isLoading } = useAuthContext();
@@ -22,7 +32,11 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <>{children}</>;
   }
 
-  return <h1>Loading</h1>;
+  return (
+    <div style={loaderContainerStyle}>
+      <Loader />
+    </div>
+  );
 };
 
 export default ProtectedRoute;
