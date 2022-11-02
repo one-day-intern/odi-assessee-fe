@@ -29,11 +29,13 @@ type Action<T> =
   | { type: "fetched"; payload: T }
   | { type: "error"; payload: FetchError };
 
-function useGetRequest<T = unknown>(uri?: string, options?: Options): UseGetRequest<T> {
+function useGetRequest<T = unknown>(
+  uri?: string,
+  options?: Options
+): UseGetRequest<T> {
   const cache = useRef<Cache<T>>({});
 
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${uri}`;
-  
 
   // Used to prevent state update if the component is unmounted
   const cancelRequest = useRef<boolean>(false);
@@ -62,7 +64,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): UseGetRequ
     accessToken,
     refreshToken,
     dispatch: authDispatch,
-    user
+    user,
   } = useAuthContext();
 
   const fetchData = useCallback(async () => {
@@ -135,7 +137,6 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): UseGetRequ
 
           const { access, refresh } = await requestNewAccessToken.json();
 
-
           if (!requestNewAccessToken.ok) throw new Error();
 
           authDispatch({
@@ -144,10 +145,22 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): UseGetRequ
               accessToken: access,
               refreshToken: refresh,
               remember: !!refresh,
-              user
+              user,
             },
           });
-          return error as FetchError;
+          if (options.disableFetchOnMount) {
+            const response = await fetch(url!, {
+              headers: {
+                Authorization: `Bearer ${access}`,
+              },
+            });
+            const data = (await response.json()) as T;
+            cache.current[url!] = data;
+            if (cancelRequest.current) return;
+
+            dispatch({ type: "fetched", payload: data });
+            return data;
+          }
         } catch (e) {
           authDispatch({
             type: AuthDispatchTypes.LOGOUT,
@@ -155,7 +168,7 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): UseGetRequ
         }
       }
       dispatch({ type: "error", payload: error as FetchError });
-      return error as FetchError
+      return error as FetchError;
     }
   }, [
     accessToken,
@@ -164,7 +177,8 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): UseGetRequ
     url,
     options?.requiresToken,
     options?.useCache,
-    user
+    options?.disableFetchOnMount,
+    user,
   ]);
 
   useEffect(() => {
@@ -175,7 +189,6 @@ function useGetRequest<T = unknown>(uri?: string, options?: Options): UseGetRequ
     if (options?.requiresToken && !accessToken) {
       return;
     }
-
 
     cancelRequest.current = false;
 
