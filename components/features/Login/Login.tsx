@@ -3,7 +3,7 @@ import { OdiLogo } from "@components/shared/elements/svg/OdiLogo";
 import { InputField } from "@components/shared/forms/InputField";
 import { PasswordField } from "@components/shared/forms/PasswordField";
 import { Backdrop } from "@components/shared/layouts/Backdrop";
-import React, { useEffect, useRef } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
 import styles from "./Login.module.css";
@@ -19,8 +19,6 @@ import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
 import usePostRequest from "@hooks/shared/usePostRequest";
 import { useRouter } from "next/router";
 import { Loader } from "@components/shared/elements/Loader";
-import useGetRequest from "@hooks/shared/useGetRequest";
-
 const LOGIN_URL = "/users/api/token/";
 
 interface TokenReturnType {
@@ -29,19 +27,17 @@ interface TokenReturnType {
 }
 
 const Login = () => {
+  const [loading, setLoading] = useState(false);
   const { data, errors, setDataValue, setErrorValue } = useLoginHandler();
   const { email, password, remember } = data;
-  const { postData, status } = usePostRequest<LoginDetails, TokenReturnType>(
+  const { postData } = usePostRequest<LoginDetails, TokenReturnType>(
     LOGIN_URL,
     {
       requiresToken: false,
     }
   );
   const { dispatch } = useAuthContext();
-  const { fetchData } = useGetRequest<AuthUser>("/users/get-info/", {
-    disableFetchOnMount: true,
-    requiresToken: true,
-  });
+  const router = useRouter();
 
   const validate = (): boolean => {
     const [isEmailValid, emailError] = emailValidator(email);
@@ -57,6 +53,7 @@ const Login = () => {
     event?.preventDefault();
     const isValid = validate();
     if (!isValid) return;
+    setLoading(true);
     const loginData = data;
     const response = await postData(loginData);
     if (response instanceof Error) {
@@ -66,6 +63,7 @@ const Login = () => {
         containerId: "root-toast",
         autoClose: 2000,
       });
+      setLoading(false);
       return;
     }
     const { access, refresh } = response;
@@ -85,6 +83,7 @@ const Login = () => {
         containerId: "root-toast",
         autoClose: 2000,
       });
+      setLoading(false);
       return;
     }
     dispatch({
@@ -102,6 +101,8 @@ const Login = () => {
       containerId: "root-toast",
       autoClose: 2000,
     });
+    setLoading(false);
+    router.push("/dashboard");
     return;
   };
 
@@ -126,9 +127,9 @@ const Login = () => {
           <Button
             variant="primary"
             type="submit"
-            disabled={status === "loading"}
+            disabled={loading}
           >
-            {status === "loading" ? <Loader /> : <h2>Login</h2>}
+            {loading ? <Loader /> : <h2>Login</h2>}
           </Button>
           <div className={styles["glassmorph__column"]}>
             <Checkbox
