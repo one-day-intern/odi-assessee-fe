@@ -16,7 +16,7 @@ const AssessmentEvent: NextPage = () => {
   );
 
   useEffect(() => {
-    if (error) {
+    if (error && router.isReady) {
       toast.error(error.message);
       router.push("/");
     }

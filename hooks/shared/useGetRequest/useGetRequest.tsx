@@ -68,6 +68,8 @@ function useGetRequest<T = unknown>(
   } = useAuthContext();
 
   const fetchData = useCallback(async () => {
+    if (accessToken === "") return;
+    
     dispatch({ type: "loading" });
 
     // If a cache exists for this url, return it
