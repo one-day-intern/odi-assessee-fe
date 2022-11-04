@@ -8,8 +8,6 @@ interface MockResponse {
   message: string;
 }
 
-let mockLocalStorage = {};
-
 interface HOCProps {
   children: ReactNode;
 }
@@ -19,20 +17,6 @@ const AuthContextWrapper = ({ children }: HOCProps) => {
 };
 
 describe("useGetRequest test", () => {
-  beforeAll(() => {
-    global.Storage.prototype.getItem = jest.fn((key) => mockLocalStorage[key]);
-    global.Storage.prototype.setItem = jest.fn((key, value) => {
-      mockLocalStorage[key] = value;
-    });
-    global.Storage.prototype.removeItem = jest.fn(
-      (key) => delete mockLocalStorage[key]
-    );
-  });
-
-  beforeEach(() => {
-    mockLocalStorage = {};
-  });
-
   it("Hook renders properly", () => {
     const { result } = renderHook(() => useGetRequest("/route/unprotected/"));
     expect(result.current).toBeDefined();
@@ -113,7 +97,7 @@ describe("useGetRequest test", () => {
   });
 
   it("Hook called when fetching protected data without token", async () => {
-
+    localStorage.setItem("accessToken", "accesstoken")
     const hook = renderHook(
       () =>
         useGetRequest<MockResponse>("/route/protected/", {
@@ -133,7 +117,7 @@ describe("useGetRequest test", () => {
   });
 
   it("Hook called when fetching protected data error without token", async () => {
-
+    localStorage.setItem("accessToken", "accesstoken")
     const hook = renderHook(
       () =>
         useGetRequest<MockResponse>("/route/protected/error/", {

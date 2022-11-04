@@ -134,6 +134,7 @@ function usePostRequest<T, V>(
         type: "fetched",
         payload: data as V,
       });
+      return data as V;
     } catch (error) {
       if (cancelRequest.current) return;
 
