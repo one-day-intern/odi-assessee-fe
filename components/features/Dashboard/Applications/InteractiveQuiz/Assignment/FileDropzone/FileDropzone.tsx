@@ -50,19 +50,45 @@ const FileDropzone = () => {
     setShowConfirmation(false);
   };
 
-  const download = async () => {};
-
+  const isOverwritingFile = fileSubmitted && uploadState.inProgress;
+  const isNoOperation = !uploadState.inProgress && !showConfirmation;
   const showFileUploadIcon =
-    !fileSubmitted ||
-    (fileSubmitted && uploadState.inProgress) ||
-    showConfirmation;
-  const showFileIcon =
-    fileSubmitted && !uploadState.inProgress && !showConfirmation;
-  const showInitialCaption =
-    !fileSubmitted && !uploadState.inProgress && !showConfirmation;
-  const showSubmittedCaption =
-    fileSubmitted && !uploadState.inProgress && !showConfirmation;
+    !fileSubmitted || showConfirmation || isOverwritingFile;
+  const showFileIcon = fileSubmitted && isNoOperation;
+  const showInitialCaption = !fileSubmitted && isNoOperation;
+  const showSubmittedCaption = fileSubmitted && isNoOperation;
   const showUploadingCaption = uploadState.inProgress && !showConfirmation;
+
+  const showCaption = () => {
+    if (showInitialCaption) return <InitialCaption key="initial-caption" />;
+    if (showSubmittedCaption)
+      return (
+        <SubmittedCaption
+          key="submitted-caption"
+          fileName={fileSubmitted.name}
+          onDownload={(e) => {
+            e.stopPropagation();
+          }}
+        />
+      );
+    if (showUploadingCaption)
+      return (
+        <UploadingCaption
+          key="confirmation-caption"
+          fileName={acceptedFiles[0].name}
+          progress={uploadProgress}
+        />
+      );
+    if (showConfirmation)
+      return (
+        <ConfirmationCaption
+          key="confirmation-caption"
+          fileName={acceptedFiles[0].name}
+          onCancel={() => setShowConfirmation(false)}
+          onContinue={() => upload()}
+        />
+      );
+  };
 
   return (
     <div
@@ -96,34 +122,7 @@ const FileDropzone = () => {
         )}
       </AnimatePresence>
       <div className={styles["dropzone-captions_container"]}>
-        <AnimatePresence>
-          {showInitialCaption && <InitialCaption key="initial-caption" />}
-          {showSubmittedCaption && (
-            <SubmittedCaption
-              key="submitted-caption"
-              fileName={fileSubmitted.name}
-              onDownload={(e) => {
-                e.stopPropagation();
-                download();
-              }}
-            />
-          )}
-          {showUploadingCaption && (
-            <UploadingCaption
-              key="uploading-caption"
-              fileName={acceptedFiles[0].name}
-              progress={uploadProgress}
-            />
-          )}
-          {showConfirmation && (
-            <ConfirmationCaption
-              key="confirmation-caption"
-              fileName={acceptedFiles[0].name}
-              onCancel={() => setShowConfirmation(false)}
-              onContinue={() => upload()}
-            />
-          )}
-        </AnimatePresence>
+        <AnimatePresence>{showCaption()}</AnimatePresence>
       </div>
     </div>
   );
