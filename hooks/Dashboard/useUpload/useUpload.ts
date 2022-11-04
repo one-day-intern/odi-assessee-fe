@@ -144,7 +144,46 @@ function useUpload<T = any, V = any>(
         authDispatch({ type: AuthDispatchTypes.LOGOUT });
         return;
       }
-     
+      const data = new FormData();
+      for (let key in body) {
+        data.append(key, body[key] as any);
+      }
+      options?.onUploadStart && options.onUploadStart();
+      setData(undefined);
+      setError(undefined);
+      setUploadProgress(0);
+      const request = new XMLHttpRequest();
+      request.responseType = "json";
+      request.onreadystatechange = async function () {
+        if (this.readyState === XMLHttpRequest.DONE && this.status < 400) {
+          setData(this.response as V);
+          if (options?.onUploadSuccess) await options.onUploadSuccess(this.response as V);
+          setUploadProgress(0);
+          dispatch({ type: "success" });
+        } else if (
+          this.readyState === XMLHttpRequest.DONE &&
+          this.status >= 400
+        ) {
+          const error = new Error();
+          error.message = this.response.message;
+          setError(error);
+          options?.onUploadError && options.onUploadError(error);
+          setUploadProgress(0);
+          dispatch({ type: "failure" });
+        }
+      };
+      request.upload.onprogress = function (event) {
+        setUploadProgress(event.loaded / event.total);
+      };
+      request.open(
+        "POST",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}${targetUrl}`
+      );
+      request.setRequestHeader(
+        "Authorization",
+        `Bearer ${authResponse.access}`
+      );
+      request.send(data);
       return;
     }
     authDispatch({ type: AuthDispatchTypes.LOGOUT });
