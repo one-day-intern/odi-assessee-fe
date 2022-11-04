@@ -1,0 +1,15 @@
+.question-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.question {
+    text-align: justify;
+}
+
+.question-answers {
+    width: 100%;
+    height: fit-content;
+}
