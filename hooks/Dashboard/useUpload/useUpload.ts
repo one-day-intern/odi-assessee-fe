@@ -187,7 +187,6 @@ function useUpload<T = any, V = any>(
       return;
     }
     authDispatch({ type: AuthDispatchTypes.LOGOUT });
-    return;
   };
 
   return [upload, uploadState, uploadProgress, data, error];

@@ -95,9 +95,9 @@ function usePostRequest<T, V>(
 
         dispatch({
           type: "error",
-          payload: error as PostError,
+          payload: error,
         });
-        return error as PostError;
+        return error;
       }
 
 
@@ -183,9 +183,9 @@ function usePostRequest<T, V>(
             error.status = response.status;
             dispatch({
               type: "error",
-              payload: error as PostError,
+              payload: error,
             });
-            return error as PostError;
+            return error;
           }
 
           dispatch({

@@ -1,6 +1,6 @@
 import { useAuthContext } from "@context/Authentication";
 import { useCallback, useEffect, useRef, useState } from "react";
-import EventSource, { OPEN } from "eventsource";
+import EventSource from "eventsource";
 import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
 
 interface SSEOptions {

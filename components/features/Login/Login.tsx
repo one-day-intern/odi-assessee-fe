@@ -103,7 +103,6 @@ const Login = () => {
     });
     setLoading(false);
     router.push("/dashboard");
-    return;
   };
 
   return (

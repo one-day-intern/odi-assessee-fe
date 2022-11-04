@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styles from "./Room.module.css";
 import { useHMSStore, selectPeers } from "@100mslive/react-sdk";
 import VideoPlayer from "../VideoPlayer";

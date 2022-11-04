@@ -1,5 +1,4 @@
 import React from "react";
-import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
 import Sidebar from "./Sidebar";
 import AssignmentTimer from "../AssignmentTimer";
 import styles from "./Quiz.module.css";

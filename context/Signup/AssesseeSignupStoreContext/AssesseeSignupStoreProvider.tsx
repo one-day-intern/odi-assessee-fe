@@ -88,7 +88,6 @@ const AssesseeSignupStoreProvider = ({
         theme: "colored",
         autoClose: 2000
       });
-      return;
     }
   }, [responseData, responseError, status, router]);
 
@@ -144,7 +143,7 @@ const AssesseeSignupStoreProvider = ({
     const [isValid, postedObject] = validate();
     if (!isValid) return;
 
-    postData!(postedObject);
+    postData(postedObject);
   };
 
   return (

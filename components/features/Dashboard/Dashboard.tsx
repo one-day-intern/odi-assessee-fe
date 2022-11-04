@@ -67,6 +67,12 @@ const Dashboard = () => {
         case "assignment":
           app = interactiveQuizApp;
           break;
+        case "response-test":
+          app = responseTestApp;
+          break;
+        case "video-conference":
+          app = vidconApp;
+          break;
         default:
           app = undefined;
           break;
@@ -82,7 +88,7 @@ const Dashboard = () => {
     [onNotification]
   );
 
-  const sse = useSSE(
+  useSSE(
     `/assessment/assessment-event/subscribe/?assessment-event-id=${router.query["assessment-event-id"]}`,
     { onMessage: handleServerNotification }
   );

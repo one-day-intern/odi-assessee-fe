@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "./InteractiveQuiz.module.css";
 import Quiz from "./Quiz";
-import Assignment from "./Assignment";
 
 const InteractiveQuiz = () => {
   return (

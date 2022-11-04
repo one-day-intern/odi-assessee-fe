@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./AssignmentTimer.module.css";
 
 interface Props extends React.PropsWithChildren {

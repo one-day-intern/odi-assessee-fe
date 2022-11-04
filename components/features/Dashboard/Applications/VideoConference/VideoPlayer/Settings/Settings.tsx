@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import styles from "./Settings.module.css";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import SettingsIcon from "./SettingsIcon";
 import SettingsModal from "./SettingsModal";
-import { AnimatePresence } from "framer-motion";
 import { useHMSActions } from "@100mslive/react-sdk";
 
 const Settings = () => {
