@@ -124,7 +124,13 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
   const showUploadingCaption = uploadState.inProgress && !showConfirmation;
 
   const showCaption = () => {
-    if (showInitialCaption) return <InitialCaption key="initial-caption" />;
+    if (showInitialCaption)
+      return (
+        <InitialCaption
+          key="initial-caption"
+          expectedFileType={assignment.additional_info.expected_file_format}
+        />
+      );
     if (showSubmittedCaption)
       return (
         <SubmittedCaption
