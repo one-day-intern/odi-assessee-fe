@@ -25,7 +25,7 @@ const Quiz = () => {
         <div className={`${styles["quiz-header"]}`}>
           <h1 className={`${styles["question-header"]}`}>Question X</h1>
           <AssignmentTimer
-            durationInMinutes={120}
+            durationInSeconds={0}
             onTimerEnd={() => console.log("hello")}
           />
         </div>
