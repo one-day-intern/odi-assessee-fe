@@ -1,0 +1,24 @@
+.quiz-body {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.question-header {
+  margin: 0;
+}
+
+.quiz-header {
+  padding-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quiz-controls {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.5rem;
+}

@@ -1,0 +1,33 @@
+.notification-viewer {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  overflow-x: hidden;
+  position: absolute;
+  top: 0;
+  width: max(30%, 450px);
+  z-index: 999999999;
+
+  background: rgba(44, 44, 44, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.empty-header {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  text-align: center;
+}
+
+@media screen and (max-width: 1024px) {
+  .notification-viewer {
+    width: 100%;
+  }
+}

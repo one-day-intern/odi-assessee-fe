@@ -1,0 +1,71 @@
+.tile {
+  width: 100%;
+  border: 0;
+  margin-bottom: 3px;
+  outline: 1px solid grey;
+  padding: 8px 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  background: rgb(254, 254, 254);
+  cursor: pointer;
+  transition: background 300ms;
+  border-radius: 5px;
+  user-select: none;
+}
+
+.tile:hover {
+  background: #ccc;
+}
+
+.sender {
+  font-size: 1.4em;
+  width: min(180px, 50%);
+  font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.email-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin-left: 30px;
+}
+
+.email-content .subject {
+  margin-right: 25px;
+  font-size: 1.25em;
+  font-weight: bold;
+  position: relative;
+}
+
+.email-content .subject::after {
+  content: "";
+  position: absolute;
+  background: grey;
+  height: 2px;
+  width: 8px;
+  right: -18px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.email-content .body {
+  color: grey;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.email-content .date {
+  width: fit-content;
+  font-weight: bold;
+  color: grey;
+  margin-left: auto;
+}

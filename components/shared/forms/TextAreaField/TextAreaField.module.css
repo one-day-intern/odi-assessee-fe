@@ -1,0 +1,40 @@
+.form__control {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+}
+
+.form__label {
+  font-size: 0.85rem;
+  margin-bottom: 0.6rem;
+}
+
+.form__input-textarea {
+  resize: none;
+
+  background: rgba(41, 90, 87, 0.1);
+
+  border-radius: 0.75rem;
+  border: none;
+
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
+
+  padding: 0.7rem 2rem;
+  z-index: 2;
+}
+
+.form__input-textarea:focus,
+.form__input-textarea:focus-visible {
+  border: none;
+  outline: none;
+}
+
+.form__error {
+  font-size: 0.7rem;
+  letter-spacing: -0.05em;
+  margin-top: 0.15rem;
+
+  color: #cc4037;
+}

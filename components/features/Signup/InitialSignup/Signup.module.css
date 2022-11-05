@@ -1,0 +1,36 @@
+.window {
+    display: flex;
+    min-height: 1000px;
+  }
+  
+  .window__illustration {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    width: 100%;
+  }
+  
+  .window__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
+    padding: 4rem 0;
+  
+    width: 100%;
+    height: 100%;
+  
+    background: white;
+  }
+
+  .window__text--heading {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 3rem;
+  
+    margin: 2.5rem 0;
+  }
+  
+  
+  

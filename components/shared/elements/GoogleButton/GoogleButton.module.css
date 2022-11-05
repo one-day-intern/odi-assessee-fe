@@ -1,0 +1,27 @@
+.button--google {
+    border-radius: 0.5rem;
+
+    padding: 0.7rem 1rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+
+    background: white;
+
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+
+    gap: 1rem;
+}
+
+.button--google__text {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+
+    margin: 0;
+    color: rgba(0, 0, 0, 0.54);
+}
