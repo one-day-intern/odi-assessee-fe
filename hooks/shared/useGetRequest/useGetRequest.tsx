@@ -85,6 +85,7 @@ function useGetRequest<T = unknown>(
       const response = await fetch(url);
 
       if (options?.returnRawResponse) {
+        dispatch({ type: "fetched", payload: response as T });
         return response;
       }
 
@@ -127,6 +128,7 @@ function useGetRequest<T = unknown>(
         dispatch({ type: "fetched", payload: data });
         return data;
       } else {
+        dispatch({ type: "fetched", payload: response as T });
         return response;
       }
     } catch (error) {
@@ -173,6 +175,7 @@ function useGetRequest<T = unknown>(
               dispatch({ type: "fetched", payload: data });
               return data;
             } else {
+              dispatch({ type: "fetched", payload: response as T });
               return response;
             }
           }

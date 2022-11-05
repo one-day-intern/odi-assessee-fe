@@ -26,7 +26,7 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
   const router = useRouter();
   const assessmentEventId = router.query["assessment-event-id"];
   const { data, fetchData } = useGetRequest<Response>(
-    `/assessment/assessment-event/?assessment-event-id=${assessmentEventId}&assignment-tool-id=${assignment.id}`,
+    `/assessment/assessment-event/get-submitted-assignment/?assessment-event-id=${assessmentEventId}&assessment-tool-id=${assignment.id}`,
     { requiresToken: true, disableFetchOnMount: true, returnRawResponse: true }
   );
   const {
@@ -75,18 +75,22 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
           toastId: "attempt-fetch-error",
         });
       } else {
-        toast.info("Good luck with your assignment!");
+        toast.info("Good luck with your assignment!", {
+          toastId: "good-luck-assignment",
+        });
       }
     }
   };
 
   const getFileFromResponse = async (response: Response): Promise<File> => {
     const blob = await response.blob();
+    if (blob.type === "application/json") {
+      throw new Error();
+    }
     const contentDisposition = response.headers.get("content-disposition");
     const fileName = contentDisposition
       ?.split("=")[1]
-      .replace('"', "")
-      .split(".")[0];
+      .replaceAll('"', "")
     if (!fileName) {
       const error = new Error("file name was not received");
       error.cause = "file name was not received";
@@ -107,6 +111,15 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
     uploadAssignment(body);
     setShowConfirmation(false);
   };
+
+  const download = () => {
+    if (!fileSubmitted) return;
+    const url = window.URL.createObjectURL(fileSubmitted);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileSubmitted.name;
+    link.click();
+  }
 
   useEffect(() => {
     fetchCurrentAttempt();
@@ -138,6 +151,7 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
           fileName={fileSubmitted.name}
           onDownload={(e) => {
             e.stopPropagation();
+            download();
           }}
         />
       );
