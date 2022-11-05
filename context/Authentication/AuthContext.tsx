@@ -25,7 +25,7 @@ const authReducer = (
   switch (type) {
     case AuthDispatchTypes.LOGIN:
       return {
-        ...payload!,
+        ...payload,
         refreshToken: payload?.remember ? payload?.refreshToken : null,
       };
     case AuthDispatchTypes.LOGOUT:

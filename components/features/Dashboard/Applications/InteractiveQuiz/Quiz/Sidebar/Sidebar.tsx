@@ -9,7 +9,7 @@ import QuestionMenu from "./QuestionMenu";
 
 const Sidebar = () => {
   return (
-    <div data-testid="QuizSidebar" className={`${styles["sidebar"]}`}>
+    <div id="quiz-sidebar" data-testid="QuizSidebar" className={`${styles["sidebar"]}`}>
       <ProgressBar />
       <div className={`${styles["sidebar-quiz_info"]}`}>
         <div className={`${styles["info-container"]}`}>

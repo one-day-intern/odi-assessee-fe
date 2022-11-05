@@ -8,7 +8,8 @@ import { createMockRouter } from "../../../../mocks/createMockRouter";
 const mockPush = jest.fn();
 
 describe("Protected Route test suite", () => {
-  it("Test if it redirects when user doesn't exist", () => {
+  it("Test if it redirects when user doesn't exist", async () => {
+    localStorage.clear();
     render(
       <AuthProvider>
         <RouterContext.Provider value={createMockRouter({ push: mockPush })}>
@@ -18,7 +19,7 @@ describe("Protected Route test suite", () => {
         </RouterContext.Provider>
       </AuthProvider>
     );
-
+    await new Promise(resolve => setTimeout(resolve, 1000));
     const hello = screen.queryByTestId("protected");
     expect(hello).not.toBeInTheDocument();
 
@@ -26,15 +27,6 @@ describe("Protected Route test suite", () => {
   });
 
   it("Test if it stays if user exists", async () => {
-    const mockLocalStorage = {}
-    global.Storage.prototype.getItem = jest.fn((key) => mockLocalStorage[key]);
-    global.Storage.prototype.setItem = jest.fn((key, value) => {
-      mockLocalStorage[key] = value;
-    });
-    global.Storage.prototype.removeItem = jest.fn(
-      (key) => delete mockLocalStorage[key]
-    );
-    
     localStorage.setItem("accessToken", "accesstoken");
     localStorage.setItem("refreshToken", "refreshtoken");
 

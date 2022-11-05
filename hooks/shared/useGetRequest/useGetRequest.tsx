@@ -16,6 +16,7 @@ interface FetchError extends Error {
 }
 
 interface Options {
+  returnRawResponse?: boolean;
   useCache?: boolean;
   requiresToken?: boolean;
   disableFetchOnMount?: boolean;
@@ -68,18 +69,26 @@ function useGetRequest<T = unknown>(
   } = useAuthContext();
 
   const fetchData = useCallback(async () => {
+    if (accessToken === "") return;
+
     dispatch({ type: "loading" });
 
     // If a cache exists for this url, return it
     // If token is required, cache is automatically disabled
-    if (!options?.requiresToken && options?.useCache && cache.current[url!]) {
-      dispatch({ type: "fetched", payload: cache.current[url!] });
-      return cache.current[url!];
+    if (!options?.requiresToken && options?.useCache && cache.current[url]) {
+      dispatch({ type: "fetched", payload: cache.current[url] });
+      return cache.current[url];
     }
 
     if (!options?.requiresToken) {
       if (cancelRequest.current) return;
-      const response = await fetch(url!);
+      const response = await fetch(url);
+
+      if (options?.returnRawResponse) {
+        dispatch({ type: "fetched", payload: response as T });
+        return response;
+      }
+
       const json = await response.json();
 
       if (!response.ok) {
@@ -87,11 +96,11 @@ function useGetRequest<T = unknown>(
         const error: FetchError = new Error(response.statusText);
         error.status = response.status;
         error.message = json?.message;
-        dispatch({ type: "error", payload: error as FetchError });
+        dispatch({ type: "error", payload: error });
         return;
       }
 
-      cache.current[url!] = json;
+      cache.current[url] = json;
 
       dispatch({ type: "fetched", payload: json });
 
@@ -99,7 +108,7 @@ function useGetRequest<T = unknown>(
     }
 
     try {
-      const response = await fetch(url!, {
+      const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -111,13 +120,17 @@ function useGetRequest<T = unknown>(
         error.message = json?.message;
         throw error;
       }
+      if (!options?.returnRawResponse) {
+        const data = (await response.json()) as T;
+        cache.current[url] = data;
+        if (cancelRequest.current) return;
 
-      const data = (await response.json()) as T;
-      cache.current[url!] = data;
-      if (cancelRequest.current) return;
-
-      dispatch({ type: "fetched", payload: data });
-      return data;
+        dispatch({ type: "fetched", payload: data });
+        return data;
+      } else {
+        dispatch({ type: "fetched", payload: response as T });
+        return response;
+      }
     } catch (error) {
       if (cancelRequest.current) return;
 
@@ -148,18 +161,23 @@ function useGetRequest<T = unknown>(
               user,
             },
           });
-          if (options.disableFetchOnMount) {
-            const response = await fetch(url!, {
+          if (options?.disableFetchOnMount) {
+            const response = await fetch(url, {
               headers: {
                 Authorization: `Bearer ${access}`,
               },
             });
-            const data = (await response.json()) as T;
-            cache.current[url!] = data;
-            if (cancelRequest.current) return;
+            if (!options?.returnRawResponse) {
+              const data = (await response.json()) as T;
+              cache.current[url] = data;
+              if (cancelRequest.current) return;
 
-            dispatch({ type: "fetched", payload: data });
-            return data;
+              dispatch({ type: "fetched", payload: data });
+              return data;
+            } else {
+              dispatch({ type: "fetched", payload: response as T });
+              return response;
+            }
           }
         } catch (e) {
           authDispatch({
@@ -178,6 +196,7 @@ function useGetRequest<T = unknown>(
     options?.requiresToken,
     options?.useCache,
     options?.disableFetchOnMount,
+    options?.returnRawResponse,
     user,
   ]);
 

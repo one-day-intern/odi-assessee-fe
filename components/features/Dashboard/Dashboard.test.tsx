@@ -106,7 +106,7 @@ describe("Dashboard test suite", () => {
     })
 
     // wait for animation
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     expect(windowContainer.children.length).toBe(1);
   });

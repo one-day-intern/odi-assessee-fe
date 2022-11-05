@@ -14,8 +14,8 @@
   "dependencies": {
     "@100mslive/react-sdk": "^0.4.2",
     "@popperjs/core": "^2.11.6",
-    "@types/eventsource": "^1.1.10",
     "@react-hook/resize-observer": "^1.2.6",
+    "@types/eventsource": "^1.1.10",
     "@types/react-flatpickr": "^3.8.7",
     "eventsource": "^2.0.2",
     "framer-motion": "^7.3.5",
@@ -23,6 +23,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-draggable": "^4.4.5",
+    "react-dropzone": "^14.2.3",
     "react-flatpickr": "^3.10.13",
     "react-phone-input-2": "^2.15.1",
     "react-popper": "^2.3.0",

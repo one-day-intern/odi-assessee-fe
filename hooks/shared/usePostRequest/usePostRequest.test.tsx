@@ -8,7 +8,6 @@ interface MockResponse {
   message: string;
 }
 
-let mockLocalStorage = {};
 
 interface HOCProps {
   children: ReactNode;
@@ -19,20 +18,6 @@ const AuthContextWrapper = ({ children }: HOCProps) => {
 };
 
 describe("usePostRequest test", () => {
-  beforeAll(() => {
-    global.Storage.prototype.getItem = jest.fn((key) => mockLocalStorage[key]);
-    global.Storage.prototype.setItem = jest.fn((key, value) => {
-      mockLocalStorage[key] = value;
-    });
-    global.Storage.prototype.removeItem = jest.fn(
-      (key) => delete mockLocalStorage[key]
-    );
-  });
-
-  beforeEach(() => {
-    mockLocalStorage = {};
-  });
-
   it("Hook renders properly", () => {
     const { result } = renderHook(() => usePostRequest("/route/unprotected/", {}));
     expect(result.current).toBeDefined();
@@ -77,11 +62,14 @@ describe("usePostRequest test", () => {
   });
 
   it("Hook called when posting protected routes on success", async () => {
+    localStorage.setItem("accessToken", "accesstoken")
     const { result } = renderHook(() =>
       usePostRequest<MockResponse, MockResponse>("/route/protected-post/", {
         requiresToken: true
       }), { wrapper: AuthContextWrapper }
     );
+
+    await new Promise(resolve => setTimeout(resolve, 500))
 
     act(() => {
       result.current.postData!({
@@ -96,11 +84,14 @@ describe("usePostRequest test", () => {
   });
 
   it("Hook called when posting protected routes on error", async () => {
+    localStorage.setItem("accessToken", "accesstoken")
     const { result } = renderHook(() =>
       usePostRequest<MockResponse, MockResponse>("/route/protected-post/error/",  {
         requiresToken: true
       }), { wrapper: AuthContextWrapper }
     );
+
+    await new Promise(resolve => setTimeout(resolve, 500))
 
     act(() => {
       result.current.postData!({

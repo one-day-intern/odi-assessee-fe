@@ -9,7 +9,6 @@ module.exports = {
     '!**/*.d.ts',
     '!**/node_modules/**',
     "!**/pages/**",
-    "!**/components/shared/**/svg/**",
     '!<rootDir>/out/**',
     '!<rootDir>/.next/**',
     '!<rootDir>/*.config.js',

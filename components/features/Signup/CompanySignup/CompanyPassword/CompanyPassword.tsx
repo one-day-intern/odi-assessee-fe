@@ -29,7 +29,7 @@ const CompanyPassword = () => {
 
   const postDataToAPI: FormEventHandler<Element> = (e) => {
     e.preventDefault();
-    postResult!();
+    postResult();
   };
 
   useEffect(() => {
