@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./AssignmentTimer.module.css";
 
 interface Props extends React.PropsWithChildren {
-  durationInMinutes: number;
+  durationInSeconds: number;
   onTimerEnd?: () => void;
 }
 
@@ -19,15 +19,15 @@ const timeFormatter = (totalSeconds: number) => {
 };
 
 const AssignmentTimer: React.FC<Props> = ({
-  durationInMinutes,
+  durationInSeconds,
   onTimerEnd,
 }) => {
   const timerRef = useRef<NodeJS.Timer>();
-  const [timeRemaining, setTimeRemaining] = useState(() => durationInMinutes * 60);
+  const [timeRemaining, setTimeRemaining] = useState(durationInSeconds);
 
   useEffect(() => {
-    setTimeRemaining(durationInMinutes * 60);
-  }, [durationInMinutes])
+    setTimeRemaining(durationInSeconds);
+  }, [durationInSeconds])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -36,7 +36,7 @@ const AssignmentTimer: React.FC<Props> = ({
     timerRef.current = timer;
 
     return () => clearInterval(timer);
-  }, [durationInMinutes]);
+  }, [durationInSeconds]);
 
   useEffect(() => {
     if (timeRemaining <= 0 && timerRef.current) {

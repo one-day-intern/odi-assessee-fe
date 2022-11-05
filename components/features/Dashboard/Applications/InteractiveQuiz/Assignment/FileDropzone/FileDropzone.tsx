@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./FileDropzone.module.css";
 import { useDropzone } from "react-dropzone";
 import useUpload from "@hooks/Dashboard/useUpload";
@@ -12,10 +12,23 @@ import {
   UploadingCaption,
 } from "./Captions";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import useGetRequest from "@hooks/shared/useGetRequest";
+import { Loader } from "@components/shared/elements/Loader";
 
-const FileDropzone = () => {
+interface Props {
+  assignment: AssignmentObject;
+}
+
+const FileDropzone: React.FC<Props> = ({ assignment }) => {
   const [fileSubmitted, setFileSubmitted] = useState<File>();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const router = useRouter();
+  const assessmentEventId = router.query["assessment-event-id"];
+  const { data, fetchData } = useGetRequest<Response>(
+    `/assessment/assessment-event/?assessment-event-id=${assessmentEventId}&assignment-tool-id=${assignment.id}`,
+    { requiresToken: true, disableFetchOnMount: true, returnRawResponse: true }
+  );
   const {
     getInputProps,
     getRootProps,
@@ -33,22 +46,73 @@ const FileDropzone = () => {
     },
   });
   const [uploadAssignment, uploadState, uploadProgress] = useUpload(
-    "/main/upload/",
+    `/assessment/assessment-event/submit-assignments/`,
     {
       onUploadError(error) {
         toast.error(error.message);
       },
       onUploadSuccess: async function () {
-        setFileSubmitted(acceptedFiles[0]);
+        await fetchCurrentAttempt();
       },
     }
   );
 
+  const fetchCurrentAttempt = async () => {
+    const response = await fetchData();
+    if (response instanceof Error) {
+      toast.error("This assignment has been closed", {
+        toastId: "attempt-fetch-error",
+      });
+      return;
+    }
+    try {
+      const file = await getFileFromResponse(response);
+      setFileSubmitted(file);
+    } catch (e) {
+      const error = e as Error;
+      if (error.name === "SERVER_ERROR") {
+        toast.error("Server error, file name could not be parsed", {
+          toastId: "attempt-fetch-error",
+        });
+      } else {
+        toast.info("Good luck with your assignment!");
+      }
+    }
+  };
+
+  const getFileFromResponse = async (response: Response): Promise<File> => {
+    const blob = await response.blob();
+    const contentDisposition = response.headers.get("content-disposition");
+    const fileName = contentDisposition
+      ?.split("=")[1]
+      .replace('"', "")
+      .split(".")[0];
+    if (!fileName) {
+      const error = new Error("file name was not received");
+      error.cause = "file name was not received";
+      error.name = "SERVER_ERROR";
+      throw error;
+    }
+    const file = new File([blob], fileName);
+    return file;
+  };
+
   const upload = () => {
     const files = acceptedFiles[0];
-    uploadAssignment({ file: files });
+    const body = {
+      file: files,
+      "assessment-tool-id": assignment.id,
+      "assessment-event-id": assessmentEventId,
+    };
+    uploadAssignment(body);
     setShowConfirmation(false);
   };
+
+  useEffect(() => {
+    fetchCurrentAttempt();
+    // fetch on mount
+    // eslint-disable-next-line
+  }, []);
 
   const isOverwritingFile = fileSubmitted && uploadState.inProgress;
   const isNoOperation = !uploadState.inProgress && !showConfirmation;
@@ -89,6 +153,23 @@ const FileDropzone = () => {
         />
       );
   };
+
+  if (!data) {
+    return (
+      <div
+        style={{
+          height: 316,
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--primary)",
+        }}
+      >
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div

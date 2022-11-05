@@ -224,4 +224,12 @@ export const handlers = [
       );
     }
   ),
+  rest.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/assessment/assessment-event/`, (req, res, ctx) => {
+    return res(
+      ctx.json({
+        message: "Attempt created"
+      }),
+      ctx.status(200)
+    )
+  })
 ];
