@@ -29,22 +29,6 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
     `/assessment/assessment-event/get-submitted-assignment/?assessment-event-id=${assessmentEventId}&assessment-tool-id=${assignment.id}`,
     { requiresToken: true, disableFetchOnMount: true, returnRawResponse: true }
   );
-  const {
-    getInputProps,
-    getRootProps,
-    acceptedFiles,
-    isDragActive,
-    isFileDialogActive,
-  } = useDropzone({
-    disabled: showConfirmation,
-    maxFiles: 1,
-    onDropAccepted() {
-      setShowConfirmation(true);
-    },
-    onDropRejected() {
-      toast.error("File format is incorrect");
-    },
-  });
   const [uploadAssignment, uploadState, uploadProgress] = useUpload(
     `/assessment/assessment-event/submit-assignments/`,
     {
@@ -56,6 +40,22 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
       },
     }
   );
+  const {
+    getInputProps,
+    getRootProps,
+    acceptedFiles,
+    isDragActive,
+    isFileDialogActive,
+  } = useDropzone({
+    disabled: showConfirmation || uploadState.inProgress,
+    maxFiles: 1,
+    onDropAccepted() {
+      setShowConfirmation(true);
+    },
+    onDropRejected() {
+      toast.error("File format is incorrect");
+    },
+  });
 
   const fetchCurrentAttempt = async () => {
     const response = await fetchData();
