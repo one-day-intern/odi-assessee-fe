@@ -12,7 +12,7 @@ import Inbox from "./Inbox";
 const ResponseTest = () => {
   const emailsPerPage = 20;
   const [emailOpened, setEmailOpened] = useState<Email>();
-  const [emails, setEmails] = useState<Email[]>([]);
+  const emails: Email[] = [];
   const [filter, setFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
 
