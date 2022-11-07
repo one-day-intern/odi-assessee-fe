@@ -74,7 +74,6 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
       });
 
       router.push("/accounts/login/assessee");
-      return;
     }
   }, [data, error, status, router]);
 
@@ -131,7 +130,7 @@ const CompanySignupStoreProvider = ({ children }: CompanySignupStoreProps) => {
 
     const result = storeState;
 
-    postData!(result);
+    postData(result);
   };
 
   return (

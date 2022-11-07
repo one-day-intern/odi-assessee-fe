@@ -58,7 +58,7 @@ const AssessmentEventCard: React.FC<AssessmentEvent> = ({ name, event_id }) => {
 const AssessmentEventList: NextPage = () => {
   const { dispatch } = useAuthContext();
   const { data } = useGetRequest<AssessmentEvent[]>(
-    "/assessee/assessment-events/",
+    "/assessee/assessment-events/?is-active=true",
     {
       requiresToken: true,
     }

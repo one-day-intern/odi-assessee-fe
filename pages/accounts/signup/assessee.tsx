@@ -1,11 +1,14 @@
-import { AssesseeSignup } from '@components/features/Signup/AssesseeSignup'
-import { NextPage } from 'next'
-import React from 'react'
+import { AssesseeSignup } from "@components/features/Signup/AssesseeSignup";
+import LoggedOutOnlyRoute from "@components/shared/layouts/LoggedOutOnlyRoute";
+import { NextPage } from "next";
+import React from "react";
 
 const AssesseeSignupPage: NextPage = () => {
   return (
-    <AssesseeSignup/>
-  )
-}
+    <LoggedOutOnlyRoute>
+      <AssesseeSignup />
+    </LoggedOutOnlyRoute>
+  );
+};
 
-export default AssesseeSignupPage
+export default AssesseeSignupPage;

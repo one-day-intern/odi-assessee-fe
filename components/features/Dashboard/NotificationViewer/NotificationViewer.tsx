@@ -17,7 +17,7 @@ interface Props {
 export const compareNotificationPriority = (
   a: AssesseeNotification,
   b: AssesseeNotification
-  ) => {
+) => {
   // -1 means a precedes b
   if (a.priority === "high" && b.priority === "normal") {
     return -1;
@@ -38,6 +38,7 @@ const NotificationViewer: React.FC<Props> = ({
   notifications,
   onNotificationClose,
 }) => {
+  const sortedNotifications = notifications.sort(compareNotificationPriority);
   return (
     <motion.div
       data-testid="NotificationViewer"
@@ -50,32 +51,32 @@ const NotificationViewer: React.FC<Props> = ({
       transition={{ type: "tween", ease: "easeOut" }}
     >
       <AnimatePresence initial={false}>
-        {notifications
-          .sort(compareNotificationPriority)
-          .map(notification => (
-            <Notification
-              key={notification.id}
-              notification={notification}
-              onNotificationClose={() =>
-                onNotificationClose(notification, false)
+        {sortedNotifications.map((notification) => (
+          <Notification
+            key={notification.id}
+            notification={notification}
+            onNotificationClose={() => onNotificationClose(notification, false)}
+            onClick={(notification) => {
+              const app = virtualDesktop.openedApps.find(
+                (app) => app.appId === notification.app.appId
+              );
+              if (!app) {
+                virtualDesktop.openApp(notification.app);
+              } else if (app.minimized) {
+                virtualDesktop.toggleMinimize(app, false);
               }
-              onClick={(notification) => {
-                const app = virtualDesktop.openedApps.find(
-                  (app) => app.appId === notification.app.appId
-                );
-                if (!app) {
-                  virtualDesktop.openApp(notification.app);
-                } else if (app.minimized) {
-                  virtualDesktop.toggleMinimize(app, false);
-                } 
-                if (app) {
-                  virtualDesktop.focusApp(app);
-                }
-                onNotificationClose(notification, true);
-              }}
-            />
-          ))}
-        {!notifications.length && <h1 className={styles["empty-header"]}>You have no new notifications.</h1>}
+              if (app) {
+                virtualDesktop.focusApp(app);
+              }
+              onNotificationClose(notification, true);
+            }}
+          />
+        ))}
+        {!notifications.length && (
+          <h1 className={styles["empty-header"]}>
+            You have no new notifications.
+          </h1>
+        )}
       </AnimatePresence>
     </motion.div>
   );

@@ -1,6 +1,6 @@
 import React, { Suspense, useState } from "react";
 import styles from "./EmailView.module.css";
-import { motion, Transition, Variants } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import "react-quill/dist/quill.snow.css";
 import Avatar from "@components/shared/svg/Avatar";
 import { Button } from "@components/shared/elements/Button";

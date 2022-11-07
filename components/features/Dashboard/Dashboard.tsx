@@ -9,6 +9,7 @@ import { AnimatePresence, MotionConfig } from "framer-motion";
 import { applications } from "@hooks/Dashboard/useVirtualDesktop/useVirtualDesktop";
 import { useRouter } from "next/router";
 import useSSE from "@hooks/shared/useSSE";
+import DashboardEvent from "./DashboardEvents";
 
 const Dashboard = () => {
   const TASKBAR_HEIGHT = 50;
@@ -67,6 +68,12 @@ const Dashboard = () => {
         case "assignment":
           app = interactiveQuizApp;
           break;
+        case "response-test":
+          app = responseTestApp;
+          break;
+        case "video-conference":
+          app = vidconApp;
+          break;
         default:
           app = undefined;
           break;
@@ -77,12 +84,25 @@ const Dashboard = () => {
           message: serverNotification.description,
           priority: "high",
         });
+        switch(app.appId) {
+          case "response-test":
+            dispatchEvent(new Event(DashboardEvent.REFRESH_EMAILS));
+            break;
+          case "interactive-quiz":
+            dispatchEvent(new Event(DashboardEvent.REFRESH_ASSIGNMENTS));
+            break;
+          case "video-conference":
+            dispatchEvent(new Event(DashboardEvent.REFRESH_VIDCON));
+            break;
+          default:
+            break;
+        }
       }
     },
     [onNotification]
   );
 
-  const sse = useSSE(
+  useSSE(
     `/assessment/assessment-event/subscribe/?assessment-event-id=${router.query["assessment-event-id"]}`,
     { onMessage: handleServerNotification }
   );

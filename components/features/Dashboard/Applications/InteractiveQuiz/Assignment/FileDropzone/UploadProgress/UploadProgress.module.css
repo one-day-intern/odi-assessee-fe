@@ -1,0 +1,16 @@
+.outer {
+  width: 400px;
+  height: 30px;
+  padding: 4px;
+  border-radius: 15px;
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.inner {
+  height: 100%;
+  border-radius: 11px;
+  background: var(--secondary);
+  max-width: 100%;
+  transition: width 300ms;
+}

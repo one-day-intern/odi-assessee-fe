@@ -1,9 +1,10 @@
 import React from "react";
-import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
 import Sidebar from "./Sidebar";
 import AssignmentTimer from "../AssignmentTimer";
 import styles from "./Quiz.module.css";
 import { Button } from "@components/shared/elements/Button";
+import EssayQuestion from "./EssayQuestion";
+import { useDashboardAPI } from "@context/Dashboard/DashboardAPIContext";
 
 const buttonStyles: React.CSSProperties = {
   maxWidth: 150,
@@ -14,18 +15,21 @@ const buttonStyles: React.CSSProperties = {
 };
 
 const Quiz = () => {
+  const { window } = useDashboardAPI();
+  const breakpoint = window.width <= 840;
+
   return (
     <>
-      <Sidebar />
-      <div className={`${styles["quiz-body"]}`}>
+      {!breakpoint && <Sidebar />}
+      <div id="quiz-body" className={`${styles["quiz-body"]}`}>
         <div className={`${styles["quiz-header"]}`}>
           <h1 className={`${styles["question-header"]}`}>Question X</h1>
           <AssignmentTimer
-            durationInMinutes={120}
+            durationInSeconds={0}
             onTimerEnd={() => console.log("hello")}
           />
         </div>
-        <MultipleChoiceQuestion />
+        <EssayQuestion/>
         <div className={`${styles["quiz-controls"]}`}>
           <Button
             style={{

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styles from "./ProgressBar.module.css";
 import ProgressIndicator from "./ProgressIndicator";
-import { motion } from "framer-motion";
 
 interface Props {}
 
