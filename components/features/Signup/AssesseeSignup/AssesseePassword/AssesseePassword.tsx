@@ -10,7 +10,7 @@ import React, { FormEventHandler, useEffect, useMemo, useRef } from "react";
 import styles from "./AssesseePassword.module.css";
 
 const AssesseePassword = () => {
-  const { data, errors, setValue, setError, postResult, loadingStatus } =
+  const { data, errors, setValue, postResult, loadingStatus } =
     useAssesseeSignupStoreContext();
   const { password, confirmed_password: confirmedPassword, email } = data;
 

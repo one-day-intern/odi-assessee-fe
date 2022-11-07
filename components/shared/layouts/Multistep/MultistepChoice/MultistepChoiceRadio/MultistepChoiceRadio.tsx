@@ -6,6 +6,8 @@ const MultistepChoiceRadio = ({
   disabled,
   isSelected,
 }: MultistepChoiceRadioProps) => {
+  const enabledPathLength = isSelected ? 0 : 1;
+  const enabledCircle = isSelected ? 11 : 23;
   return (
     <div className={ styles["choice__radio"]}>
       <motion.svg
@@ -43,7 +45,7 @@ const MultistepChoiceRadio = ({
           }}
           animate={{
             stroke: disabled ? "#808080" : "#3D65D8",
-            r: disabled ? 0 : isSelected ? 11 : 23,
+            r: disabled ? 0 : enabledCircle
           }}
           data-testid="inner-circle"
         />
@@ -61,7 +63,7 @@ const MultistepChoiceRadio = ({
           stroke="white"
           strokeWidth="2.82067"
           animate={{
-            pathLength: disabled ? 0 : isSelected ? 0 : 1
+            pathLength: disabled ? 0 : enabledPathLength
           }}
           transition={{
             duration: 0.3
