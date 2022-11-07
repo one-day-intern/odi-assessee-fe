@@ -99,11 +99,8 @@ function useGetRequest<T = unknown>(
         dispatch({ type: "error", payload: error });
         return;
       }
-
       cache.current[url] = json;
-
       dispatch({ type: "fetched", payload: json });
-
       return json;
     }
 
