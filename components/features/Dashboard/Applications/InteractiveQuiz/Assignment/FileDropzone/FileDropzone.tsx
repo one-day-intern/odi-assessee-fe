@@ -10,6 +10,7 @@ import {
   InitialCaption,
   SubmittedCaption,
   UploadingCaption,
+  NoSubmissionCaption,
 } from "./Captions";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
@@ -18,11 +19,13 @@ import { Loader } from "@components/shared/elements/Loader";
 
 interface Props {
   assignment: AssignmentObject;
+  isAssignmentEnd: boolean;
 }
 
-const FileDropzone: React.FC<Props> = ({ assignment }) => {
+const FileDropzone: React.FC<Props> = ({ assignment, isAssignmentEnd }) => {
   const [fileSubmitted, setFileSubmitted] = useState<File>();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [transformingFile, setTransformingFile] = useState(false);
   const router = useRouter();
   const assessmentEventId = router.query["assessment-event-id"];
   const { data, fetchData } = useGetRequest<Response>(
@@ -40,6 +43,8 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
       },
     }
   );
+  const disableDropzone =
+    showConfirmation || uploadState.inProgress || isAssignmentEnd;
   const {
     getInputProps,
     getRootProps,
@@ -47,7 +52,7 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
     isDragActive,
     isFileDialogActive,
   } = useDropzone({
-    disabled: showConfirmation || uploadState.inProgress,
+    disabled: disableDropzone,
     maxFiles: 1,
     onDropAccepted() {
       setShowConfirmation(true);
@@ -66,15 +71,18 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
       return;
     }
     try {
+      setTransformingFile(true);
       const file = await getFileFromResponse(response);
       setFileSubmitted(file);
+      setTransformingFile(false);
     } catch (e) {
+      setTransformingFile(false);
       const error = e as Error;
       if (error.name === "SERVER_ERROR") {
         toast.error("Server error, file name could not be parsed", {
           toastId: "attempt-fetch-error",
         });
-      } else {
+      } else if (!isAssignmentEnd) {
         toast.info("Good luck with your assignment!", {
           toastId: "good-luck-assignment",
         });
@@ -88,9 +96,7 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
       throw new Error();
     }
     const contentDisposition = response.headers.get("content-disposition");
-    const fileName = contentDisposition
-      ?.split("=")[1]
-      .replaceAll('"', "")
+    const fileName = contentDisposition?.split("=")[1].replaceAll('"', "");
     if (!fileName) {
       const error = new Error("file name was not received");
       error.cause = "file name was not received";
@@ -119,7 +125,7 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
     link.href = url;
     link.download = fileSubmitted.name;
     link.click();
-  }
+  };
 
   useEffect(() => {
     fetchCurrentAttempt();
@@ -128,7 +134,8 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
   }, []);
 
   const isOverwritingFile = fileSubmitted && uploadState.inProgress;
-  const isNoOperation = !uploadState.inProgress && !showConfirmation;
+  const isNoOperation =
+    !uploadState.inProgress && !showConfirmation && !transformingFile;
   const showFileUploadIcon =
     !fileSubmitted || showConfirmation || isOverwritingFile;
   const showFileIcon = fileSubmitted && isNoOperation;
@@ -137,6 +144,8 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
   const showUploadingCaption = uploadState.inProgress && !showConfirmation;
 
   const showCaption = () => {
+    if (!fileSubmitted && isAssignmentEnd)
+      return <NoSubmissionCaption key="no-submission-caption" />;
     if (showInitialCaption)
       return (
         <InitialCaption
@@ -149,6 +158,7 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
         <SubmittedCaption
           key="submitted-caption"
           fileName={fileSubmitted.name}
+          isAssignmentEnd={isAssignmentEnd}
           onDownload={(e) => {
             e.stopPropagation();
             download();
@@ -174,7 +184,7 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
       );
   };
 
-  if (!data) {
+  if (!data || transformingFile) {
     return (
       <div
         style={{
@@ -195,13 +205,13 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
     <div
       {...getRootProps()}
       className={`${styles.dropzone}${
-        showConfirmation ? " " + styles.disabled : ""
+        disableDropzone ? " " + styles.disabled : ""
       }${isDragActive || isFileDialogActive ? " " + styles.accepted : ""}
       `}
     >
       <input {...getInputProps()} />
       <AnimatePresence mode="wait">
-        {showFileIcon && (
+        {(showFileIcon || isAssignmentEnd) && (
           <motion.div
             key={"file-icon"}
             initial={{ scale: 0 }}
@@ -211,7 +221,7 @@ const FileDropzone: React.FC<Props> = ({ assignment }) => {
             <FileIcon color="var(--primary)" />
           </motion.div>
         )}
-        {showFileUploadIcon && (
+        {showFileUploadIcon && !isAssignmentEnd && (
           <motion.div
             key={"upload-file-icon"}
             initial={{ scale: 0 }}
