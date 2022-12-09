@@ -21,9 +21,18 @@ export default function Redirect() {
     useEffect(() => {
       let accessToken = getCookie('accessToken');
       let refreshToken = getCookie('refreshToken');
-      localStorage.setItem('accessToken', accessToken!);
-      localStorage.setItem('refreshToken', refreshToken!);
-      router.push('/dashboard');
+      let googleErrorMessage = getCookie('googleErrorMessage');
+      if (accessToken != null) {
+        localStorage.removeItem('googleErrorMessage');
+        localStorage.setItem('accessToken', accessToken!);
+        localStorage.setItem('refreshToken', refreshToken!);
+        router.push('/dashboard');
+        
+      } else {
+        localStorage.setItem('googleErrorMessage', googleErrorMessage!);
+        router.push('/accounts/login/assessee')
+      }
+      
     }, []);  
 
   return (

@@ -3,7 +3,7 @@ import { OdiLogo } from "@components/shared/elements/svg/OdiLogo";
 import { InputField } from "@components/shared/forms/InputField";
 import { PasswordField } from "@components/shared/forms/PasswordField";
 import { Backdrop } from "@components/shared/layouts/Backdrop";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 import styles from "./Login.module.css";
@@ -44,6 +44,7 @@ const Login = () => {
   const navigateToGoogleAuth = () => {
     window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=' + GOOGLE_LOGIN_REGISTER_CALLBACK_URI_ASSESSEE + '&prompt=consent&response_type=code&client_id=' + CLIENT_ID + '&scope=email profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read&access_type=offline';
   }
+
   const validate = (): boolean => {
     const [isEmailValid, emailError] = emailValidator(email);
     setErrorValue("email", emailError);
@@ -109,6 +110,23 @@ const Login = () => {
     setLoading(false);
     router.push("/dashboard");
   };
+
+  useEffect(() => {
+    let errorMessage = localStorage.getItem('googleErrorMessage');
+    if (errorMessage != null) {
+      errorMessage = errorMessage.replaceAll('\"', '');
+
+      toast.error(errorMessage, {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "colored",
+        containerId: "root-toast",
+        autoClose: 2000,
+      });
+  
+      localStorage.removeItem('googleErrorMessage');
+    }
+    
+  }, []);
 
   return (
     <Backdrop>
