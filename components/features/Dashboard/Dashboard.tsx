@@ -68,10 +68,10 @@ const Dashboard = () => {
         case "assignment":
           app = interactiveQuizApp;
           break;
-        case "response-test":
+        case "responsetest":
           app = responseTestApp;
           break;
-        case "video-conference":
+        case "videoconference":
           app = vidconApp;
           break;
         default:
