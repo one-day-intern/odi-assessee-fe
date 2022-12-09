@@ -20,9 +20,11 @@ export default function Redirect() {
     }
 
     useEffect(() => {
-      let accessToken = getCookie('accessToken');
-      let refreshToken = getCookie('refreshToken');
-      let googleErrorMessage = getCookie('googleErrorMessage');
+      const urlParams = new URLSearchParams(window.location.search);
+      let accessToken = urlParams.get('accessToken');
+      let refreshToken = urlParams.get('refreshToken');
+      let googleErrorMessage = urlParams.get('errorMessage');
+      
       if (accessToken != null) {
         localStorage.removeItem('googleErrorMessage');
         localStorage.setItem('accessToken', accessToken!);
@@ -31,7 +33,7 @@ export default function Redirect() {
 
       } else {
         localStorage.setItem('googleErrorMessage', googleErrorMessage!);
-        router.push(ASSESSEE_LOGIN_URL)
+        router.push(ASSESSEE_LOGIN_URL);
       }
       
     }, [router]);  
@@ -39,4 +41,4 @@ export default function Redirect() {
   return (
     <div></div>
   )
-}
+} 
