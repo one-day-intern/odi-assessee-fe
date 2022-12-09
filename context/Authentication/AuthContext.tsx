@@ -147,6 +147,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             }
           );
 
+          if (!response.ok && !isLoading) {
+            authDispatch({
+              type: AuthDispatchTypes.LOGOUT,
+              payload: {
+                user: null,
+                accessToken: null,
+                refreshToken: null,
+                remember: false,
+              },
+            });
+          }
+
           const user = await response.json();
 
           authDispatch({
