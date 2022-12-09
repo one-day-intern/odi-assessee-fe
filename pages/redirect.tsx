@@ -27,13 +27,13 @@ export default function Redirect() {
         localStorage.setItem('accessToken', accessToken!);
         localStorage.setItem('refreshToken', refreshToken!);
         router.push('/dashboard');
-        
+
       } else {
         localStorage.setItem('googleErrorMessage', googleErrorMessage!);
         router.push('/accounts/login/assessee')
       }
       
-    }, []);  
+    }, [router]);  
 
   return (
     <div></div>
