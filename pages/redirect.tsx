@@ -3,6 +3,7 @@ import { useAuthContext } from '@context/Authentication';
 import { useRouter } from 'next/router';
 
 
+const ASSESSEE_LOGIN_URL = '/accounts/login/assessee';
 export default function Redirect() {
     const router = useRouter();
     const { dispatch } = useAuthContext();
@@ -30,7 +31,7 @@ export default function Redirect() {
 
       } else {
         localStorage.setItem('googleErrorMessage', googleErrorMessage!);
-        router.push('/accounts/login/assessee')
+        router.push(ASSESSEE_LOGIN_URL)
       }
       
     }, [router]);  
