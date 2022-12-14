@@ -11,15 +11,24 @@ interface Props {
   openEmail: (email: Email) => void;
 }
 
-
-const Inbox: React.FC<React.PropsWithChildren<Props>> = ({ emails, filter, currentPage, emailsPerPage, openEmail }) => {
+const Inbox: React.FC<React.PropsWithChildren<Props>> = ({
+  emails,
+  filter,
+  currentPage,
+  emailsPerPage,
+  openEmail,
+}) => {
   return (
     <div className={`${styles["window-body__inbox"]}`}>
       {emails
         .filter(
           (email) =>
-            email.subject.toLowerCase().includes(filter.toLowerCase()) ||
-            email.sender.toLowerCase().includes(filter.toLowerCase())
+            email.additional_info.subject
+              .toLowerCase()
+              .includes(filter.toLowerCase()) ||
+            email.additional_info.sender
+              .toLowerCase()
+              .includes(filter.toLowerCase())
         )
         // sort from most recent to least recent email
         .sort((a, b) => b.receivedOn.getTime() - a.receivedOn.getTime())
@@ -28,8 +37,12 @@ const Inbox: React.FC<React.PropsWithChildren<Props>> = ({ emails, filter, curre
           currentPage * emailsPerPage,
           (currentPage + 1) * emailsPerPage
         )
-        .map((email) => (
-          <EmailTile key={email.id} email={email} onClick={openEmail} />
+        .map((email, index) => (
+          <EmailTile
+            key={email.id + `${index}`}
+            email={email}
+            onClick={openEmail}
+          />
         ))}
       {emails.length === 0 && (
         <h1

@@ -14,11 +14,57 @@ beforeAll(() => {
 
 describe("InteractiveQuiz component test suite", () => {
     test("render component", () => {
-        const { getByTestId } = render(<QuestionMenu />);
+        const { getByTestId } = render(<QuestionMenu questions={[
+            {
+              "question-attempt-id": "some-attempt-id-1",
+              "is-answered": false,
+              prompt: "hello",
+              "question-type": "multiple_choice",
+              "answer-options": [
+                {
+                  "answer-option-id": "ldhkawdwa",
+                  content: "hello",
+                },
+              ],
+              "selected-answer-option-id": null,
+            },
+            {
+              "question-attempt-id": "some-attempt-id",
+              "is-answered": false,
+              prompt: "hello",
+              "question-type": "text",
+              answer: "test",
+            },
+          ]}
+          currentQuestion={0}
+          setCurrentQuestion={() => {}}/>);
         getByTestId("QuestionMenu")
     })
     test("open question menu", () => {
-        const { getByTestId } = render(<QuestionMenu />);
+        const { getByTestId } = render(<QuestionMenu questions={[
+            {
+              "question-attempt-id": "some-attempt-id-1",
+              "is-answered": false,
+              prompt: "hello",
+              "question-type": "multiple_choice",
+              "answer-options": [
+                {
+                  "answer-option-id": "ldhkawdwa",
+                  content: "hello",
+                },
+              ],
+              "selected-answer-option-id": null,
+            },
+            {
+              "question-attempt-id": "some-attempt-id",
+              "is-answered": false,
+              prompt: "hello",
+              "question-type": "text",
+              answer: "test",
+            },
+          ]}
+          currentQuestion={0}
+          setCurrentQuestion={() => {}} />);
         const menuButton = getByTestId("QuestionMenu").querySelector(".menu-button");
 
         act(() => {

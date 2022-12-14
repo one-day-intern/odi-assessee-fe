@@ -20,7 +20,7 @@
    left: calc(2rem + 12.5px);
    top: calc(50% + 12.5px);
 
-   transform: translate(-50%, -50%);
+   transform: translate(-50%, -100%);
 }
 
 .progress-bar_container-overflow {

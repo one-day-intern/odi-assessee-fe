@@ -21,10 +21,10 @@ const EmailTile: React.FC<React.PropsWithChildren<Props>> = ({
       whileTap={{ scale: 0.995 }}
       onTap={() => onClick(email)}
     >
-      <div className={`${styles.sender}`}>{email.sender}</div>
+      <div className={`${styles.sender}`}>{email.additional_info.sender.split('@').at(0)}</div>
       <div className={`${styles["email-content"]}`}>
-        <div className={`${styles.subject}`}>{email.subject}</div>
-        <div className={`${styles.body}`}>{email.body}</div>
+        <div className={`${styles.subject}`}>{email.additional_info.subject}</div>
+        <div className={`${styles.body}`}>{email.additional_info.prompt}</div>
         <div className={`${styles.date}`}>
           {dateFormatter(email.receivedOn)}
         </div>

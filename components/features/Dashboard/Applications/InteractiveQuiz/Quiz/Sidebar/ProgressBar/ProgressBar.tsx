@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import styles from "./ProgressBar.module.css";
 import ProgressIndicator from "./ProgressIndicator";
 
-interface Props {}
+interface Props {
+  questions: Array<TextQuestionAttempt | MultipleChoiceQuestionAttempt>;
+  currentQuestion: number;
+  setCurrentQuestion: React.Dispatch<React.SetStateAction<number>>;
+}
 
-const ProgressBar: React.FC<React.PropsWithChildren<Props>> = () => {
-  const questions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-
+const ProgressBar: React.FC<React.PropsWithChildren<Props>> = ({ questions, currentQuestion, setCurrentQuestion }) => {
   return (
     <div
       className={`${styles["progress-bar_container"]} ${
@@ -15,7 +16,7 @@ const ProgressBar: React.FC<React.PropsWithChildren<Props>> = () => {
       }`}
     >
       <div
-        style={{ height: questions.length * 50 }}
+        style={{ height: (questions.length - 1) * 50 }}
         className={`${styles["progress-bar"]} ${
           questions.length > 10 ? styles["progress-bar_overflow"] : ""
         }`}
@@ -27,10 +28,11 @@ const ProgressBar: React.FC<React.PropsWithChildren<Props>> = () => {
       </div>
       {questions.map((question, i) => (
         <ProgressIndicator
+          key={question["question-attempt-id"]}
           isCurrentQuestion={i === currentQuestion}
-          questionCompleted={i === 3}
+          questionCompleted={questions[i]["is-answered"]}
+          questionNumber={i + 1}
           onClick={(e) => setCurrentQuestion(i)}
-          key={question}
         />
       ))}
     </div>

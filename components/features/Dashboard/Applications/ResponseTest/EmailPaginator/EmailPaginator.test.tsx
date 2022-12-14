@@ -1,11 +1,11 @@
-import React from "react";
-import Inbox from "./Inbox";
-import { render } from "@testing-library/react";
+import React from 'react';
+import EmailPaginator from "./EmailPaginator";
+import { fireEvent, render } from "@testing-library/react";
 
-describe("Inbox component test suite", () => {
-  test("test render component", () => {
+describe("EmailPaginator component test suite", () => {
+  test("render email paginator with emails", () => {
     render(
-      <Inbox
+      <EmailPaginator
         emails={[
           {
             id: "8312903-2819381290-9031829032",
@@ -16,12 +16,12 @@ describe("Inbox component test suite", () => {
             },
             released_time: "2022-12-05T16:40:00",
             receivedOn: new Date("2022-12-05T16:40:00"),
-          }
+          },
         ]}
+        emailsPerPage={10}
         currentPage={0}
-        emailsPerPage={20}
-        filter={""}
-        openEmail={(email) => {}}
+        filter={'hey'}
+        setCurrentPage={() => {}}
       />
     );
   });

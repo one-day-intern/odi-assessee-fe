@@ -2,6 +2,18 @@
   padding: 2rem;
   display: flex;
   flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+  border: 0;
 }
 
 .question-header {
