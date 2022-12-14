@@ -55,7 +55,6 @@
 
 .task-item {
   width: 100%;
-  border: 0;
   border-radius: 5px;
   border: 2px solid var(--secondary);
   padding: 1rem;
