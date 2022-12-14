@@ -40,7 +40,7 @@ const dateFormatter = (date: Date, nowDate?: Date): string => {
 };
 
 const dateStringToSeconds = (time: string) => {
-  const deadline = new Date(time.split("+")[0]);
+  const deadline = new Date(time);
   const diffMs = deadline.getTime() - new Date().getTime();
   const diffSeconds = Math.floor(diffMs / 1000);
   return diffSeconds;
