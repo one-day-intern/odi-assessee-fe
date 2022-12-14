@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AssignmentTimer from "../AssignmentTimer";
 import styles from "./Assignment.module.css";
 import FileDropzone from "./FileDropzone";
+import { dateStringToSeconds } from "@utils/formatters/dateFormatter";
 
 interface Props {
   assignment: AssignmentObject;
@@ -10,18 +11,12 @@ interface Props {
   >;
 }
 
-const getSecondsRemaining = (time: string) => {
-  const deadline = new Date(time.split("+")[0]);
-  const diffMs = deadline.getTime() - new Date().getTime();
-  const diffSeconds = Math.floor(diffMs / 1000);
-  return diffSeconds;
-};
 
 const Assignment: React.FC<Props> = ({
   assignment,
   setCurrentActiveAssignment,
 }) => {
-  const durationInSeconds = getSecondsRemaining(assignment.end_working_time);
+  const durationInSeconds = dateStringToSeconds(assignment.end_working_time);
   const [isAssignmentEnd, setIsAssignmentEnd] = useState(durationInSeconds <= 0);
 
   return (

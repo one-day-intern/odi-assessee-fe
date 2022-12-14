@@ -296,4 +296,37 @@ export const handlers = [
       return res(ctx.status(400));
     }
   ),
+  rest.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/assessment/assessment-event/get-submitted-quiz/`,
+    (req, res, ctx) => {
+      return res(
+        ctx.json({
+          "answer-attempts": [
+            {
+              "question-attempt-id": "some-mcq-attempt",
+              "is-answered": false,
+              prompt: "hello",
+              "question-type": "multiple_choice",
+              "answer-options": [
+                {
+                  "answer-option-id": "option-1",
+                  content: "hello",
+                },
+              ],
+              "selected-answer-option-id": null,
+            },
+            {
+              "question-attempt-id": "some-essay-attempt",
+              "is-answered": false,
+              prompt: "hello",
+              "question-type": "text",
+              answer: null,
+            },
+          ],
+          "assessment-tool-attempted": "",
+          "tool-attempt-id": "tul-atem",
+        })
+      );
+    }
+  ),
 ];

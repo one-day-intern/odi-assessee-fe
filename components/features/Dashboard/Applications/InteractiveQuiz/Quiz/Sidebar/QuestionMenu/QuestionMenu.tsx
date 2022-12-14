@@ -3,14 +3,22 @@ import styles from "./QuestionMenu.module.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 
-interface QuestionTabProps extends React.PropsWithChildren {
+interface Props {
+  questions: Array<TextQuestionAttempt | MultipleChoiceQuestionAttempt>;
+  currentQuestion: number;
+  setCurrentQuestion: React.Dispatch<React.SetStateAction<number>>;
+}
+
+interface QuestionTabProps extends Props {
   onClose: () => void;
 }
 
-const QuestionsTab: React.FC<QuestionTabProps> = ({ onClose }) => {
-  const questions = Array.from(Array(100).keys());
-  const isCurrent = 5;
-
+const QuestionsTab: React.FC<QuestionTabProps> = ({
+  onClose,
+  currentQuestion,
+  questions,
+  setCurrentQuestion,
+}) => {
   return (
     <motion.div
       data-testid="QuestionMenuTab"
@@ -24,9 +32,13 @@ const QuestionsTab: React.FC<QuestionTabProps> = ({ onClose }) => {
       <div className={`${styles["question-menu_list"]}`}>
         {questions.map((question, i) => (
           <motion.button
-            animate={i === isCurrent ? { scale: [1.1, 0.8] } : {}}
-            transition={{ repeat: Infinity, repeatType: "reverse" }}
-            key={i}
+            animate={i === currentQuestion ? { scale: [1.1, 0.8] } : {}}
+            transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.3 }}
+            key={question["question-attempt-id"]}
+            onClick={() => {
+              setCurrentQuestion(i);
+              onClose();
+            }}
             className={`${styles["question-menu_question"]}`}
           >
             {i}
@@ -43,7 +55,7 @@ const QuestionsTab: React.FC<QuestionTabProps> = ({ onClose }) => {
   );
 };
 
-const QuestionMenu = () => {
+const QuestionMenu: React.FC<Props> = (props) => {
   const [menuOpened, setMenuOpened] = useState(false);
   const [inBrowser, setInBrowser] = useState(false);
 
@@ -75,7 +87,7 @@ const QuestionMenu = () => {
         createPortal(
           <AnimatePresence>
             {menuOpened && (
-              <QuestionsTab onClose={() => setMenuOpened(false)} />
+              <QuestionsTab onClose={() => setMenuOpened(false)} {...props} />
             )}
           </AnimatePresence>,
           document.getElementById("quiz-root")!

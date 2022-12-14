@@ -6,11 +6,13 @@ interface Props {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   isCurrentQuestion?: boolean;
   questionCompleted?: boolean;
+  questionNumber: number;
 }
 
 const ProgressIndicator: React.FC<React.PropsWithChildren<Props>> = ({
   questionCompleted,
   isCurrentQuestion,
+  questionNumber,
   onClick,
 }) => {
   return (
@@ -55,7 +57,7 @@ const ProgressIndicator: React.FC<React.PropsWithChildren<Props>> = ({
         </motion.div>
       </div>
       <div style={{ color: isCurrentQuestion ? "#3D65D8" : "#ccc" }}>
-        Question X
+        Question {questionNumber}
       </div>
     </motion.button>
   );

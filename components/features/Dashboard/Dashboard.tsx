@@ -65,6 +65,7 @@ const Dashboard = () => {
         (_app) => _app.appId === "interactive-quiz"
       );
       switch (serverNotification.type) {
+        case "interactivequiz":
         case "assignment":
           app = interactiveQuizApp;
           break;
