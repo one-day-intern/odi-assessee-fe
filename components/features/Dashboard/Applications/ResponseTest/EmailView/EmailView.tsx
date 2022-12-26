@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import usePostRequest from "@hooks/shared/usePostRequest";
 import { toast } from "react-toastify";
 import { InputField } from "@components/shared/forms/InputField";
+import { Loader } from "@components/shared/elements/Loader";
 
 const ReactQuill = React.lazy(() => import("react-quill"));
 
@@ -129,7 +130,8 @@ const EmailView: React.FC<React.PropsWithChildren<Props>> = ({
     setSubmittingResponse(false);
   };
 
-  const hideReplyButton = showReplySection || submittedResponse?.tool_attempt_id
+  const hideReplyButton =
+    !data || showReplySection || submittedResponse?.tool_attempt_id;
 
   return (
     <motion.div
@@ -173,9 +175,10 @@ const EmailView: React.FC<React.PropsWithChildren<Props>> = ({
             </div>
           </div>
         </div>
-        <p className={`${styles["email-body"]}`}>
-          {email.additional_info.prompt}
-        </p>
+        <p
+          className={`${styles["email-body"]}`}
+          dangerouslySetInnerHTML={{ __html: email.additional_info.prompt }}
+        />
         {!hideReplyButton && (
           <Button
             onClick={() => setShowReplySection(true)}
@@ -257,6 +260,11 @@ const EmailView: React.FC<React.PropsWithChildren<Props>> = ({
               />
             </>
           ))}
+        {!data && (
+          <div style={{ width: "100%", display: "grid", placeItems: "center", color: "var(--primary)" }}>
+            <Loader />
+          </div>
+        )}
       </div>
     </motion.div>
   );

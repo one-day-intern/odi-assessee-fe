@@ -15,7 +15,7 @@ interface Props {
 const Sidebar: React.FC<Props> = (props) => {
   const { window } = useDashboardAPI();
   const numAnsweredQuestions = props.questions.filter(
-    (question: any) => question["selected-answer-option-id"] || question["answer"]
+    (question: QuestionAttempt) => question["is-answered"]
   ).length;
   return (
     <div

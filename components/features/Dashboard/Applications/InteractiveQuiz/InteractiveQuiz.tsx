@@ -117,7 +117,7 @@ const InteractiveQuiz = () => {
                         <AiOutlineClockCircle />
                       </div>
                       <p>
-                        {assignment.additional_info.duration_in_minutes} minutes
+                        {assignment.additional_info.duration} minutes
                       </p>
                     </div>
                   </div>

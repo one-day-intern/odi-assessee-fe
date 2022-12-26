@@ -80,12 +80,45 @@ const Dashboard = () => {
           break;
       }
       if (app) {
-        onNotification(app, {
+        let notification: DashboardNotification = {
           id: serverNotification.id,
-          message: serverNotification.description,
+          title: "",
+          message: "",
           priority: "high",
-        });
-        switch(app.appId) {
+        };
+        switch (serverNotification.type) {
+          case "interactivequiz":
+            notification = {
+              ...notification,
+              title: `[QUIZ] ${serverNotification.name}`,
+              message: `${serverNotification.description}`,
+            };
+            break;
+          case "assignment":
+            notification = {
+              ...notification,
+              title: `[ASSIGNMENT] ${serverNotification.name}`,
+              message: `${serverNotification.description}`
+            }
+            break;
+          case "responsetest":
+            notification = {
+              ...notification,
+              title: `${serverNotification.additional_info.sender}`,
+              message: `${serverNotification.additional_info.prompt}`
+            }
+            break;
+          case "videoconference":
+            notification = {
+              ...notification,
+              title: 'Video Conference with your Assessor',
+              message: 'Open your video conference application! It\'s time for your video assessment.',
+            }
+            break;
+          default:
+        }
+        onNotification(app, notification);
+        switch (app.appId) {
           case "response-test":
             dispatchEvent(new Event(DashboardEvent.REFRESH_EMAILS));
             break;
