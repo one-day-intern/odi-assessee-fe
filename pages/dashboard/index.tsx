@@ -35,7 +35,6 @@ const enterButtonStyles: React.CSSProperties = {
   marginLeft: "auto",
   marginTop: 0,
   marginBottom: 0,
-
 };
 
 interface AssessmentEvent {
@@ -55,7 +54,7 @@ const AssessmentEventCard: React.FC<{ event: AssessmentEvent }> = ({
       layout
       className={styles["assessment-event-card"]}
     >
-      <MdAssessment size={50} color="var(--primary) "/>
+      <MdAssessment size={50} color="var(--primary) " />
       <div>
         <h2 className={styles["assessment-event-card_header"]}>{event.name}</h2>
         <div className={styles.time}>
@@ -82,7 +81,7 @@ const AssessmentEventList: NextPage = () => {
       requiresToken: true,
     }
   );
-  
+
   if (!data || !user) {
     return (
       <ProtectedRoute>
@@ -123,6 +122,7 @@ const AssessmentEventList: NextPage = () => {
           {data.map((event) => (
             <AssessmentEventCard event={event} key={event.event_id} />
           ))}
+          {<h1>You have no active Assessment Events.</h1>}
         </div>
       </main>
     </ProtectedRoute>
