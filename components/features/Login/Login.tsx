@@ -174,6 +174,7 @@ const Login = () => {
             variant="secondary"
             type="button"
             style={{ fontWeight: "bold" }}
+            data-testid="loginCompany"
           >
             Login as a Company
           </Button>
