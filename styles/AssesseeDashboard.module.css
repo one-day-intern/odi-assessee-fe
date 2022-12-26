@@ -5,9 +5,75 @@
   background-color: #d9afd9;
   background-image: linear-gradient(0deg, #d9afd9 0%, #97d9e1 100%);
   display: flex;
+  align-items: center;
+}
+
+.sidebar {
+  min-height: inherit;
+  width: 300px;
+  background: white;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 2rem;
+  padding-top: 2rem;
+}
+
+.sidebar hr {
+  width: 80%;
+  background: var(--secondary);
+  position: relative;
+  height: 3px;
+  margin: 1rem;
+}
+
+.tab {
+  width: 80%;
+  display: flex;
+  padding: 0.5rem 1rem;
+  padding-left: 0;
+  align-items: center;
+  font-size: 1rem;
+  gap: 1rem;
+  background: none;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  margin: 0.5rem 0;
+}
+
+.tab.active {
+  color: var(--secondary);
+  font-weight: bold;
+}
+
+.tab.danger {
+  color: red;
+  font-weight: bold;
+}
+
+.tab.active::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 60%;
+  border-radius: 5px;
+  background-color: var(--secondary);
+  right: 0;
+}
+
+.tab > div {
+  padding-top: 3px;
+}
+
+.name {
+  letter-spacing: 1.5px;
+  margin-bottom: 0;
+}
+
+.role {
+  margin: 0.25rem;
+  color: rgb(180, 180, 180);
+  font-weight: bold;
 }
 
 .container {
@@ -24,18 +90,13 @@
 }
 
 .assessment-list {
-  width: 100%;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  min-height: inherit;
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 1rem;
-  overflow: hidden;
+  overflow: auto;
+  padding: 1rem;
 }
 
 .assessment-event-card {
@@ -43,16 +104,27 @@
   background: white;
   border-radius: 10px;
   display: flex;
-  justify-content: space-between;
+  gap: 1rem;
   align-items: center;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  border: 3px solid var(--secondary);
 }
 
 .assessment-event-card_header {
   padding: 0;
   font-size: 1.25rem;
-  color: var(--primary);
   margin: 0 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.time {
+  margin: 0 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.85rem;
+  color: grey;
 }
 
 .loader-container {

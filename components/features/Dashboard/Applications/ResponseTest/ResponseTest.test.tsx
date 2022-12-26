@@ -22,7 +22,7 @@ describe("Response Test component test suite", () => {
       </RouterContext.Provider>
     );
 
-    await sleep(100);
+    await sleep(150);
 
     const responseTestBody = getByTestId("ResponseTestBody");
     const firstEmail = responseTestBody.querySelector(

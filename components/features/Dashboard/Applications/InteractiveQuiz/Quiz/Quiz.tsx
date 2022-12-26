@@ -66,6 +66,7 @@ const Quiz: React.FC<Props> = ({ quiz, setCurrentActiveQuiz }) => {
             return {
               ...question,
               "selected-answer-option-id": optionId,
+              "is-answered": true,
             } as MultipleChoiceQuestionAttempt;
           }
           return question;
@@ -117,7 +118,8 @@ const Quiz: React.FC<Props> = ({ quiz, setCurrentActiveQuiz }) => {
           if (question["question-attempt-id"] === questionAttemptId) {
             return {
               ...question,
-              answer,
+              answer: answer.trim(),
+              "is-answered": !!answer.trim(),
             } as TextQuestionAttempt;
           }
           return question;
@@ -128,7 +130,7 @@ const Quiz: React.FC<Props> = ({ quiz, setCurrentActiveQuiz }) => {
         "assessment-event-id": router.query["assessment-event-id"],
         "assessment-tool-id": quiz.id,
         answers: [
-          { "question-attempt-id": questionAttemptId, "text-answer": answer },
+          { "question-attempt-id": questionAttemptId, "text-answer": answer.trim() },
         ],
       });
       if (response instanceof Error) {

@@ -8,6 +8,12 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import useGetRequest from "@hooks/shared/useGetRequest";
 import { Loader } from "@components/shared/elements/Loader";
+import { RxAvatar, RxClock } from "react-icons/rx";
+import {
+  MdAssessment,
+  MdOutlineAssessment,
+  MdOutlineLogout,
+} from "react-icons/md";
 
 const buttonStyles: React.CSSProperties = {
   fontWeight: "bold",
@@ -26,15 +32,21 @@ const enterButtonStyles: React.CSSProperties = {
   fontSize: "1rem",
   maxWidth: 200,
   padding: "0.5rem",
-  margin: 0,
+  marginLeft: "auto",
+  marginTop: 0,
+  marginBottom: 0,
+
 };
 
 interface AssessmentEvent {
   name: string;
   event_id: string;
+  end_date_time: string;
 }
 
-const AssessmentEventCard: React.FC<AssessmentEvent> = ({ name, event_id }) => {
+const AssessmentEventCard: React.FC<{ event: AssessmentEvent }> = ({
+  event,
+}) => {
   const router = useRouter();
   return (
     <motion.div
@@ -43,9 +55,16 @@ const AssessmentEventCard: React.FC<AssessmentEvent> = ({ name, event_id }) => {
       layout
       className={styles["assessment-event-card"]}
     >
-      <h2 className={styles["assessment-event-card_header"]}>{name}</h2>
+      <MdAssessment size={50} color="var(--primary) "/>
+      <div>
+        <h2 className={styles["assessment-event-card_header"]}>{event.name}</h2>
+        <div className={styles.time}>
+          <RxClock />
+          <div>Ending at: {new Date(event.end_date_time).toLocaleString()}</div>
+        </div>
+      </div>
       <Button
-        onClick={() => router.push(`/dashboard/${event_id}`)}
+        onClick={() => router.push(`/dashboard/${event.event_id}`)}
         style={enterButtonStyles}
         variant="secondary"
       >
@@ -56,15 +75,15 @@ const AssessmentEventCard: React.FC<AssessmentEvent> = ({ name, event_id }) => {
 };
 
 const AssessmentEventList: NextPage = () => {
-  const { dispatch } = useAuthContext();
+  const { dispatch, user } = useAuthContext();
   const { data } = useGetRequest<AssessmentEvent[]>(
     "/assessee/assessment-events/?is-active=true",
     {
       requiresToken: true,
     }
   );
-
-  if (!data) {
+  
+  if (!data || !user) {
     return (
       <ProtectedRoute>
         <div className={styles["loader-container"]}>
@@ -77,26 +96,34 @@ const AssessmentEventList: NextPage = () => {
   return (
     <ProtectedRoute>
       <main className={styles.main}>
-        <div className={styles.container}>
-          <h1 className={styles["main-header"]}>Your Assessments</h1>
-          <div className={styles["assessment-list"]}>
-            {data &&
-              data.map((event) => (
-                <AssessmentEventCard
-                  key={event.event_id}
-                  name={event.name}
-                  event_id={event.event_id}
-                />
-              ))}
-          </div>
+        <aside className={styles.sidebar}>
+          <RxAvatar color="var(--primary)" size={120} />
+          <h2
+            className={styles.name}
+          >{`${user.first_name} ${user.last_name}`}</h2>
+          <p className={styles.role}>Assessee</p>
+          <hr />
+          <button className={`${styles.tab} ${styles.active}`}>
+            <MdOutlineAssessment size={35} color="currentColor" />
+            <div>My Assessments</div>
+          </button>
+          <button
+            onClick={() => dispatch({ type: AuthDispatchTypes.LOGOUT })}
+            className={`${styles.tab} ${styles.danger}`}
+          >
+            <MdOutlineLogout
+              style={{ transform: "scale(-1, 1)" }}
+              size={35}
+              color="currentColor"
+            />
+            <div>Logout</div>
+          </button>
+        </aside>
+        <div className={styles["assessment-list"]}>
+          {data.map((event) => (
+            <AssessmentEventCard event={event} key={event.event_id} />
+          ))}
         </div>
-        <Button
-          style={buttonStyles}
-          variant="primary"
-          onClick={() => dispatch({ type: AuthDispatchTypes.LOGOUT })}
-        >
-          Logout
-        </Button>
       </main>
     </ProtectedRoute>
   );

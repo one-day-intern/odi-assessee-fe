@@ -43,21 +43,5 @@ describe("EmailView component test suite", () => {
         />
       </RouterContext.Provider>
     );
-
-    const reply = getByText("Reply");
-
-    act(() => {
-      fireEvent.click(reply);
-    });
-
-    let replyGone = false;
-
-    try {
-      getByText("Reply");
-    } catch {
-      replyGone = true;
-    }
-
-    expect(replyGone).toBe(true);
   });
 });
