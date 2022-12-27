@@ -32,7 +32,10 @@ const Notification: React.FC<Props> = ({
           {notification.title}
         </h1>
       </div>
-      <p className={styles["notification-body"]}>{notification.message}</p>
+      <p
+        className={styles["notification-body"]}
+        dangerouslySetInnerHTML={{ __html: notification.message }}
+      />
       <motion.button
         className={styles["notification-close"]}
         onTap={(e) => e.stopPropagation}
