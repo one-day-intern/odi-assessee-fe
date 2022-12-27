@@ -9,7 +9,8 @@ const Button = ({
   onClick,
   disabled,
   style,
-  type
+  type,
+  ...rest
 }: ButtonProps) => {
   const buttonVariant = `button--${variant}`;
   return (
@@ -21,6 +22,7 @@ const Button = ({
       style={style}
       className={`${styles["button"]} ${styles[buttonVariant]} ${disabled ? styles["button--disabled"] : ""}`}
       type={type}
+      {...rest}
     >
       {children}
     </motion.button>

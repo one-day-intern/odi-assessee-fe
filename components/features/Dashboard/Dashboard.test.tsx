@@ -45,11 +45,18 @@ describe("Dashboard test suite", () => {
     expect(screenEl).toHaveAttribute("class", "screen");
     expect(taskbarEl).toHaveAttribute("class", "taskbar");
   });
-  test("testing open app", () => {
-    const { getByTestId } = render(<Dashboard />);
+  test("testing open app", async () => {
+    const { getByTestId } = render(
+      <AuthProvider>
+        <Dashboard />
+      </AuthProvider>
+    );
     const windowContainer = getByTestId("FullscreenBounds");
     const taskbarEl = getByTestId("MainTaskbar");
-    const shortcut = taskbarEl.children[1];
+    const shortcut = taskbarEl.children[2];
+
+    // wait for mocked api
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     fireEvent.mouseDown(shortcut.firstElementChild!);
     fireEvent.mouseUp(shortcut.firstElementChild!);
@@ -58,10 +65,18 @@ describe("Dashboard test suite", () => {
   });
 
   test("testing minimize app", async () => {
-    const { getByTestId } = render(<Dashboard />);
+    const { getByTestId } = render(
+      <AuthProvider>
+        <Dashboard />
+      </AuthProvider>
+    );
+
     const windowContainer = getByTestId("FullscreenBounds");
     const taskbarEl = getByTestId("MainTaskbar");
-    const shortcut = taskbarEl.children[1];
+    const shortcut = taskbarEl.children[2];
+
+    // wait for mocked api
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     expect(windowContainer.children.length).toBe(1);
 
@@ -86,10 +101,18 @@ describe("Dashboard test suite", () => {
   });
 
   test("testing close app", async () => {
-    const { getByTestId } = render(<Dashboard />);
+    const { getByTestId } = render(
+      <AuthProvider>
+        <Dashboard />
+      </AuthProvider>
+    );
+
+    // wait for mocked api
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     const windowContainer = getByTestId("FullscreenBounds");
     const taskbarEl = getByTestId("MainTaskbar");
-    const shortcut = taskbarEl.children[1];
+    const shortcut = taskbarEl.children[2];
 
     act(() => {
       fireEvent.mouseDown(shortcut.firstElementChild!);
@@ -103,7 +126,7 @@ describe("Dashboard test suite", () => {
 
     act(() => {
       fireEvent.click(windowCloseBtn!);
-    })
+    });
 
     // wait for animation
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -118,7 +141,7 @@ describe("Dashboard test suite", () => {
     );
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    
+
     const notificationButton = getByTestId(
       "NotificationViewerShortcut"
     ).firstElementChild;
@@ -135,7 +158,7 @@ describe("Dashboard test suite", () => {
     expect(notificationViewer.children.length).toBe(1);
 
     act(() => {
-        fireEvent.click(notificationViewer.firstElementChild!);
-    })
+      fireEvent.click(notificationViewer.firstElementChild!);
+    });
   });
 });

@@ -38,7 +38,7 @@ const NotificationViewer: React.FC<Props> = ({
   notifications,
   onNotificationClose,
 }) => {
-  const sortedNotifications = notifications.sort(compareNotificationPriority);
+  const sortedNotifications = [...notifications].sort(compareNotificationPriority);
   return (
     <motion.div
       data-testid="NotificationViewer"

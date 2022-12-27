@@ -3,7 +3,7 @@ import { OdiLogo } from "@components/shared/elements/svg/OdiLogo";
 import { InputField } from "@components/shared/forms/InputField";
 import { PasswordField } from "@components/shared/forms/PasswordField";
 import { Backdrop } from "@components/shared/layouts/Backdrop";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 import styles from "./Login.module.css";
@@ -19,7 +19,13 @@ import { AuthDispatchTypes } from "@context/Authentication/AuthDispatchTypes";
 import usePostRequest from "@hooks/shared/usePostRequest";
 import { useRouter } from "next/router";
 import { Loader } from "@components/shared/elements/Loader";
-const LOGIN_URL = "/users/api/token/";
+const LOGIN_URL = "/users/login/assessee/";
+const COMPANY_LOGIN_REDIRECT_URL =
+  process.env.NEXT_PUBLIC_COMPANY_REDIRECT_URL;
+const GOOGLE_LOGIN_REGISTER_CALLBACK_URI_ASSESSEE =
+  process.env.NEXT_PUBLIC_BACKEND_URL! +
+  process.env.NEXT_PUBLIC_GOOGLE_LOGIN_REGISTER_CALLBACK_URL;
+const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 
 interface TokenReturnType {
   access: string;
@@ -38,6 +44,15 @@ const Login = () => {
   );
   const { dispatch } = useAuthContext();
   const router = useRouter();
+
+  const navigateToGoogleAuth = () => {
+    window.location.href =
+      "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=" +
+      GOOGLE_LOGIN_REGISTER_CALLBACK_URI_ASSESSEE +
+      "&prompt=consent&response_type=code&client_id=" +
+      CLIENT_ID +
+      "&scope=email profile https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/user.phonenumbers.read&access_type=offline";
+  };
 
   const validate = (): boolean => {
     const [isEmailValid, emailError] = emailValidator(email);
@@ -105,6 +120,22 @@ const Login = () => {
     router.push("/dashboard");
   };
 
+  useEffect(() => {
+    let errorMessage = localStorage.getItem("googleErrorMessage");
+    if (errorMessage != null) {
+      errorMessage = errorMessage.replaceAll('"', "");
+
+      toast.error(errorMessage, {
+        position: toast.POSITION.TOP_CENTER,
+        theme: "colored",
+        containerId: "root-toast",
+        autoClose: 2000,
+      });
+
+      localStorage.removeItem("googleErrorMessage");
+    }
+  }, []);
+
   return (
     <Backdrop>
       <div className={styles["backdrop__center"]}>
@@ -123,11 +154,7 @@ const Login = () => {
             onChange={(e) => setDataValue("password", e.target?.value)}
             error={errors.password}
           />
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={loading}
-          >
+          <Button variant="primary" type="submit" disabled={loading}>
             {loading ? <Loader /> : <h2>Login</h2>}
           </Button>
           <div className={styles["glassmorph__column"]}>
@@ -141,7 +168,16 @@ const Login = () => {
             </Link>
           </div>
           <LoginDivider />
-          <GoogleButton onClick={() => {}} />
+          <GoogleButton onClick={navigateToGoogleAuth} />
+          <Button
+            onClick={() => router.push(`${COMPANY_LOGIN_REDIRECT_URL}`)}
+            variant="secondary"
+            type="button"
+            style={{ fontWeight: "bold" }}
+            data-testid="loginCompany"
+          >
+            Login as a Company
+          </Button>
           <p className={styles["glassmorph__body"]}>
             Dont have an account?{" "}
             <Link href="/accounts/signup/assessee">

@@ -58,7 +58,6 @@ describe("Notification component test suite", () => {
 
     const notifElement = getByTestId(`Notification-${testNotificationHigh.id}`);
 
-    expect(notifElement.querySelector(".notification-header__title")).toHaveTextContent(testNotificationHigh.app.appName);
     expect(notifElement.querySelector(".notification-body")).toHaveTextContent(testNotificationHigh.message);
   });
 });

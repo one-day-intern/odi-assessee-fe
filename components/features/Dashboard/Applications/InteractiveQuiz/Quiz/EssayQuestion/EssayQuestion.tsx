@@ -1,46 +1,51 @@
-import { useDashboardAPI } from "@context/Dashboard/DashboardAPIContext";
-import useResizeObserver from "@react-hook/resize-observer";
-import React, { Suspense, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "./EssayQuestion.module.css";
+import TextareaAutosize from "react-textarea-autosize";
 
-const ReactQuill = React.lazy(() => import("react-quill"));
+interface Props {
+  onChange?: (answer: string, attemptId: string) => void;
+  isQuizEnded: boolean;
+  question: TextQuestionAttempt;
+}
 
-const EssayQuestion = () => {
-  const { window } = useDashboardAPI();
-  const [sidebarSize, setSidebarSize] = useState<DOMRect>();
-  const divRef = useRef<HTMLDivElement>(null);
-  const sidebar = document.getElementById("quiz-sidebar");
-  useResizeObserver(sidebar, (entry) => setSidebarSize(entry.contentRect));
-  const maxQuilWidth = window.width - (sidebar ? sidebarSize?.width! + 82 : 82);
+const DEBOUNCE_MS = 200;
+
+const EssayQuestion: React.FC<Props> = ({ question, isQuizEnded, onChange }) => {
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // if there is a scheduled onChange then clear it first
+    // and schedule another one
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onChange?.(e.target.value, question["question-attempt-id"]);
+    }, DEBOUNCE_MS);
+  };
+
+  useEffect(() => {
+    const currTimeout = debounceRef.current;
+    if (currTimeout) {
+      // prevent memory leak
+      return () => clearTimeout(currTimeout);
+    }
+  }, []);
 
   return (
-    <div ref={divRef} className={`${styles["question-body"]}`}>
-      <p className={`${styles["question"]}`}>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus,
-        modi quia! Reprehenderit atque in excepturi, optio ipsum maiores ratione
-        ipsa numquam deserunt eum quia ducimus aut sunt rem consectetur
-        mollitia. Cupiditate repellendus reprehenderit, est mollitia sed illo
-        inventore corporis? Nihil, saepe. Nam corrupti quis consectetur suscipit
-        tempore? Repellat ipsa sunt, adipisci harum vel sed totam ratione. Sunt
-        et asperiores corporis? Ex, magnam molestias aspernatur, quaerat
-        possimus quia voluptate nesciunt delectus a, ipsum assumenda
-        reprehenderit? Dignissimos hic esse itaque? Exercitationem fugiat
-        accusamus aliquid voluptas nam cupiditate dignissimos natus ad delectus
-        excepturi? Expedita optio sed excepturi quis dignissimos animi,
-        obcaecati ducimus dolorum dolore! Veritatis aliquam accusamus
-        reprehenderit eveniet pariatur velit nulla aspernatur dolores, quisquam
-        perferendis quas sit fugiat corrupti, nesciunt rerum temporibus? Non
-        iste sequi dicta, quaerat optio quas reprehenderit fugit. Asperiores
-        magni a tempore, quisquam modi unde commodi ad assumenda nulla ipsa
-        aspernatur eligendi itaque, atque dicta. Autem illo consequuntur totam?
-      </p>
-      <div
-        style={{ maxWidth: maxQuilWidth }}
-        className={`${styles["question-answers"]}`}
-      >
-        <Suspense>
-          <ReactQuill style={{ fontSize: "1rem" }} />
-        </Suspense>
+    <div className={`${styles["question-body"]}`}>
+      <p className={`${styles["question"]}`}>{question.prompt}</p>
+      <div className={`${styles["question-answers"]}`}>
+        <TextareaAutosize
+          disabled={isQuizEnded}
+          defaultValue={question.answer}
+          style={{
+            width: "100%",
+            padding: "1rem",
+            font: "inherit",
+            resize: "none",
+          }}
+          placeholder={"Type your answer..."}
+          onChange={handleChange}
+        />
       </div>
     </div>
   );

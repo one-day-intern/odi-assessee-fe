@@ -14,9 +14,7 @@ export const handlers = [
             })
           );
         }
-        return res(
-          ctx.status(400)
-        );
+        return res(ctx.status(400));
       }
     }
   ),
@@ -224,12 +222,111 @@ export const handlers = [
       );
     }
   ),
-  rest.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/assessment/assessment-event/`, (req, res, ctx) => {
-    return res(
-      ctx.json({
-        message: "Attempt created"
-      }),
-      ctx.status(200)
-    )
-  })
+  rest.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/assessment/assessment-event/`,
+    (req, res, ctx) => {
+      return res(
+        ctx.json({
+          message: "Attempt created",
+        }),
+        ctx.status(200)
+      );
+    }
+  ),
+  rest.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/assessment/assessment-event/released-response-tests/`,
+    (req, res, ctx) => {
+      const testCase = req.url.searchParams.get("assessment-event-id");
+      return res(
+        ctx.json([
+          {
+            id: "8312903-2819381290-9031829032",
+            additional_info: {
+              sender: "mock@server.com",
+              subject: "hey this is a mocked response",
+              prompt: "hello this is a mocked response body",
+            },
+            released_time: "2022-12-05T16:40:00",
+            receivedOn: null,
+          },
+        ]),
+        ctx.status(200)
+      );
+    }
+  ),
+
+  rest.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/assessment/assessment-event/get-submitted-response-test/`,
+    (req, res, ctx) => {
+      const testCase = req.url.searchParams.get("assessment-event-id");
+      if (testCase === "withSubmission") {
+        return res(
+          ctx.json({
+            tool_attempt_id: "389012839",
+            submitted_time: new Date(),
+            responseTime: new Date(),
+            subject: "This is my subject",
+            response: "This is my response",
+          }),
+          ctx.status(200)
+        );
+      }
+
+      return res(
+        ctx.json({
+          tool_attempt_id: null,
+          submitted_time: null,
+          responseTime: null,
+          subject: "",
+          response: "",
+        }),
+        ctx.status(200)
+      );
+    }
+  ),
+  rest.post(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/assessment/assessment-event/submit-response-test/`,
+    (req, res, ctx) => {
+      const testCase = req.url.searchParams.get("assessment-event-id");
+
+      if (testCase === "withReply") {
+        return res(ctx.status(200));
+      }
+
+      return res(ctx.status(400));
+    }
+  ),
+  rest.get(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/assessment/assessment-event/get-submitted-quiz/`,
+    (req, res, ctx) => {
+      return res(
+        ctx.json({
+          "answer-attempts": [
+            {
+              "question-attempt-id": "some-mcq-attempt",
+              "is-answered": false,
+              prompt: "hello",
+              "question-type": "multiple_choice",
+              "answer-options": [
+                {
+                  "answer-option-id": "option-1",
+                  content: "hello",
+                },
+              ],
+              "selected-answer-option-id": null,
+            },
+            {
+              "question-attempt-id": "some-essay-attempt",
+              "is-answered": false,
+              prompt: "hello",
+              "question-type": "text",
+              answer: null,
+            },
+          ],
+          "assessment-tool-attempted": "",
+          "tool-attempt-id": "tul-atem",
+        })
+      );
+    }
+  ),
 ];

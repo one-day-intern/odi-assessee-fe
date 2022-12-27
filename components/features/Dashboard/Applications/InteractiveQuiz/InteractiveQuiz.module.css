@@ -7,6 +7,22 @@
 
 .window-body {
   display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100%;
+  height: fit-content;
+  background: white;
+}
+.window-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.3;
+}
+
+.quiz-window-body {
+  display: flex;
   width: 100%;
   min-height: 100%;
   height: fit-content;
@@ -26,6 +42,7 @@
   width: 100%;
   min-height: 100%;
   padding: 2rem;
+  padding-top: 0;
   overflow: auto;
 }
 
@@ -38,19 +55,82 @@
 
 .task-item {
   width: 100%;
-  border: 0;
   border-radius: 5px;
+  border: 2px solid var(--secondary);
   padding: 1rem;
-  background: rgb(54, 138, 255);
+  background: white;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 1rem;
   cursor: pointer;
-}
-
-.task-item .name, .task-item .arrow {
   font-size: 1.2rem;
   font-weight: bold;
-  color: white;
+  color: var(--secondary);
+}
+
+.task-item:hover {
+  background: rgb(246, 246, 246);
+}
+
+.task-description {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+}
+
+.duration {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.duration div {
+  display: flex;
+  align-items: center;
+}
+
+.duration p {
+  margin: 0;
+  padding: 0;
+  color: grey;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 0.9rem;
+}
+
+.icon-container {
+  display: grid;
+  place-items: center;
+}
+
+.arrow {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.arrow p {
+  font-size: 1rem;
+  font-weight: normal;
+  position: relative;
+}
+
+.task-item .arrow p::after {
+  content: "";
+  position: absolute;
+  background: var(--secondary);
+  height: 2px;
+  width: 0;
+  right: 0;
+  bottom: -2px;
+  transition: width 300ms;
+}
+
+.task-item:hover .arrow p::after {
+  width: 100%;
+  left: 0;
 }

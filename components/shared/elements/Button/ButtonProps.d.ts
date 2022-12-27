@@ -7,4 +7,5 @@ interface ButtonProps {
   disabled?: boolean;
   style?: CSSProperties;
   type?: "button" | "submit" | "reset";
+  rest?: any;
 }

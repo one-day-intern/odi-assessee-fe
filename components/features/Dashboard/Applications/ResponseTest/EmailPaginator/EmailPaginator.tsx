@@ -22,8 +22,8 @@ const EmailPaginator: React.FC<React.PropsWithChildren<Props>> = ({
       ? Math.ceil(
           emails.filter(
             (email) =>
-              email.subject.toLowerCase().includes(filter.toLowerCase()) ||
-              email.sender.toLowerCase().includes(filter.toLowerCase())
+              email.additional_info.subject.toLowerCase().includes(filter.toLowerCase()) ||
+              email.additional_info.sender.toLowerCase().includes(filter.toLowerCase())
           ).length / emailsPerPage
         )
       : 1;

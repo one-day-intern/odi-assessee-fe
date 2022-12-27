@@ -50,7 +50,7 @@ function useGetRequest<T = unknown>(
   const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
     switch (action.type) {
       case "loading":
-        return { ...initialState };
+        return { ...initialState, data: state.data };
       case "fetched":
         return { ...initialState, data: action.payload, error: undefined };
       case "error":
@@ -99,11 +99,8 @@ function useGetRequest<T = unknown>(
         dispatch({ type: "error", payload: error });
         return;
       }
-
       cache.current[url] = json;
-
       dispatch({ type: "fetched", payload: json });
-
       return json;
     }
 

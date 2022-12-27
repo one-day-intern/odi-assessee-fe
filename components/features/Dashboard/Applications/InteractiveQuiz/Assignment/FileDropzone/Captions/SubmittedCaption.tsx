@@ -11,9 +11,10 @@ const buttonStyles: React.CSSProperties = {
 };
 
 export const SubmittedCaption: React.FC<{
+  isAssignmentEnd?: boolean;
   fileName: string;
   onDownload: React.MouseEventHandler;
-}> = ({ fileName, onDownload }) => {
+}> = ({ isAssignmentEnd, fileName, onDownload }) => {
   return (
     <motion.div
       layout
@@ -30,8 +31,10 @@ export const SubmittedCaption: React.FC<{
       >
         Download
       </Button>
-      <div className={styles["divider"]}>or</div>
-      <p className={styles["sub-caption"]}>make a new submission!</p>
+      {!isAssignmentEnd && <div className={styles["divider"]}>or</div>}
+      {!isAssignmentEnd && (
+        <p className={styles["sub-caption"]}>make a new submission!</p>
+      )}
     </motion.div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./MultipleChoiceQuestion.module.css";
 import { motion } from "framer-motion";
 
@@ -27,40 +27,31 @@ const MultipleChoice: React.FC<
   );
 };
 
-const MultipleChoiceQuestion = () => {
-  const answers = ["Hello", "World", "Hi", "Mom"];
-  const [selectedAnswer, setSelectedAnswer] = useState<number | undefined>(
-    undefined
-  );
+interface Props {
+  onChange?: (optionId: string, attemptId: string) => void;
+  question: MultipleChoiceQuestionAttempt;
+}
+
+const MultipleChoiceQuestion: React.FC<Props> = ({ question, onChange }) => {
+  const handleChoiceClick = (optionId: string) => {
+    // if user answer changed
+    if (optionId !== question["selected-answer-option-id"]) {
+      onChange?.(optionId, question["question-attempt-id"]);
+    }
+  }
 
   return (
     <div className={`${styles["question-body"]}`}>
       <p className={`${styles["question"]}`}>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus,
-        modi quia! Reprehenderit atque in excepturi, optio ipsum maiores ratione
-        ipsa numquam deserunt eum quia ducimus aut sunt rem consectetur
-        mollitia. Cupiditate repellendus reprehenderit, est mollitia sed illo
-        inventore corporis? Nihil, saepe. Nam corrupti quis consectetur suscipit
-        tempore? Repellat ipsa sunt, adipisci harum vel sed totam ratione. Sunt
-        et asperiores corporis? Ex, magnam molestias aspernatur, quaerat
-        possimus quia voluptate nesciunt delectus a, ipsum assumenda
-        reprehenderit? Dignissimos hic esse itaque? Exercitationem fugiat
-        accusamus aliquid voluptas nam cupiditate dignissimos natus ad delectus
-        excepturi? Expedita optio sed excepturi quis dignissimos animi,
-        obcaecati ducimus dolorum dolore! Veritatis aliquam accusamus
-        reprehenderit eveniet pariatur velit nulla aspernatur dolores, quisquam
-        perferendis quas sit fugiat corrupti, nesciunt rerum temporibus? Non
-        iste sequi dicta, quaerat optio quas reprehenderit fugit. Asperiores
-        magni a tempore, quisquam modi unde commodi ad assumenda nulla ipsa
-        aspernatur eligendi itaque, atque dicta. Autem illo consequuntur totam?
+        {question.prompt}
       </p>
       <div className={`${styles["question-answers"]}`}>
-        {answers.map((answer, i) => (
+        {question["answer-options"].map((option, i) => (
           <MultipleChoice
-            key={answer}
-            value={answer}
-            onClick={() => setSelectedAnswer(i)}
-            selected={i === selectedAnswer}
+            key={option["answer-option-id"]}
+            value={option.content}
+            onClick={() => handleChoiceClick(option["answer-option-id"])}
+            selected={option["answer-option-id"] === question["selected-answer-option-id"]}
           />
         ))}
       </div>

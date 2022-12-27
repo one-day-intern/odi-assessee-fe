@@ -5,11 +5,17 @@ import DashboardAPIProvider from "../../../../../../../context/Dashboard/Dashboa
 
 describe("Essay Question component test suite", () => {
   test("test render component", () => {
-    const dummyRef = { current: document.createElement("div") };
     render(
-      <DashboardAPIProvider parentRef={dummyRef} onPushNotification={() => {}}>
-        <EssayQuestion />
-      </DashboardAPIProvider>
+      <EssayQuestion
+        question={{
+          "question-attempt-id": "some-attempt-id",
+          "is-answered": false,
+          prompt: "hello",
+          "question-type": "text",
+          answer: "test",
+        }}
+        isQuizEnded={false}
+      />
     );
   });
 });

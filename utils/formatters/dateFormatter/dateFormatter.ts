@@ -39,4 +39,11 @@ const dateFormatter = (date: Date, nowDate?: Date): string => {
   return `${date.getDate()}/${monthString}/${yearString}`;
 };
 
-export { dateFormatter };
+const dateStringToSeconds = (time: string) => {
+  const deadline = new Date(time);
+  const diffMs = deadline.getTime() - new Date().getTime();
+  const diffSeconds = Math.floor(diffMs / 1000);
+  return diffSeconds;
+};
+
+export { dateFormatter, dateStringToSeconds };

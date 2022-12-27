@@ -6,6 +6,7 @@ import DashboardAPIProvider from "@context/Dashboard/DashboardAPIContext";
 import Draggable from "react-draggable";
 import WindowActions from "./WindowActions";
 import Resizers from "./Resizers";
+import DashboardEvent from "../DashboardEvents";
 
 interface Props {
   children?: React.ReactNode;
@@ -124,6 +125,19 @@ const Window: React.FC<Props> = ({
       setWindowReady(true);
     }
   }, []);
+
+  useEffect(() => {
+    const bringWindowToScreen = () => {
+      onUpdatePos(app, {
+        x: window.innerWidth * 0.5 - app.width * 0.5,
+        y: window.innerHeight * 0.5 - app.height * 0.5,
+      });
+    };
+
+    addEventListener(DashboardEvent.REVEAL_WINDOWS, bringWindowToScreen);
+    return () =>
+      removeEventListener(DashboardEvent.REVEAL_WINDOWS, bringWindowToScreen);
+  }, [onUpdatePos, app]);
 
   const className = `${styles["odi-window"]}${
     app.fullscreen || mobileMode ? " " + styles["odi-window-fullscreen"] : ""

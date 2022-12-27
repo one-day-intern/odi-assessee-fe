@@ -16,7 +16,7 @@ const Room: React.FC<Props> = ({ onLeaveConference }) => {
 
   const normalMode = window.width >= 1024;
 
-  let participantLayout = "single";
+  let participantLayout: string;
 
   switch (peers.length) {
     case 1:
