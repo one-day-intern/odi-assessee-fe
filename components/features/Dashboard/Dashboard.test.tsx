@@ -53,7 +53,7 @@ describe("Dashboard test suite", () => {
     );
     const windowContainer = getByTestId("FullscreenBounds");
     const taskbarEl = getByTestId("MainTaskbar");
-    const shortcut = taskbarEl.children[1];
+    const shortcut = taskbarEl.children[2];
 
     // wait for mocked api
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -73,7 +73,7 @@ describe("Dashboard test suite", () => {
 
     const windowContainer = getByTestId("FullscreenBounds");
     const taskbarEl = getByTestId("MainTaskbar");
-    const shortcut = taskbarEl.children[1];
+    const shortcut = taskbarEl.children[2];
 
     // wait for mocked api
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -112,7 +112,7 @@ describe("Dashboard test suite", () => {
 
     const windowContainer = getByTestId("FullscreenBounds");
     const taskbarEl = getByTestId("MainTaskbar");
-    const shortcut = taskbarEl.children[1];
+    const shortcut = taskbarEl.children[2];
 
     act(() => {
       fireEvent.mouseDown(shortcut.firstElementChild!);
