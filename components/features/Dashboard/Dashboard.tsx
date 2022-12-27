@@ -136,8 +136,7 @@ const Dashboard = () => {
             notification = {
               ...notification,
               title: "Video Conference with your Assessor",
-              message:
-                "Open your video conference application! It's time for your video assessment.",
+              message: serverNotification.additional_info.message,
             };
             break;
           default:
