@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import useVirtualDesktop from "@hooks/Dashboard/useVirtualDesktop";
 import Screen from "./Screen";
 import Taskbar from "./Taskbar";
@@ -10,17 +10,41 @@ import { applications } from "@hooks/Dashboard/useVirtualDesktop/useVirtualDeskt
 import { useRouter } from "next/router";
 import useSSE from "@hooks/shared/useSSE";
 import DashboardEvent from "./DashboardEvents";
+import useGetRequest from "@hooks/shared/useGetRequest";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const TASKBAR_HEIGHT = 50;
   const router = useRouter();
   const fullscreenBoundRef = useRef<HTMLDivElement>(null);
   const virtualDesktop = useVirtualDesktop();
+  const { data } = useGetRequest<any>(
+    `/assessment/assessment-event/get-data/?assessment-event-id=${router.query["assessment-event-id"]}`,
+    {
+      requiresToken: true,
+    }
+  );
   const [isNotificationViewerOpened, setIsNotificationViewerOpened] =
     useState(false);
   const [notifications, setNotifications] = useState<AssesseeNotification[]>(
     []
   );
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "test") return;
+
+    if (data) {
+      const nowTime = new Date();
+      const endTime = new Date(data.end_date_time);
+      const difference = endTime.getTime() - nowTime.getTime();
+      const kickTimeout = setTimeout(() => {
+        router.replace("/dashboard");
+        toast.info("Assessment Event has ended!");
+      }, difference);
+
+      return () => clearTimeout(kickTimeout);
+    }
+  }, [data, router]);
 
   const onNotification = useCallback(
     (app: Application, notification: DashboardNotification) => {
@@ -98,22 +122,23 @@ const Dashboard = () => {
             notification = {
               ...notification,
               title: `[ASSIGNMENT] ${serverNotification.name}`,
-              message: `${serverNotification.description}`
-            }
+              message: `${serverNotification.description}`,
+            };
             break;
           case "responsetest":
             notification = {
               ...notification,
               title: `${serverNotification.additional_info.sender}`,
-              message: `${serverNotification.additional_info.prompt}`
-            }
+              message: `${serverNotification.additional_info.prompt}`,
+            };
             break;
           case "videoconference":
             notification = {
               ...notification,
-              title: 'Video Conference with your Assessor',
-              message: 'Open your video conference application! It\'s time for your video assessment.',
-            }
+              title: "Video Conference with your Assessor",
+              message:
+                "Open your video conference application! It's time for your video assessment.",
+            };
             break;
           default:
         }
@@ -123,6 +148,7 @@ const Dashboard = () => {
             dispatchEvent(new Event(DashboardEvent.REFRESH_EMAILS));
             break;
           case "interactive-quiz":
+            dispatchEvent(new Event(DashboardEvent.REFRESH_QUIZZES));
             dispatchEvent(new Event(DashboardEvent.REFRESH_ASSIGNMENTS));
             break;
           case "video-conference":

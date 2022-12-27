@@ -122,7 +122,7 @@ const AssessmentEventList: NextPage = () => {
           {data.map((event) => (
             <AssessmentEventCard event={event} key={event.event_id} />
           ))}
-          {<h1>You have no active Assessment Events.</h1>}
+          {!data.length && <h1>You have no active Assessment Events.</h1>}
         </div>
       </main>
     </ProtectedRoute>
