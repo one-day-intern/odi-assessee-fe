@@ -1,1 +1,1 @@
-export { dateFormatter } from "./dateFormatter"
+export * from "./dateFormatter"

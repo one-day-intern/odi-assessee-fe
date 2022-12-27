@@ -8,6 +8,8 @@ interface Props {
   onDoubleClick?: () => void;
   opened?: boolean;
   focused?: boolean;
+  style?: React.CSSProperties;
+  testid?: string;
 }
 
 interface NotificationViewerShortcutProps extends Props {
@@ -78,15 +80,18 @@ const TaskbarShortcut: React.FC<Props> = ({
   onClick,
   focused,
   opened,
+  style,
+  testid,
 }) => {
   return (
     <motion.button
       className={`${styles["taskbar-shortcut"]} ${
         focused ? styles.hovered : ""
       }`}
-      data-testid="Shortcut"
+      data-testid={testid ?? "Shortcut"}
       title="taskbar-shortcut"
       type="button"
+      style={style}
     >
       <motion.div
         className="icon"

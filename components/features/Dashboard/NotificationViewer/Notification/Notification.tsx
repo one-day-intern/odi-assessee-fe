@@ -29,10 +29,13 @@ const Notification: React.FC<Props> = ({
           <notification.app.icon width={30} height={30} />
         </div>
         <h1 className={styles["notification-header__title"]}>
-          {notification.app.appName}
+          {notification.title}
         </h1>
       </div>
-      <p className={styles["notification-body"]}>{notification.message}</p>
+      <p
+        className={styles["notification-body"]}
+        dangerouslySetInnerHTML={{ __html: notification.message }}
+      />
       <motion.button
         className={styles["notification-close"]}
         onTap={(e) => e.stopPropagation}

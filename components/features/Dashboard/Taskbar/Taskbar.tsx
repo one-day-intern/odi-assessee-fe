@@ -1,7 +1,11 @@
 import React from "react";
 import styles from "./Taskbar.module.css";
 import TaskbarShortcut, { NotificationViewerShortcut } from "./TaskbarShortcut";
+import { TiTabsOutline } from "react-icons/ti";
+import { AiOutlineHome } from "react-icons/ai"
 import { motion } from "framer-motion";
+import DashboardEvent from "../DashboardEvents";
+import { useRouter } from "next/router";
 
 interface Props {
   children?: React.ReactNode;
@@ -19,6 +23,7 @@ const Taskbar: React.FC<Props> = ({
   notificationCount,
   height,
 }) => {
+  const router = useRouter();
   return (
     <motion.div
       data-testid="MainTaskbar"
@@ -30,6 +35,12 @@ const Taskbar: React.FC<Props> = ({
         notificationCount={notificationCount}
         onClick={() => onNotificationViewerOpen()}
       />
+      <TaskbarShortcut
+        testid="DashboardBack"
+        onClick={() => router.replace('/dashboard')}
+      >
+        <AiOutlineHome size={34} color="var(--primary)" />
+      </TaskbarShortcut>
       {virtualDesktop.applications.map((app) => {
         const appInMemory = virtualDesktop.openedApps.find(
           (_app) => _app.appId === app.appId
@@ -55,6 +66,13 @@ const Taskbar: React.FC<Props> = ({
           </TaskbarShortcut>
         );
       })}
+      <TaskbarShortcut
+        testid="RevealWindows"
+        onClick={() => dispatchEvent(new Event(DashboardEvent.REVEAL_WINDOWS))}
+        style={{ position: "absolute", right: 0 }}
+      >
+        <TiTabsOutline size={32} color="var(--secondary)" />
+      </TaskbarShortcut>
     </motion.div>
   );
 };

@@ -9,18 +9,21 @@ describe("Email tile component test suite", () => {
     const { getByTestId } = render(
       <EmailTile
         email={{
-          id: "email-1",
-          subject: "test",
-          sender: "testing",
-          body: "test",
-          receivedOn: new Date(Date.now()),
+          id: "8312903-2819381290-9031829032",
+          additional_info: {
+            sender: "mock@server.com",
+            subject: "hey this is a mocked response",
+            prompt: "hello this is a mocked response body",
+          },
+          released_time: "2022-12-05T16:40:00",
+          receivedOn: new Date("2022-12-05T16:40:00"),
         }}
         onClick={() => {
           clicked = true;
         }}
       />
     );
-    const tile = getByTestId(`EmailTile-email-1`);
+    const tile = getByTestId(`EmailTile-8312903-2819381290-9031829032`);
 
     act(() => {
         fireEvent.mouseDown(tile);

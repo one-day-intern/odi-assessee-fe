@@ -7,6 +7,7 @@
 
 .question {
     text-align: justify;
+    width: 100%;
 }
 
 .question-answers {
@@ -18,7 +19,7 @@
 }
 
 .choice, .indicator-outer, .indicator-inner {
-    transition: 300ms ease-out;
+    transition: 150ms ease-out;
 }
  
 .choice {

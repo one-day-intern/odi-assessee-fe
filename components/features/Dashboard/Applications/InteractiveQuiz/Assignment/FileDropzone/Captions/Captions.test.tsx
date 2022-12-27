@@ -4,6 +4,7 @@ import { ConfirmationCaption } from "./ConfirmationCaption";
 import { InitialCaption } from "./InitialCaption";
 import { SubmittedCaption } from "./SubmittedCaption";
 import { UploadingCaption } from "./UploadingCaption";
+import { NoSubmissionCaption } from './NoSubmissionCaption';
 
 describe("Dropzone captions component test suite", () => {
   test("test render Confirmation caption", () => {
@@ -15,6 +16,9 @@ describe("Dropzone captions component test suite", () => {
       />
     );
   });
+  test('test render no file submission', () => {
+    render(<NoSubmissionCaption />)
+  })
   test("test render Initial caption", () => {
     render(<InitialCaption />);
   });

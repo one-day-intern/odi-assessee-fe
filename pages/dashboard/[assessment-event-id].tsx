@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 const AssessmentEvent: NextPage = () => {
   const router = useRouter();
   const { data, error } = useGetRequest(
-    `/assessment/assessment-event/verify-participant/?assessment-event-id=${router.query["assessment-event-id"]}`,
+    `/assessment/assessment-event/get-data/?assessment-event-id=${router.query["assessment-event-id"]}`,
     { requiresToken: true }
   );
 
@@ -23,11 +23,13 @@ const AssessmentEvent: NextPage = () => {
   }, [error, router]);
 
   if (!data) {
-    <ProtectedRoute>
-      <div className={styles["loader-container"]}>
-        <Loader />
-      </div>
-    </ProtectedRoute>;
+    return (
+      <ProtectedRoute>
+        <div className={styles["loader-container"]}>
+          <Loader />
+        </div>
+      </ProtectedRoute>
+    );
   }
 
   return (

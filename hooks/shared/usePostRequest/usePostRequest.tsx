@@ -30,7 +30,7 @@ type Action<T> =
 function usePostRequest<T, V>(
   uri: string,
   options?: Options
-): UsePostRequest<T,V> {
+): UsePostRequest<T, V> {
   const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}${uri}`;
   const {
     user,
@@ -42,7 +42,7 @@ function usePostRequest<T, V>(
   // Used to prevent state update if the component is unmounted
   const cancelRequest = useRef<boolean>(false);
 
-  const initialState: State<T,V> = {
+  const initialState: State<T, V> = {
     error: undefined,
     data: undefined,
     status: "initial",
@@ -53,11 +53,11 @@ function usePostRequest<T, V>(
 
     return () => {
       cancelRequest.current = true;
-    }
-  })
+    };
+  });
 
   // Keep state logic separated
-  const fetchReducer = (state: State<T,V>, action: Action<V>): State<T,V> => {
+  const fetchReducer = (state: State<T, V>, action: Action<V>): State<T, V> => {
     switch (action.type) {
       case "loading":
         return { ...initialState, status: "loading" };
@@ -100,7 +100,6 @@ function usePostRequest<T, V>(
         return error;
       }
 
-
       dispatch({
         type: "fetched",
         payload: json,
@@ -109,14 +108,13 @@ function usePostRequest<T, V>(
     }
 
     try {
-
       const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(postBody)
+        body: JSON.stringify(postBody),
       });
 
       const data = await response.json();
@@ -134,7 +132,7 @@ function usePostRequest<T, V>(
         type: "fetched",
         payload: data as V,
       });
-      return data as V;
+      return data;
     } catch (error) {
       if (cancelRequest.current) return;
 
@@ -169,13 +167,12 @@ function usePostRequest<T, V>(
           const response = await fetch(url, {
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${access}`
+              Authorization: `Bearer ${access}`,
             },
             method: "POST",
             body: JSON.stringify(postBody),
           });
           const json = await response.json();
-
 
           if (!response.ok) {
             const error: PostError = new Error(response.statusText);
@@ -190,8 +187,8 @@ function usePostRequest<T, V>(
 
           dispatch({
             type: "fetched",
-            payload: json as V
-          })
+            payload: json as V,
+          });
 
           return json;
         } catch (err) {
@@ -202,6 +199,7 @@ function usePostRequest<T, V>(
       }
 
       dispatch({ type: "error", payload: error as PostError });
+      return error;
     }
   };
 

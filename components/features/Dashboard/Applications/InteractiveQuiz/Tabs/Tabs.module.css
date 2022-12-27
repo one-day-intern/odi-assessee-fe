@@ -1,0 +1,25 @@
+.tabs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tab {
+    width: 150px;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: inherit;
+    color: rgba(59, 151, 255, 0.518);
+    border: 1px solid rgba(59, 151, 255, 0.518);
+}
+
+.tab.selected {
+    border: 1px solid rgb(53, 127, 255);
+    color: rgb(53, 127, 255);
+    background: rgba(59, 151, 255, 0.518);
+}
